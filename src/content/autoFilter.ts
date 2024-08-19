@@ -1,17 +1,34 @@
 import { AutoFilter } from "../services";
 
-export async function autoFilter(baseUiUrl: string, filter: AutoFilter) {
-  if (window.location.href.includes("?q=")) return;
-  window.location.replace(`${baseUiUrl}?q=${filter.filter}`);
+export async function autoFilter(filter: AutoFilter) {
+  const updateFilter = () => {
+    const searchInput = document.getElementById("js-issues-search");
+    const activeTab = document.querySelector(".UnderlineNav-item.selected");
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const link = document.getElementById("pull-requests-tab");
+    if (
+      searchInput instanceof HTMLInputElement &&
+      searchInput &&
+      filter.filter &&
+      activeTab?.id === "pull-requests-tab"
+    ) {
+      // trim() is necessary, since GitHub adds a space after the actual filter text
+      if (searchInput.value.trim() !== filter.filter.trim()) {
+        searchInput.value = filter.filter;
 
-    if (link) {
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        window.location.href = baseUiUrl + filter.filter;
-      });
+        const inputEvent = new Event("input", { bubbles: true });
+        searchInput.dispatchEvent(inputEvent);
+
+        const form = searchInput.closest("form");
+        if (form) {
+          const formSubmitEvent = new Event("submit", {
+            bubbles: true,
+            cancelable: true,
+          });
+          form.dispatchEvent(formSubmitEvent);
+        }
+      }
     }
-  });
+  };
+
+  updateFilter();
 }

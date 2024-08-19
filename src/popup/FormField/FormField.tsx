@@ -1,10 +1,11 @@
 import { Field } from "formik";
 import React from "react";
 import styles from "./FormField.module.scss";
+import { SettingName } from "../../services";
 
 type Props = {
   label: string;
-  name: string;
+  name: SettingName;
   error?: string;
 };
 

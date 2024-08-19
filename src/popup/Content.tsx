@@ -12,11 +12,11 @@ import {
 } from "../services";
 import { Button } from "./Button";
 
-const tabs: Array<Tab> = ["Auto filter", "Settings"];
+const tabs: Array<Tab> = ["Settings", "Auto filter"];
 type FormValues = Settings;
 
 export const Content = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("Auto filter");
+  const [activeTab, setActiveTab] = useState<Tab>("Settings");
   const [result, resultSet] = useState("");
   const [initialValues, initialValuesSet] =
     useState<FormValues>(INITIAL_VALUES);

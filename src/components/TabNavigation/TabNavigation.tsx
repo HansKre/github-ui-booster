@@ -1,7 +1,6 @@
 import { UnderlineNav } from "@primer/react";
 import { UnderlineNavItem } from "@primer/react/lib-esm/UnderlineNav/UnderlineNavItem";
 import React from "react";
-import styles from "./TabNavigation.module.scss";
 
 export type Tab = "Settings" | "Auto filter";
 
@@ -28,7 +27,6 @@ export const TabNavigation: React.FC<Props> = ({
           }}
           aria-current={tab === activeTab ? "page" : undefined}
           as="button"
-          className={styles.tabTitle}
         >
           {tab}
         </UnderlineNavItem>

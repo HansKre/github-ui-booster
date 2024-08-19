@@ -15,8 +15,17 @@ export const settingsSchema = object({
   autoFilter: autoFilterSchema,
 });
 
+type NestedKeys<T, Prefix extends string = ""> = {
+  [K in keyof T]: T[K] extends object
+    ?
+        | `${Prefix}${K & string}`
+        | `${Prefix}${K & string}.${NestedKeys<T[K], "">}`
+    : `${Prefix}${K & string}`;
+}[keyof T];
+
+export type SettingName = NestedKeys<Settings>;
+
 export type Settings = InferType<typeof settingsSchema>;
-export type SettingName = keyof Settings;
 
 export const INITIAL_VALUES = {
   pat: "",
