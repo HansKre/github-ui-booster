@@ -50,7 +50,7 @@ export const Content = () => {
   const mapTabToComponent = (tab: Tab, errors: FormikErrors<FormValues>) => {
     switch (tab) {
       case "Auto filter":
-        return <AutoFilterTab errors={errors} />;
+        return <AutoFilterTab />;
       case "Settings":
         return <SettingsTab errors={errors} />;
     }
@@ -72,7 +72,7 @@ export const Content = () => {
           enableReinitialize
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          //validationSchema={settingsSchema}
+          validationSchema={settingsSchema}
         >
           {({ errors, isValid, dirty, isSubmitting }) => {
             return (

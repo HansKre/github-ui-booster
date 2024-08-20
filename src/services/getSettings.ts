@@ -2,7 +2,6 @@ import { InferType, object, string } from "yup";
 
 const autoFilterSchema = object({
   filter: string().optional(),
-  repo: string().optional(),
 });
 
 export type AutoFilter = InferType<typeof autoFilterSchema>;
@@ -32,7 +31,7 @@ export const INITIAL_VALUES = {
   org: "",
   repo: "",
   ghBaseUrl: "https://api.github.com",
-  autoFilter: { filter: "", repo: "" },
+  autoFilter: { filter: "" },
 };
 
 type Params = {
