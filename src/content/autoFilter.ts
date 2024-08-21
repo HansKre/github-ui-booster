@@ -9,28 +9,28 @@ export function autoFilter({ filter }: AutoFilter) {
     const activeTab = document.querySelector(".UnderlineNav-item.selected");
 
     if (
-      searchInput instanceof HTMLInputElement &&
-      searchInput &&
-      filter &&
-      activeTab?.id === "pull-requests-tab"
-    ) {
-      // trim() is necessary, since GitHub adds a space after the actual filter text
-      if (searchInput.value.trim() !== filter.trim()) {
-        searchInput.value = filter;
+      !(searchInput instanceof HTMLInputElement) ||
+      !searchInput ||
+      !filter ||
+      activeTab?.id !== "pull-requests-tab"
+    )
+      return;
 
-        const inputEvent = new Event("input", { bubbles: true });
-        searchInput.dispatchEvent(inputEvent);
+    // trim() is necessary, since GitHub adds a space after the actual filter text
+    if (searchInput.value.trim() === filter.trim()) return;
 
-        const form = searchInput.closest("form");
-        if (form) {
-          const formSubmitEvent = new Event("submit", {
-            bubbles: true,
-            cancelable: true,
-          });
-          form.dispatchEvent(formSubmitEvent);
-        }
-      }
-    }
+    searchInput.value = filter;
+
+    const inputEvent = new Event("input", { bubbles: true });
+    searchInput.dispatchEvent(inputEvent);
+
+    const form = searchInput.closest("form");
+    if (!form) return;
+    const formSubmitEvent = new Event("submit", {
+      bubbles: true,
+      cancelable: true,
+    });
+    form.dispatchEvent(formSubmitEvent);
   };
 
   replaceFilter();
