@@ -15,9 +15,8 @@ export const settingsSchema = object({
   autoFilter: autoFilterSchema,
 });
 
-export type SettingName = DeepKeysOf<Settings>;
-
 export type Settings = InferType<typeof settingsSchema>;
+export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES = {
   pat: "",

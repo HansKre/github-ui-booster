@@ -1,19 +1,22 @@
 import { AutoFilter } from "../services";
 
-export async function autoFilter(filter: AutoFilter) {
-  const updateFilter = () => {
+/**
+ * Replace current PR-Filter by the filter from Settings by simulating an Input-Event, i.e. as if user had typed in the new filter himself and then triggering GitHub's built-in Handling of a new filter through form-Submit.
+ */
+export function autoFilter({ filter }: AutoFilter) {
+  const replaceFilter = () => {
     const searchInput = document.getElementById("js-issues-search");
     const activeTab = document.querySelector(".UnderlineNav-item.selected");
 
     if (
       searchInput instanceof HTMLInputElement &&
       searchInput &&
-      filter.filter &&
+      filter &&
       activeTab?.id === "pull-requests-tab"
     ) {
       // trim() is necessary, since GitHub adds a space after the actual filter text
-      if (searchInput.value.trim() !== filter.filter.trim()) {
-        searchInput.value = filter.filter;
+      if (searchInput.value.trim() !== filter.trim()) {
+        searchInput.value = filter;
 
         const inputEvent = new Event("input", { bubbles: true });
         searchInput.dispatchEvent(inputEvent);
@@ -30,5 +33,5 @@ export async function autoFilter(filter: AutoFilter) {
     }
   };
 
-  updateFilter();
+  replaceFilter();
 }
