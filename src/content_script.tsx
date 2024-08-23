@@ -6,20 +6,12 @@ let observer: MutationObserver | null = null;
 
 const observe = (observer: MutationObserver) => {
   const tabNavigation = document.querySelector(".UnderlineNav");
-  const filterInput = document.getElementById("js-issues-search");
 
   // tabNavigation-DOM changes when GH-page-content changes, hence the need to re-run our scripts
   if (tabNavigation) {
     observer.observe(tabNavigation, {
       childList: true,
       subtree: true,
-      attributes: true,
-    });
-  }
-
-  // warum?
-  if (filterInput) {
-    observer.observe(filterInput, {
       attributes: true,
     });
   }
@@ -50,7 +42,7 @@ function handleContent(settings: Settings) {
   if (window.location.href.startsWith(prUiUrl)) handlePr(settings);
 
   if (window.location.href.startsWith(baseUiUrl)) {
-    if (observer) observer.disconnect();
+    if (observer) return;
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
