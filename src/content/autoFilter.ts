@@ -3,7 +3,8 @@ import { AutoFilter } from "../services";
 /**
  * Replace current PR-Filter by the filter from Settings by simulating an Input-Event, i.e. as if user had typed in the new filter himself and then triggering GitHub's built-in Handling of a new filter through form-Submit.
  */
-export function autoFilter({ filter }: AutoFilter) {
+export function autoFilter({ filter, active }: AutoFilter) {
+  if (!active) return;
   const replaceFilter = () => {
     const searchInput = document.getElementById("js-issues-search");
     const activeTab = document.querySelector(".UnderlineNav-item.selected");

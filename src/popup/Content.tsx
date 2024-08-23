@@ -26,7 +26,7 @@ export const Content = () => {
       onSuccess: initialValuesSet,
       onError: () => resultSet("Couldn't load from chrome storage"),
     });
-  }, []);
+  }, [initialValues]);
 
   const handleSubmit = (
     values: FormValues,
@@ -50,7 +50,7 @@ export const Content = () => {
   const mapTabToComponent = (tab: Tab, errors: FormikErrors<FormValues>) => {
     switch (tab) {
       case "Auto filter":
-        return <AutoFilterTab />;
+        return <AutoFilterTab disabled={!initialValues.autoFilter.active} />;
       case "Settings":
         return <SettingsTab errors={errors} />;
     }

@@ -1,7 +1,8 @@
-import {DeepKeysOf} from "ts-type-safe";
-import { InferType, object, string } from "yup";
+import { DeepKeysOf } from "ts-type-safe";
+import { boolean, InferType, object, string } from "yup";
 
 const autoFilterSchema = object({
+  active: boolean().optional(),
   filter: string().optional(),
 });
 
@@ -23,7 +24,7 @@ export const INITIAL_VALUES = {
   org: "",
   repo: "",
   ghBaseUrl: "https://api.github.com",
-  autoFilter: { filter: "" },
+  autoFilter: { filter: "", active: false },
 };
 
 type Params = {
