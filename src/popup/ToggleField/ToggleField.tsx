@@ -26,6 +26,7 @@ export const ToggleField: React.FC<Props> = ({ label, name }) => {
                 form.submitForm();
               }}
               checked={field.value}
+              size="small"
             />
           );
         }}
