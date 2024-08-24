@@ -1,25 +1,23 @@
 import { AutoFilter } from "../services";
+import { isOnPrPage } from "./isOnPrPage";
 
 let intercepted = false;
 
 /**
  * Replace current PR-Filter by the filter from Settings by simulating an Input-Event, i.e. as if user had typed in the new filter himself and then triggering GitHub's built-in Handling of a new filter through form-Submit.
  */
-export function autoFilter(
+export function handlePrFilter(
   { filter, active }: AutoFilter,
   filterIntercepted?: string
 ) {
-  if (!active || intercepted || !isOnPRPage()) return;
+  if (!active || intercepted) return;
 
-  function isOnPRPage() {
-    if (window.location.href.includes("/pulls")) return true;
-
+  if (!isOnPrPage()) {
     document.removeEventListener("click", onQuickFilterClick);
-    return false;
+    return;
   }
 
   document.addEventListener("click", onQuickFilterClick);
-
   replaceFilter(filter, filterIntercepted);
 }
 
@@ -65,7 +63,7 @@ function onQuickFilterClick(event: MouseEvent) {
     if (targetUrl.href.includes("/issues")) {
       event.preventDefault();
       const decodedFilter = decodeQueryString(params.toString());
-      autoFilter({ filter: decodedFilter, active: true }, decodedFilter);
+      handlePrFilter({ filter: decodedFilter, active: true }, decodedFilter);
       intercepted = true;
     }
   }
