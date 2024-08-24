@@ -1,5 +1,5 @@
-import { handlePr, handlePrs } from "./content";
-import { handlePrFilter } from "./content/handlePrFilter";
+import { handlePrFilter, handlePrPage, handlePrsPage } from "./content";
+import { urls } from "./content/utils/urls";
 import { Settings, getSettings } from "./services";
 
 let observer: MutationObserver | null = null;
@@ -29,24 +29,17 @@ getSettings({
  * changes without a full reload.
  */
 function handleContentChange(settings: Settings) {
-  const baseUiUrl = `${settings.ghBaseUrl.replace("/api/v3", "")}/${
-    settings.org
-  }/${settings.repo}`;
-  const prsUiUrl = `${baseUiUrl}/pulls`;
-  const prUiUrl = `${baseUiUrl}/pull`;
-
-  if (window.location.href.startsWith(prsUiUrl)) {
-    handlePrs(settings);
-  }
-  if (window.location.href.startsWith(prUiUrl)) handlePr(settings);
-
-  if (window.location.href.startsWith(baseUiUrl)) {
+  if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          handlePrFilter(settings.autoFilter);
+          console.log(mutation);
+          // handlers take care of checking for conditions to run on their own
+          handlePrFilter(settings, settings.autoFilter);
+          handlePrsPage(settings);
+          handlePrPage(settings);
         }
       });
     });
