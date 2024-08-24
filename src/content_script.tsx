@@ -53,14 +53,5 @@ function handleContent(settings: Settings) {
     });
 
     observe(observer);
-  } else {
-    // Remove all click listeners when not on the base GH page
-    window.addEventListener(
-      "click",
-      function (event) {
-        event.stopImmediatePropagation();
-      },
-      true
-    );
   }
 }

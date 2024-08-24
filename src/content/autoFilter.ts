@@ -9,69 +9,71 @@ export function autoFilter(
   { filter, active }: AutoFilter,
   filterIntercepted?: string
 ) {
-  if (!active || intercepted || !window.location.href.includes("/pulls"))
+  if (!active || intercepted || !isOnPRPage()) return;
+
+  function isOnPRPage() {
+    if (window.location.href.includes("/pulls")) return true;
+
+    document.removeEventListener("click", onQuickFilterClick);
+    return false;
+  }
+
+  document.addEventListener("click", onQuickFilterClick);
+
+  replaceFilter(filter, filterIntercepted);
+}
+
+function replaceFilter(filter: string | undefined, filterIntercepted?: string) {
+  const searchInput = document.getElementById("js-issues-search");
+  const activeTab = document.querySelector(".UnderlineNav-item.selected");
+
+  if (
+    !(searchInput instanceof HTMLInputElement) ||
+    !searchInput ||
+    !filter ||
+    activeTab?.id !== "pull-requests-tab"
+  )
     return;
-  const replaceFilter = () => {
-    const searchInput = document.getElementById("js-issues-search");
-    const activeTab = document.querySelector(".UnderlineNav-item.selected");
 
-    if (
-      !(searchInput instanceof HTMLInputElement) ||
-      !searchInput ||
-      !filter ||
-      activeTab?.id !== "pull-requests-tab"
-    )
-      return;
+  // trim() is necessary, since GitHub adds a space after the actual filter text
+  if (searchInput.value.trim() === filter.trim()) return;
 
-    // trim() is necessary, since GitHub adds a space after the actual filter text
-    if (searchInput.value.trim() === filter.trim()) return;
+  searchInput.value = filterIntercepted ?? filter;
 
-    searchInput.value = filterIntercepted ?? filter;
+  const inputEvent = new Event("input", { bubbles: true });
+  searchInput.dispatchEvent(inputEvent);
 
-    const inputEvent = new Event("input", { bubbles: true });
-    searchInput.dispatchEvent(inputEvent);
+  const form = searchInput.closest("form");
+  if (form)
+    form.dispatchEvent(
+      new Event("submit", { bubbles: true, cancelable: true })
+    );
+}
 
-    const form = searchInput.closest("form");
-    if (!form) return;
-    const formSubmitEvent = new Event("submit", {
-      bubbles: true,
-      cancelable: true,
-    });
-    form.dispatchEvent(formSubmitEvent);
-  };
+// Intercept GH PR quickfilters (Open, Closed)
+// The quick filter is so smart that it just appends itself to the current filter,
+// so we can just replace the filter stored by the user without actually losing it
+function onQuickFilterClick(event: MouseEvent) {
+  if (!(event.target instanceof HTMLElement)) return;
+  intercepted = false;
+  const quickFilter = event.target.closest("a.btn-link");
 
-  // Intercept GH PR quickfilters (Open, Closed)
-  // The quick filter is so smart that it just appends to the set current filter,
-  // so we can just replace the filter stored by the user without losing it
-  document.addEventListener("click", function (event) {
-    if (!(event.target instanceof HTMLElement)) return;
-    intercepted = false;
-    const quickFilter = event.target.closest("a.btn-link");
+  if (quickFilter && quickFilter instanceof HTMLAnchorElement) {
+    const targetUrl = new URL(quickFilter.href);
+    const params = new URLSearchParams(targetUrl.search);
 
-    if (quickFilter && quickFilter instanceof HTMLAnchorElement) {
-      const targetUrl = new URL(quickFilter.href);
-      const params = new URLSearchParams(targetUrl.search);
-
-      if (targetUrl.href.includes("/issues")) {
-        event.preventDefault();
-        filter = decodeQueryString(params.toString());
-        autoFilter({ filter, active: true }, filter);
-        intercepted = true;
-      }
+    if (targetUrl.href.includes("/issues")) {
+      event.preventDefault();
+      const decodedFilter = decodeQueryString(params.toString());
+      autoFilter({ filter: decodedFilter, active: true }, decodedFilter);
+      intercepted = true;
     }
-  });
-
-  replaceFilter();
+  }
 }
 
 function decodeQueryString(encodedQuery: string) {
-  let decodedString = decodeURIComponent(encodedQuery);
-
-  decodedString = decodedString.replace(/\+/g, " ");
-
-  if (decodedString.startsWith("q=")) {
-    decodedString = decodedString.substring(2);
-  }
-
-  return decodedString;
+  return decodeURIComponent(encodedQuery.replace(/\+/g, " ")).replace(
+    /^q=/,
+    ""
+  );
 }
