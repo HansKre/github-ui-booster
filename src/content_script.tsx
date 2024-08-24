@@ -32,11 +32,14 @@ function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
 
+    // handlers take care of checking for conditions to run on their own
+    handlePrFilter(settings, settings.autoFilter);
+    handlePrsPage(settings);
+    handlePrPage(settings);
+
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          console.log(mutation);
-          // handlers take care of checking for conditions to run on their own
           handlePrFilter(settings, settings.autoFilter);
           handlePrsPage(settings);
           handlePrPage(settings);
