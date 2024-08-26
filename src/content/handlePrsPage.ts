@@ -23,9 +23,9 @@ export async function handlePrsPage(settings: Settings) {
 
     const prRows = document.querySelectorAll("div[id^=issue_]");
     prRows.forEach((prRow) => {
+      if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
       const [, prNumber] = prRow.id.split("_");
       const prData = prs.find((pr) => pr.number === parseInt(prNumber));
-      if (prRow.querySelector(".IssueLabel.hx_IssueLabel")) return;
       addLabel(prData, prRow);
     });
   } catch (err) {
@@ -46,6 +46,7 @@ function addLabel(
   const text = `${prData.base.ref} <-- ${prData.head.ref}`;
   const spanEl = document.createElement("span");
   spanEl.textContent = text;
+  spanEl.classList.add("ghUiBooster");
   spanEl.classList.add("IssueLabel");
   spanEl.classList.add("hx_IssueLabel");
   prRow.children[0].children[2].appendChild(spanEl);
