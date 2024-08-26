@@ -1,25 +1,24 @@
-import { handlePr, handlePrs } from "./content";
-import { autoFilter } from "./content/autoFilter";
+import { handlePrFilter, handlePrPage, handlePrsPage } from "./content";
+import { urls } from "./content/utils/urls";
 import { Settings, getSettings } from "./services";
 
 let observer: MutationObserver | null = null;
 
-const observe = (observer: MutationObserver) => {
+const observeContentChanges = (observer: MutationObserver) => {
   const tabNavigation = document.querySelector(".UnderlineNav");
+  if (!tabNavigation) return;
 
   // tabNavigation-DOM changes when GH-page-content changes, hence the need to re-run our scripts
-  if (tabNavigation) {
-    observer.observe(tabNavigation, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-    });
-  }
+  observer.observe(tabNavigation, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
 };
 
 getSettings({
-  onSuccess: handleContent,
-  onError: () => alert("Couldn't load from chrome storage"),
+  onSuccess: handleContentChange,
+  onError: () => alert("Couldn't load your Settings from chrome storage"),
 });
 
 /**
@@ -29,29 +28,25 @@ getSettings({
  * are needed to ensure the content script is triggered when the page content
  * changes without a full reload.
  */
-function handleContent(settings: Settings) {
-  const baseUiUrl = `${settings.ghBaseUrl.replace("/api/v3", "")}/${
-    settings.org
-  }/${settings.repo}`;
-  const prsUiUrl = `${baseUiUrl}/pulls`;
-  const prUiUrl = `${baseUiUrl}/pull`;
-
-  if (window.location.href.startsWith(prsUiUrl)) {
-    handlePrs(settings);
-  }
-  if (window.location.href.startsWith(prUiUrl)) handlePr(settings);
-
-  if (window.location.href.startsWith(baseUiUrl)) {
+function handleContentChange(settings: Settings) {
+  if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
+
+    // handlers take care of checking for conditions to run on their own
+    handlePrFilter(settings, settings.autoFilter);
+    handlePrsPage(settings);
+    handlePrPage(settings);
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          autoFilter(settings.autoFilter);
+          handlePrFilter(settings, settings.autoFilter);
+          handlePrsPage(settings);
+          handlePrPage(settings);
         }
       });
     });
 
-    observe(observer);
+    observeContentChanges(observer);
   }
 }
