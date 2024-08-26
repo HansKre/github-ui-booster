@@ -1,20 +1,30 @@
-import { InferType, object, string } from 'yup';
+import { DeepKeysOf } from "ts-type-safe";
+import { boolean, InferType, object, string } from "yup";
+
+const autoFilterSchema = object({
+  active: boolean().optional(),
+  filter: string().optional(),
+});
+
+export type AutoFilter = InferType<typeof autoFilterSchema>;
 
 export const settingsSchema = object({
-  pat: string().required().matches(/^ghp_/, 'Should start with ghp_').min(30),
+  pat: string().required().matches(/^ghp_/, "Should start with ghp_").min(30),
   org: string().required(),
   repo: string().required(),
   ghBaseUrl: string().required().url(),
+  autoFilter: autoFilterSchema,
 });
 
 export type Settings = InferType<typeof settingsSchema>;
-export type SettingName = keyof Settings;
+export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES = {
-  pat: '',
-  org: '',
-  repo: '',
-  ghBaseUrl: 'https://api.github.com',
+  pat: "",
+  org: "",
+  repo: "",
+  ghBaseUrl: "https://api.github.com",
+  autoFilter: { filter: "", active: false },
 };
 
 type Params = {
@@ -32,7 +42,10 @@ export function getSettings({ onSuccess, onError }: Params) {
         settingsSchema
           .validate(entries)
           .then((settings) => onSuccess(settings))
-          .catch(() => onError());
+          .catch((e) => {
+            console.error(e);
+            onError();
+          });
       }
     });
 }

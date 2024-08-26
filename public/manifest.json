@@ -16,7 +16,7 @@
 
   "content_scripts": [
     {
-      "matches": ["https://*/*/pulls*", "https://*/*/pull/*"],
+      "matches": ["https://*/*"],
       "js": ["js/vendor.js", "js/content_script.js"]
     }
   ],
