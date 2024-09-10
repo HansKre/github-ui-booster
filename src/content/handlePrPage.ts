@@ -1,11 +1,14 @@
-import { Octokit } from '@octokit/rest';
-import { Settings } from '../services';
-import { getPrFromLocation } from './getPrFromLocation';
-import { Spinner } from './spinner';
+import { Octokit } from "@octokit/rest";
+import { Settings } from "../services";
+import { getPrFromLocation } from "./getPrFromLocation";
+import { Spinner } from "./spinner";
+import { isOnPrPage } from "./utils/isOnPrPage";
 
-const BLACKLIST = ['package-lock.json'];
+const BLACKLIST = ["package-lock.json"];
 
-export async function handlePr(settings: Settings) {
+export async function handlePrPage(settings: Settings) {
+  if (!isOnPrPage(settings)) return;
+
   const prNumber = getPrFromLocation();
 
   if (!prNumber) return;
@@ -23,8 +26,8 @@ export async function handlePr(settings: Settings) {
 
   try {
     Spinner.showSpinner(
-      '#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav',
-      'ghuibooster__spinner__large'
+      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+      "ghuibooster__spinner__large"
     );
     while (hasNextPage) {
       const { data: files } = await octokit.pulls.listFiles({
@@ -50,20 +53,24 @@ export async function handlePr(settings: Settings) {
 
     updateUi(totalLinesAdded, totalLinesRemoved);
   } catch (error) {
-    console.error('Error fetching pull request files:', error);
+    console.error("Error fetching pull request files:", error);
   } finally {
     Spinner.hideSpinner();
   }
 }
 
 function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
-  // remove diffstat-block
-  document
-    .querySelector('#diffstat > span > span[class^=diffstat-block]')
-    ?.parentElement?.remove();
+  const diffStats = document.querySelector(
+    "#diffstat > span > span[class^=diffstat-block]"
+  )?.parentElement;
+
+  // if undefined, assume that this script already ran
+  if (!diffStats) return;
+
+  diffStats.remove();
 
   const linesAddedEl = document.querySelector<HTMLElement>(
-    '#diffstat > span.color-fg-success'
+    "#diffstat > span.color-fg-success"
   );
   const addedClone = linesAddedEl?.cloneNode(true);
   if (!addedClone) return;
@@ -71,7 +78,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   linesAddedEl?.parentNode?.insertBefore(addedClone, linesAddedEl);
 
   const linesRemovedEl = document.querySelector<HTMLElement>(
-    '#diffstat > span.color-fg-danger'
+    "#diffstat > span.color-fg-danger"
   );
   const removedClone = linesRemovedEl?.cloneNode(true);
   if (!removedClone) return;
@@ -84,7 +91,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
 function reduceFont(...els: Array<HTMLElement | null>) {
   els.forEach((el) => {
     if (!el) return;
-    el.style['fontSize'] = '8px';
-    el.style['verticalAlign'] = 'sub';
+    el.style["fontSize"] = "8px";
+    el.style["verticalAlign"] = "sub";
   });
 }

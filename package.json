@@ -10,8 +10,19 @@
     "test": "npx jest",
     "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
-  "author": "",
   "license": "ISC",
+  "maintainers": [
+    {
+      "name": "Hans Krebs",
+      "githubUsername": "HansKre",
+      "url": "https://github.com/HansKre"
+    },
+    {
+      "name": "Lucas Calefi Giglio",
+      "githubUsername": "lukegskw",
+      "url": "https://github.com/lukegskw"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/HansKre/github-ui-booster"
