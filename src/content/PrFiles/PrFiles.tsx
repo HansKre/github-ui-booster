@@ -18,7 +18,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
       onMouseEnter={() => openSet(true)}
       onMouseLeave={() => setTimeout(() => openSet(false), 100)}
     >
-      📄
+      🗂️
       <div className={cns(styles.popup, open && styles.popup__hovered)}>
         {prFiles.map((fileName) => (
           <Text as="p" key={fileName} className={styles.file}>
