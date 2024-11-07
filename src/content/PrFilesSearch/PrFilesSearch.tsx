@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { cns } from "ts-type-safe";
 import { Search } from "../Search";
 
-import styles from "./PrFilesSearch.module.scss";
+import { FilesWithDiff } from "../FilesWithDiff";
+import { Files } from "../types";
 
-export type Files =
-  RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"];
+import styles from "./PrFilesSearch.module.scss";
 
 type PrWithFiles = {
   title: string;
@@ -22,8 +22,6 @@ type Props = {
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   const [map, mapSet] = useState<PrWithFiles[]>();
-  const [open, openSet] = useState<string>();
-
   return (
     <>
       <Search
@@ -69,31 +67,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
                   <Text as="h5">{title}</Text>
                 </a>
                 <ul className={styles.list}>
-                  {files.map((file, index) => (
-                    <React.Fragment key={file.filename}>
-                      <Text
-                        as="li"
-                        onMouseEnter={() => openSet(getKey(title, index))}
-                        onMouseLeave={() => openSet(undefined)}
-                      >
-                        {file.filename}
-                      </Text>
-                      {/* only text-based files have a patch */}
-                      {file.patch && (
-                        <div
-                          className={cns(
-                            styles.popup,
-                            open === getKey(title, index) &&
-                              styles.popup__hovered
-                          )}
-                        >
-                          <pre>
-                            <code>{formatPatch(file.patch)}</code>
-                          </pre>
-                        </div>
-                      )}
-                    </React.Fragment>
-                  ))}
+                  <FilesWithDiff files={files} prTitle={title} />
                 </ul>
               </div>
             ))}
@@ -102,45 +76,4 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
       </div>
     </>
   );
-};
-function getKey(title: string, index: number) {
-  return `${title}-${index}`;
-}
-
-// Function to escape HTML and highlight patch content
-const formatPatch = (patch: string | undefined) => {
-  if (!patch) return;
-
-  // Split lines and wrap each in appropriate JSX with highlights
-  return patch.split("\n").map((line, index) => {
-    if (line.startsWith("@@")) {
-      // Separate the metadata and code parts on the line
-      const [, metadata, code] = line.split("@@ ");
-      return (
-        <React.Fragment key={index}>
-          {/* Display metadata part */}
-          <div className={styles.metadata}>{metadata}</div>
-          {/* Display code part (if it exists) on a new line */}
-          {code ? <div>{code}</div> : null}
-        </React.Fragment>
-      );
-    } else if (line.startsWith("+")) {
-      // Added line
-      return (
-        <div key={index} className={styles.added}>
-          {line}
-        </div>
-      );
-    } else if (line.startsWith("-")) {
-      // Removed line
-      return (
-        <div key={index} className={styles.removed}>
-          {line}
-        </div>
-      );
-    } else {
-      // Regular code line
-      return <div key={index}>{line}</div>;
-    }
-  });
 };

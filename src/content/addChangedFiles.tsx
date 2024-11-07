@@ -3,8 +3,9 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { Settings } from "../services";
 import { PrFiles } from "./PrFiles";
-import { Files, PrFilesSearch } from "./PrFilesSearch";
+import { PrFilesSearch } from "./PrFilesSearch";
 import { processPrFiles } from "./processPrFiles";
+import { Files } from "./types";
 
 export async function addChangedFiles(settings: Settings) {
   const octokit = new Octokit({
