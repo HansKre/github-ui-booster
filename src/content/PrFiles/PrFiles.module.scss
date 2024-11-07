@@ -16,10 +16,3 @@
 .fileTooltip:hover .popup {
   display: block; /* Show on hover */
 }
-
-// obsolete?
-.file {
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-}

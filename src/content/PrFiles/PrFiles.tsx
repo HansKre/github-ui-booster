@@ -20,11 +20,13 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
     >
       🗂️
       <div className={cns(styles.popup, open && styles.popup__hovered)}>
-        {prFiles.map((fileName) => (
-          <Text as="p" key={fileName} className={styles.file}>
-            {fileName}
-          </Text>
-        ))}
+        <ul>
+          {prFiles.map((fileName) => (
+            <Text as="li" key={fileName}>
+              {fileName}
+            </Text>
+          ))}
+        </ul>
       </div>
     </span>
   );
