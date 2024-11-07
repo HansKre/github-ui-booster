@@ -1,8 +1,10 @@
-import { handlePrPage } from "./content";
+import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
+import { addChangedFiles } from "./content/addChangedFiles";
+import { handlePrFilter } from "./content/handlePrFilter";
 import { Spinner } from "./content/spinner";
-import { isOnPrPage } from "./content/utils/isOnPrPage";
+import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { urls } from "./content/utils/urls";
-import { Settings, getSettings } from "./services";
+import { getSettings, Settings } from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -23,6 +25,9 @@ getSettings({
   onError: () => alert("Couldn't load your Settings from chrome storage"),
 });
 
+const SPINNER_PARENT =
+  "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+
 /**
  * This method is automatically executed on initial page load, refreshes, and full navigations.
  *
@@ -32,23 +37,31 @@ getSettings({
  */
 async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (!isOnPrPage(settings)) return;
+    if (!isOnPrsPage(settings)) return;
 
     if (observer) return;
 
-    Spinner.showSpinner(
-      "content_prs_page",
-      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav"
-    );
+    try {
+      Spinner.showSpinner(SPINNER_PARENT);
 
-    await handlePrPage(settings);
-
-    Spinner.hideSpinner();
+      await handlePrFilter(settings, settings.autoFilter);
+      await addBaseBranchLabels(settings);
+      await addChangedFiles(settings);
+    } catch (err) {
+      alert(
+        "Error in content_prs_page-script. Check console and report if the issue persists."
+      );
+      console.error(err);
+    } finally {
+      Spinner.hideSpinner();
+    }
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          handlePrPage(settings);
+          handlePrFilter(settings, settings.autoFilter);
+          addBaseBranchLabels(settings);
+          addChangedFiles(settings);
         }
       });
     });

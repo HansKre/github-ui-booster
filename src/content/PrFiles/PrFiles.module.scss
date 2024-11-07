@@ -1,0 +1,43 @@
+.fileTooltip {
+  padding-left: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.popup {
+  display: none; /* Initially hidden */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  max-height: 80vh; /* Limit the height */
+  max-width: 80vw; /* Limit the width */
+  overflow-y: auto; /* Enable scroll if content is too long */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  bottom: auto;
+  height: fit-content;
+  width: fit-content;
+  background-color: #0b0b0c;
+  border: solid 1px darkgray;
+  cursor: text;
+
+  &__hovered {
+    display: block;
+  }
+}
+
+.fileTooltip:hover .popup {
+  display: block; /* Show on hover */
+}
+
+// obsolete?
+.file {
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
