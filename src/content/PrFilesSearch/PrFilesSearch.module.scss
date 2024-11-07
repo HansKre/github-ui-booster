@@ -1,6 +1,6 @@
 @import "../../shared-component-styles.scss";
 
-.popup {
+.searchPopup {
   @extend .popup;
   transform: translateX(-20%);
 }
@@ -11,4 +11,17 @@
 
 .prFiles:not(:first-child) {
   margin-top: 1rem;
+}
+
+.metadata {
+  color: #6a737d;
+  font-weight: bold;
+}
+
+.added {
+  color: #22863a;
+}
+
+.removed {
+  color: #cb2431;
 }

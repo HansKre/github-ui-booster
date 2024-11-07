@@ -22,6 +22,7 @@ type Props = {
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   const [map, mapSet] = useState<PrWithFiles[]>();
+  const [open, openSet] = useState<string>();
 
   return (
     <>
@@ -55,7 +56,10 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
         }}
       />
       <div
-        className={cns(styles.popup, !!map?.length && styles.popup__hovered)}
+        className={cns(
+          styles.searchPopup,
+          !!map?.length && styles.popup__hovered
+        )}
       >
         {map && (
           <>
@@ -65,10 +69,30 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
                   <Text as="h5">{title}</Text>
                 </a>
                 <ul className={styles.list}>
-                  {files.map((file) => (
-                    <Text as="li" key={file}>
-                      {file.filename}
-                    </Text>
+                  {files.map((file, index) => (
+                    <React.Fragment key={file.filename}>
+                      <Text
+                        as="li"
+                        onMouseEnter={() => openSet(getKey(title, index))}
+                        onMouseLeave={() => openSet(undefined)}
+                      >
+                        {file.filename}
+                      </Text>
+                      {/* only text-based files have a patch */}
+                      {file.patch && (
+                        <div
+                          className={cns(
+                            styles.popup,
+                            open === getKey(title, index) &&
+                              styles.popup__hovered
+                          )}
+                        >
+                          <pre>
+                            <code>{formatPatch(file.patch)}</code>
+                          </pre>
+                        </div>
+                      )}
+                    </React.Fragment>
                   ))}
                 </ul>
               </div>
@@ -78,4 +102,45 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
       </div>
     </>
   );
+};
+function getKey(title: string, index: number) {
+  return `${title}-${index}`;
+}
+
+// Function to escape HTML and highlight patch content
+const formatPatch = (patch: string | undefined) => {
+  if (!patch) return;
+
+  // Split lines and wrap each in appropriate JSX with highlights
+  return patch.split("\n").map((line, index) => {
+    if (line.startsWith("@@")) {
+      // Separate the metadata and code parts on the line
+      const [, metadata, code] = line.split("@@ ");
+      return (
+        <React.Fragment key={index}>
+          {/* Display metadata part */}
+          <div className={styles.metadata}>{metadata}</div>
+          {/* Display code part (if it exists) on a new line */}
+          {code ? <div>{code}</div> : null}
+        </React.Fragment>
+      );
+    } else if (line.startsWith("+")) {
+      // Added line
+      return (
+        <div key={index} className={styles.added}>
+          {line}
+        </div>
+      );
+    } else if (line.startsWith("-")) {
+      // Removed line
+      return (
+        <div key={index} className={styles.removed}>
+          {line}
+        </div>
+      );
+    } else {
+      // Regular code line
+      return <div key={index}>{line}</div>;
+    }
+  });
 };
