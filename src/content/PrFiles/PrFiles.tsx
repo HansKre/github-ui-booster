@@ -1,10 +1,11 @@
-import { Text } from "@primer/react";
 import React, { useState } from "react";
 import { cns } from "ts-type-safe";
+import { FilesWithDiff } from "../FilesWithDiff";
+import { Files } from "../types";
 import styles from "./PrFiles.module.scss";
 
 type Props = {
-  prFiles: string[] | undefined;
+  prFiles: Files | undefined;
 };
 
 export const PrFiles: React.FC<Props> = ({ prFiles }) => {
@@ -21,11 +22,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
       🗂️
       <div className={cns(styles.popup, open && styles.popup__hovered)}>
         <ul>
-          {prFiles.map((fileName) => (
-            <Text as="li" key={fileName}>
-              {fileName}
-            </Text>
-          ))}
+          <FilesWithDiff files={prFiles} />
         </ul>
       </div>
     </span>

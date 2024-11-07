@@ -67,7 +67,7 @@ export async function addChangedFiles(settings: Settings) {
 
     root.render(
       <React.StrictMode>
-        <PrFiles prFiles={prFiles?.map((file) => file.filename)} />
+        <PrFiles prFiles={prFiles} />
       </React.StrictMode>
     );
   }
