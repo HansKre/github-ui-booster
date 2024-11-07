@@ -1,26 +1,8 @@
-.popup {
-  display: none; /* Initially hidden */
-  position: absolute;
-  transform: translateX(-20%);
-  color: #fff;
-  padding: 1rem 2rem;
-  border-radius: 4px;
-  white-space: nowrap;
-  max-height: 80vh; /* Limit the height */
-  max-width: 80vw; /* Limit the width */
-  overflow-y: auto; /* Enable scroll if content is too long */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-  z-index: 100;
-  bottom: auto;
-  height: fit-content;
-  width: fit-content;
-  background-color: #0b0b0c;
-  border: solid 1px darkgray;
-  cursor: text;
+@import "../../shared-component-styles.scss";
 
-  &__hovered {
-    display: block;
-  }
+.popup {
+  @extend .popup;
+  transform: translateX(-20%);
 }
 
 .list {

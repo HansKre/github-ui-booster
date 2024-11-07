@@ -17,15 +17,13 @@ export const Search: React.FC<Props> = ({
   const [value, valueSet] = useState("");
 
   return (
-    <div className={styles.fieldWrapper}>
-      <input
-        placeholder={label}
-        className={styles.field}
-        id={name}
-        type="text"
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
+    <input
+      placeholder={label}
+      className={styles.input}
+      id={name}
+      type="text"
+      disabled={disabled}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 };
