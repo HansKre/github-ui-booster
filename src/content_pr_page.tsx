@@ -22,7 +22,7 @@ getSettings({
 });
 
 /**
- * This method of content_scripts is automatically executed on initial page load, refreshes, and full navigations.
+ * This method is automatically executed on initial page load, refreshes, and full navigations.
  *
  * For SPAs and dynamic content, additional strategies like Mutation Observer
  * are needed to ensure the content script is triggered when the page content
@@ -32,9 +32,6 @@ function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
 
-    // handlers take care of checking for conditions to run on their own
-    handlePrFilter(settings, settings.autoFilter);
-    handlePrsPage(settings);
     handlePrPage(settings);
 
     observer = new MutationObserver((mutations) => {
