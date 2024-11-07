@@ -20,7 +20,8 @@ const observeContentChanges = (observer: MutationObserver) => {
 
 getSettings({
   onSuccess: handleContentChange,
-  onError: () => alert("Couldn't load your Settings from chrome storage"),
+  onError: () =>
+    alert("Couldn't load your Settings from chrome storage (content_pr_page)"),
 });
 
 /**
@@ -37,7 +38,6 @@ async function handleContentChange(settings: Settings) {
     if (observer) return;
 
     Spinner.showSpinner(
-      "content_prs_page",
       "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav"
     );
 
