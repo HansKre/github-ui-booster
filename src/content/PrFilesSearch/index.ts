@@ -1,1 +1,1 @@
-export { PrFilesSearch } from "./PrFilesSearch";
+export { PrFilesSearch, Files } from "./PrFilesSearch";

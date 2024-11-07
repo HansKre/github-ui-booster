@@ -3,7 +3,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { Settings } from "../services";
 import { PrFiles } from "./PrFiles";
-import { PrFilesSearch } from "./PrFilesSearch";
+import { Files, PrFilesSearch } from "./PrFilesSearch";
 import { processPrFiles } from "./processPrFiles";
 
 export async function addChangedFiles(settings: Settings) {
@@ -21,19 +21,10 @@ export async function addChangedFiles(settings: Settings) {
   });
 
   // Fetch PR files
-  const prFilesMap = new Map<number, string[]>();
+  const prFilesMap = new Map<number, Files>();
   for await (const pr of prs) {
     await processPrFiles(settings, pr.number, (files) => {
-      prFilesMap.set(
-        pr.number,
-        files.map((file) => file.filename)
-      );
-      /* ------ */
-      files.forEach((file) => {
-        console.log(`File: ${file.filename}`);
-        console.log(`Diff: ${file.patch}`);
-      });
-      /* ------ */
+      prFilesMap.set(pr.number, files);
     });
   }
 
@@ -75,10 +66,8 @@ export async function addChangedFiles(settings: Settings) {
 
     root.render(
       <React.StrictMode>
-        <PrFiles prFiles={prFiles} />
+        <PrFiles prFiles={prFiles?.map((file) => file.filename)} />
       </React.StrictMode>
     );
-    console.log("rendered");
   }
-  console.log("finished for loop");
 }

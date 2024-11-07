@@ -6,15 +6,18 @@ import { Search } from "../Search";
 
 import styles from "./PrFilesSearch.module.scss";
 
+export type Files =
+  RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"];
+
 type PrWithFiles = {
   title: string;
   url: string;
-  files: string[];
+  files: Files;
 };
 
 type Props = {
   prs: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"];
-  prFilesMap: Map<number, string[]>;
+  prFilesMap: Map<number, Files>;
 };
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
@@ -23,7 +26,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   return (
     <>
       <Search
-        label="PR Files Search"
+        label="Search for file in PRs"
         name="search"
         onChange={(value) => {
           if (value.trim() === "") {
@@ -35,12 +38,11 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
 
           prFilesMap.forEach((files, prNumber) => {
             const matchingFiles = files.filter((file) =>
-              file.toLowerCase().includes(value.toLowerCase())
+              file.filename.toLowerCase().includes(value.toLowerCase())
             );
             if (matchingFiles.length > 0) {
               const prData = prs.find((pr) => pr.number === prNumber);
               if (!prData) return;
-              prData.url;
               matchingMap.push({
                 title: `${prData.number}: ${prData.title}`,
                 url: `${prData.html_url}/files`,
@@ -65,7 +67,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
                 <ul className={styles.list}>
                   {files.map((file) => (
                     <Text as="li" key={file}>
-                      {file}
+                      {file.filename}
                     </Text>
                   ))}
                 </ul>
