@@ -38,7 +38,8 @@ async function handleContentChange(settings: Settings) {
     if (observer) return;
 
     Spinner.showSpinner(
-      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav"
+      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+      "ghuibooster__spinner__large"
     );
 
     await handlePrPage(settings);
