@@ -2,8 +2,8 @@ import { Octokit } from "@octokit/rest";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { Settings } from "../services";
+import { injectPrFilesSearch } from "./injectPrFilesSearch";
 import { PrFiles } from "./PrFiles";
-import { PrFilesSearch } from "./PrFilesSearch";
 import { processPrFiles } from "./processPrFiles";
 import { Files } from "./types";
 
@@ -29,25 +29,7 @@ export async function addChangedFiles(settings: Settings) {
     });
   }
 
-  const contentEl = document.querySelector(".repository-content");
-  if (!contentEl) return;
-
-  const prFilesSearchClass = "gh-ui-booster-pr-files-search";
-  if (contentEl.querySelector(`.${prFilesSearchClass}`)) return;
-
-  const rootDivEl = document.createElement("div");
-  rootDivEl.classList.add(prFilesSearchClass);
-
-  contentEl.children[0].children[2].insertBefore(
-    rootDivEl,
-    contentEl.children[0].children[2].children[1]
-  );
-  const newRoot = createRoot(rootDivEl);
-  newRoot.render(
-    <React.StrictMode>
-      <PrFilesSearch prs={prs} prFilesMap={prFilesMap} />
-    </React.StrictMode>
-  );
+  injectPrFilesSearch(prs, prFilesMap);
 
   // Add Files-Icon to PRs
   const prRows = document.querySelectorAll("div[id^=issue_]");

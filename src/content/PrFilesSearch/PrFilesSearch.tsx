@@ -15,7 +15,7 @@ type PrWithFiles = {
   files: Files;
 };
 
-type Props = {
+export type Props = {
   prs: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"];
   prFilesMap: Map<number, Files>;
 };
