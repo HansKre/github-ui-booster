@@ -25,13 +25,15 @@ export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
       {file.patch && (
         <div
           className={cns(
-            styles.popup,
-            open === getKey(prTitle, index) && styles.popup__hovered
+            styles.popupContainer,
+            open === getKey(prTitle, index) && styles.popupContainer__hovered
           )}
         >
-          <pre>
-            <code>{formatPatch(file.patch)}</code>
-          </pre>
+          <div className={styles.popupContent}>
+            <pre>
+              <code>{formatPatch(file.patch)}</code>
+            </pre>
+          </div>
         </div>
       )}
     </>

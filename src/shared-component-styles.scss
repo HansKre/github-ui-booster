@@ -35,16 +35,16 @@ $fontColor: rgba(255, 255, 255);
   }
 }
 
-.popup {
+.popupContainer {
   display: none; /* Initially hidden */
   position: absolute;
+  overflow: visible; /* required for popup in popup to work */
   color: #fff;
   padding: 1rem 2rem;
   border-radius: 4px;
   white-space: nowrap;
   max-height: 80vh; /* Limit the height */
   max-width: 80vw; /* Limit the width */
-  overflow-y: auto; /* Enable scroll if content is too long */
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   z-index: 100;
   bottom: auto;
@@ -55,6 +55,11 @@ $fontColor: rgba(255, 255, 255);
   cursor: text;
 
   &__hovered {
-    display: block;
+    display: flex;
+    flex-direction: column;
   }
+}
+
+.popupContent {
+  overflow-y: auto; /* Enable scroll if content is too long */
 }

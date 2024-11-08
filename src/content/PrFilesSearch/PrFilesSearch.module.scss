@@ -1,7 +1,7 @@
 @import "../../shared-component-styles.scss";
 
-.searchPopup {
-  @extend .popup;
+.searchPopupContainer {
+  @extend .popupContainer;
   transform: translateX(-20%);
 }
 

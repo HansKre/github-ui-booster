@@ -55,24 +55,26 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
       />
       <div
         className={cns(
-          styles.searchPopup,
-          !!map?.length && styles.popup__hovered
+          styles.searchPopupContainer,
+          !!map?.length && styles.popupContainer__hovered
         )}
       >
-        {map && (
-          <>
-            {map.map(({ title, url, files }) => (
-              <div key={title} className={styles.prFiles}>
-                <a href={url} target="_blank" rel="noreferrer">
-                  <Text as="h5">{title}</Text>
-                </a>
-                <ul className={styles.list}>
-                  <FilesWithDiff files={files} prTitle={title} />
-                </ul>
-              </div>
-            ))}
-          </>
-        )}
+        <div className={styles.popupContent}>
+          {map && (
+            <>
+              {map.map(({ title, url, files }) => (
+                <div key={title} className={styles.prFiles}>
+                  <a href={url} target="_blank" rel="noreferrer">
+                    <Text as="h5">{title}</Text>
+                  </a>
+                  <ul className={styles.list}>
+                    <FilesWithDiff files={files} prTitle={title} />
+                  </ul>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </>
   );

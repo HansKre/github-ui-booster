@@ -20,10 +20,17 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
       onMouseLeave={() => setTimeout(() => openSet(false), 100)}
     >
       🗂️
-      <div className={cns(styles.popup, open && styles.popup__hovered)}>
-        <ul>
-          <FilesWithDiff files={prFiles} />
-        </ul>
+      <div
+        className={cns(
+          styles.popupContainer,
+          open && styles.popupContainer__hovered
+        )}
+      >
+        <div className={styles.popupContent}>
+          <ul>
+            <FilesWithDiff files={prFiles} />
+          </ul>
+        </div>
       </div>
     </span>
   );
