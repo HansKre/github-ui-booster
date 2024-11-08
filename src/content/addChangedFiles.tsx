@@ -29,15 +29,19 @@ export async function addChangedFiles(settings: Settings) {
     });
   }
 
-  const rootDivEl = document.createElement("div");
   const contentEl = document.querySelector(".repository-content");
   if (!contentEl) return;
-  document
-    .querySelector(".repository-content")
-    ?.children[0].children[2].insertBefore(
-      rootDivEl,
-      contentEl.children[0].children[2].children[1]
-    );
+
+  const prFilesSearchClass = "gh-ui-booster-pr-files-search";
+  if (contentEl.querySelector(`.${prFilesSearchClass}`)) return;
+
+  const rootDivEl = document.createElement("div");
+  rootDivEl.classList.add(prFilesSearchClass);
+
+  contentEl.children[0].children[2].insertBefore(
+    rootDivEl,
+    contentEl.children[0].children[2].children[1]
+  );
   const newRoot = createRoot(rootDivEl);
   newRoot.render(
     <React.StrictMode>
@@ -53,8 +57,9 @@ export async function addChangedFiles(settings: Settings) {
     //  Add popover for the files
     const prFiles = prFilesMap.get(parseInt(prNumber));
     // addPopover(prFiles, prRow);
-    if (prRow.classList.contains("gh-ui-booster-pr-files")) return;
-    prRow.classList.add("gh-ui-booster-pr-files");
+    const prFilesClass = "gh-ui-booster-pr-files";
+    if (prRow.classList.contains(prFilesClass)) return;
+    prRow.classList.add(prFilesClass);
 
     const rootSpanEl = document.createElement("span");
     // Insert between the first and second child
