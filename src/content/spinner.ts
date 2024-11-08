@@ -1,7 +1,7 @@
 function showSpinner(parentSelector: string, ...additionalClasses: string[]) {
-  const loadingSpinner = document.querySelector('.ghuibooster__spinner');
+  const loadingSpinner = document.querySelector(".ghuibooster__spinner");
   if (loadingSpinner) {
-    loadingSpinner.classList.remove('ghuibooster__hidden');
+    loadingSpinner.classList.remove("ghuibooster__hidden");
     return;
   }
   injectCSS();
@@ -9,8 +9,8 @@ function showSpinner(parentSelector: string, ...additionalClasses: string[]) {
 }
 
 function injectCSS() {
-  const style = document.createElement('style');
-  style.type = 'text/css';
+  const style = document.createElement("style");
+  style.type = "text/css";
   style.innerHTML = `
       .ghuibooster__spinner.ghuibooster__hidden {
           display: none;
@@ -36,13 +36,13 @@ function injectCSS() {
         100% { transform: rotate(360deg); }
       }
     `;
-  document.getElementsByTagName('head')[0].appendChild(style);
+  document.getElementsByTagName("head")[0].appendChild(style);
 }
 
 function createSpinner(parentSelector: string, ...additionalClasses: string[]) {
   const parentEl = document.querySelector(parentSelector);
-  const loadingSpinner = document.createElement('div');
-  loadingSpinner.classList.add('ghuibooster__spinner');
+  const loadingSpinner = document.createElement("div");
+  loadingSpinner.classList.add("ghuibooster__spinner");
   additionalClasses.forEach((c) => {
     loadingSpinner.classList.add(c);
   });
@@ -51,8 +51,8 @@ function createSpinner(parentSelector: string, ...additionalClasses: string[]) {
 }
 
 function hideSpinner() {
-  const loadingOverlay = document.querySelector('.ghuibooster__spinner');
-  loadingOverlay?.classList.add('ghuibooster__hidden');
+  const loadingOverlay = document.querySelector(".ghuibooster__spinner");
+  loadingOverlay?.classList.add("ghuibooster__hidden");
 }
 
 export const Spinner = {

@@ -1,3 +1,3 @@
 export * from "./handlePrFilter";
 export * from "./handlePrPage";
-export * from "./handlePrsPage";
+export * from "./addBaseBranchLabels";

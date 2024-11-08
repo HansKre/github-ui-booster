@@ -1,0 +1,14 @@
+@import "../../shared-component-styles.scss";
+
+.searchPopupContainer {
+  @extend .popupContainer;
+  transform: translateX(-20%);
+}
+
+.list {
+  padding-left: 1.5rem;
+}
+
+.prFiles:not(:first-child) {
+  margin-top: 1rem;
+}

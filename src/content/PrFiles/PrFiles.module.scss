@@ -1,0 +1,19 @@
+@import "../../shared-component-styles.scss";
+
+.fileTooltip {
+  padding-left: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.popupContainer {
+  @extend .popupContainer;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fileTooltip:hover .popupContainer {
+  display: flex;
+  flex-direction: column;
+}

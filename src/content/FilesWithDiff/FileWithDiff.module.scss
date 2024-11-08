@@ -1,0 +1,20 @@
+@import "../../shared-component-styles.scss";
+
+.metadata {
+  color: #6a737d;
+  font-weight: bold;
+}
+
+.added {
+  background-color: var(
+    --diffBlob-addition-bgColor-line,
+    var(--color-diff-blob-addition-line-bg)
+  );
+}
+
+.removed {
+  background-color: var(
+    --diffBlob-deletion-bgColor-line,
+    var(--color-diff-blob-deletion-line-bg)
+  );
+}

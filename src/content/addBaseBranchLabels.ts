@@ -1,18 +1,16 @@
 import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
 import { Settings } from "../services";
-import { Spinner } from "./spinner";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
-export async function handlePrsPage(settings: Settings) {
+export async function addBaseBranchLabels(settings: Settings) {
   const octokit = new Octokit({
     auth: settings.pat,
     baseUrl: settings.ghBaseUrl,
   });
   if (!isOnPrsPage(settings)) return;
+
   try {
-    Spinner.showSpinner(
-      "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div"
-    );
+    // Fetch PRs
     const { data: prs } = await octokit.pulls.list({
       owner: settings.org,
       repo: settings.repo,
@@ -23,7 +21,7 @@ export async function handlePrsPage(settings: Settings) {
 
     const prRows = document.querySelectorAll("div[id^=issue_]");
     prRows.forEach((prRow) => {
-      if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
+      // Add labels indicating the base-ref to every PR row
       const [, prNumber] = prRow.id.split("_");
       const prData = prs.find((pr) => pr.number === parseInt(prNumber));
       addLabel(prData, prRow);
@@ -31,8 +29,6 @@ export async function handlePrsPage(settings: Settings) {
   } catch (err) {
     alert("Error fetching PR data. Check console");
     console.error(err);
-  } finally {
-    Spinner.hideSpinner();
   }
 }
 
@@ -43,6 +39,7 @@ function addLabel(
   prRow: Element
 ) {
   if (!prData) return;
+  if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
   const text = `${prData.base.ref} <-- ${prData.head.ref}`;
   const spanEl = document.createElement("span");
   spanEl.textContent = text;
