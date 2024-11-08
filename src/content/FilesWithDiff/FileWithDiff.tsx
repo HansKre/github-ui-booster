@@ -26,6 +26,7 @@ export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
         <div
           className={cns(
             styles.popupContainer,
+            styles.popupContainer__muted,
             open === getKey(prTitle, index) && styles.popupContainer__hovered
           )}
         >

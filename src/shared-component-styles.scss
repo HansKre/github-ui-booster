@@ -50,13 +50,18 @@ $fontColor: rgba(255, 255, 255);
   bottom: auto;
   height: fit-content;
   width: fit-content;
-  background-color: #0b0b0c;
+  background-color: var(--bgColor-default, var(--color-canvas-default));
   border: solid 1px darkgray;
   cursor: text;
 
   &__hovered {
     display: flex;
     flex-direction: column;
+  }
+
+  &__muted {
+    /* background-color of left side of files-diff */
+    background-color: #181b22;
   }
 }
 

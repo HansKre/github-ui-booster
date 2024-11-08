@@ -6,9 +6,15 @@
 }
 
 .added {
-  color: #22863a;
+  background-color: var(
+    --diffBlob-addition-bgColor-line,
+    var(--color-diff-blob-addition-line-bg)
+  );
 }
 
 .removed {
-  color: #cb2431;
+  background-color: var(
+    --diffBlob-deletion-bgColor-line,
+    var(--color-diff-blob-deletion-line-bg)
+  );
 }
