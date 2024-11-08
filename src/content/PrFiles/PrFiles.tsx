@@ -4,7 +4,7 @@ import { FilesWithDiff } from "../FilesWithDiff";
 import { Files } from "../types";
 import styles from "./PrFiles.module.scss";
 
-type Props = {
+export type Props = {
   prFiles: Files | undefined;
 };
 
