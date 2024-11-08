@@ -14,7 +14,7 @@ export const FilesWithDiff: React.FC<Props> = ({
   return (
     <>
       {files.map((file, index) => (
-        <FileWithDiff prTitle={prTitle} file={file} index={index} />
+        <FileWithDiff key={index} prTitle={prTitle} file={file} index={index} />
       ))}
     </>
   );

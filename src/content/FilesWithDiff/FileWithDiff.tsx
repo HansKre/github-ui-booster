@@ -13,7 +13,7 @@ type Props = {
 export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
   const [open, openSet] = useState<string>();
   return (
-    <React.Fragment key={file.filename}>
+    <>
       <Text
         as="li"
         onMouseEnter={() => openSet(getKey(prTitle, index))}
@@ -34,7 +34,7 @@ export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
           </pre>
         </div>
       )}
-    </React.Fragment>
+    </>
   );
 };
 
