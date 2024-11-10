@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styles from "./Search.module.scss";
 
 type Props = {
@@ -14,8 +14,6 @@ export const Search: React.FC<Props> = ({
   onChange,
   disabled,
 }) => {
-  const [value, valueSet] = useState("");
-
   return (
     <input
       placeholder={label}
