@@ -19,15 +19,40 @@ export const TotalLines: React.FC<Props> = ({
         size="small"
       />
       <span className={cns("color-fg-success", styles.label)}>
-        {totalLinesAdded}
+        {` ${totalLinesAdded} `}
       </span>
-      <DiffRemovedIcon
-        className={cns("color-fg-danger", styles.spacing)}
-        size="small"
-      />
+      <DiffRemovedIcon className="color-fg-danger" size="small" />
       <span className={cns("color-fg-danger", styles.label)}>
-        {totalLinesRemoved}
+        {` ${totalLinesRemoved} `}
       </span>
+      <DiffStat
+        totalLinesAdded={totalLinesAdded}
+        totalLinesRemoved={totalLinesRemoved}
+      />
     </>
   );
+};
+
+const BLOCKS = 5;
+
+const DiffStat: React.FC<Props> = ({ totalLinesAdded, totalLinesRemoved }) => {
+  const totalLines = totalLinesAdded + totalLinesRemoved;
+  const positiveBlocksCount = Math.round(
+    (totalLinesAdded / totalLines) * BLOCKS
+  );
+
+  const blocks = Array.from({ length: BLOCKS }, (_, index) => {
+    return (
+      <span
+        key={index}
+        className={
+          index < positiveBlocksCount
+            ? "diffstat-block-added"
+            : "diffstat-block-neutral"
+        }
+      />
+    );
+  });
+
+  return <span>{blocks}</span>;
 };
