@@ -24,7 +24,7 @@ export async function addBaseBranchLabels(settings: Settings) {
       // Add labels indicating the base-ref to every PR row
       const [, prNumber] = prRow.id.split("_");
       const prData = prs.find((pr) => pr.number === parseInt(prNumber));
-      addLabel(prData, prRow);
+      addLabel(prs, prData, prRow);
     });
   } catch (err) {
     alert("Error fetching PR data. Check console");
@@ -33,18 +33,38 @@ export async function addBaseBranchLabels(settings: Settings) {
 }
 
 function addLabel(
-  prData:
+  prs: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"],
+  currentPr:
     | RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number]
     | undefined,
   prRow: Element
 ) {
-  if (!prData) return;
+  if (!currentPr) return;
+
   if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
-  const text = `${prData.base.ref} <-- ${prData.head.ref}`;
-  const spanEl = document.createElement("span");
-  spanEl.textContent = text;
-  spanEl.classList.add("ghUiBooster");
-  spanEl.classList.add("IssueLabel");
-  spanEl.classList.add("hx_IssueLabel");
-  prRow.children[0].children[2].appendChild(spanEl);
+  const text = `${currentPr.base.ref} <-- ${currentPr.head.ref}`;
+
+  const basePr = prs.find((pr) => pr.head.ref === currentPr.base.ref);
+
+  const aOrSpanEl = document.createElement(basePr ? "a" : "span");
+
+  aOrSpanEl.textContent = text;
+  aOrSpanEl.classList.add("ghUiBooster");
+
+  aOrSpanEl.style.marginRight = "1rem";
+
+  if (basePr && aOrSpanEl instanceof HTMLAnchorElement) {
+    aOrSpanEl.target = "_blank";
+    aOrSpanEl.rel = "noopener noreferrer";
+    aOrSpanEl.href = basePr.html_url;
+  } else {
+    aOrSpanEl.style.color = "initial";
+  }
+
+  const parent = prRow.children[0].children[2].querySelector(
+    "div.d-flex.mt-1.text-small.color-fg-muted"
+  );
+
+  // insert as the very first element
+  parent?.insertBefore(aOrSpanEl, parent.firstChild);
 }
