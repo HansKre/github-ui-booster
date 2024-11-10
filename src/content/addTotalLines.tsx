@@ -8,7 +8,6 @@ import { processPrFiles } from "./processPrFiles";
 export async function addTotalLines(settings: Settings) {
   const prRows = document.querySelectorAll("div[id^=issue_]");
   for await (const prRow of prRows) {
-    // Add labels indicating the base-ref to every PR row
     const [, prNumber] = prRow.id.split("_");
     if (!prNumber) continue;
 
