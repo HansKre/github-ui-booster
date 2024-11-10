@@ -26,7 +26,8 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   const filterPrs = useCallback(
     (value: string) =>
       startTransition(() => {
-        if (value.trim() === "") {
+        const terms = value.trim().toLowerCase().split(" ").filter(Boolean);
+        if (terms.length === 0) {
           mapSet(undefined);
           return;
         }
@@ -34,9 +35,13 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
         const matchingMap: PrWithFiles[] = [];
 
         prFilesMap.forEach((files, prNumber) => {
-          const matchingFiles = files.filter((file) =>
-            file.filename.toLowerCase().includes(value.toLowerCase())
-          );
+          // Apply each search term sequentially to narrow down matching files
+          const matchingFiles = terms.reduce((currentFiles, term) => {
+            return currentFiles.filter((file) =>
+              file.filename.toLowerCase().includes(term)
+            );
+          }, files);
+
           if (matchingFiles.length > 0) {
             const prData = prs.find((pr) => pr.number === prNumber);
             if (!prData) return;
