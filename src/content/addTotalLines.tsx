@@ -27,6 +27,8 @@ export async function addTotalLines(settings: Settings) {
     prRow.classList.add(prTotalLinesClass);
 
     const rootSpanEl = document.createElement("span");
+    rootSpanEl.classList.add("diffstat");
+
     /* Insert before the div-element
        this way, it will always be the last element in the line
        since the div has a display: flex and hence displays as a block-element
