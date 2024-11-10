@@ -1,6 +1,6 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { Text } from "@primer/react";
-import React, { useState } from "react";
+import React, { useCallback, useState, useTransition } from "react";
 import { cns } from "ts-type-safe";
 import { SearchInput } from "../../components";
 
@@ -22,36 +22,43 @@ export type Props = {
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   const [map, mapSet] = useState<PrWithFiles[]>();
+  const [, startTransition] = useTransition();
+  const filterPrs = useCallback(
+    (value: string) =>
+      startTransition(() => {
+        if (value.trim() === "") {
+          mapSet(undefined);
+          return;
+        }
+
+        const matchingMap: PrWithFiles[] = [];
+
+        prFilesMap.forEach((files, prNumber) => {
+          const matchingFiles = files.filter((file) =>
+            file.filename.toLowerCase().includes(value.toLowerCase())
+          );
+          if (matchingFiles.length > 0) {
+            const prData = prs.find((pr) => pr.number === prNumber);
+            if (!prData) return;
+            matchingMap.push({
+              title: `${prData.number}: ${prData.title}`,
+              url: `${prData.html_url}/files`,
+              files: matchingFiles,
+            });
+          }
+        });
+
+        mapSet(matchingMap);
+      }),
+    [prs, prFilesMap]
+  );
+
   return (
     <>
       <SearchInput
         label="Search for file in PRs"
         name="search"
-        onChange={(value) => {
-          if (value.trim() === "") {
-            mapSet(undefined);
-            return;
-          }
-
-          const matchingMap: PrWithFiles[] = [];
-
-          prFilesMap.forEach((files, prNumber) => {
-            const matchingFiles = files.filter((file) =>
-              file.filename.toLowerCase().includes(value.toLowerCase())
-            );
-            if (matchingFiles.length > 0) {
-              const prData = prs.find((pr) => pr.number === prNumber);
-              if (!prData) return;
-              matchingMap.push({
-                title: `${prData.number}: ${prData.title}`,
-                url: `${prData.html_url}/files`,
-                files: matchingFiles,
-              });
-            }
-          });
-
-          mapSet(matchingMap);
-        }}
+        onChange={filterPrs}
       />
       <div
         className={cns(

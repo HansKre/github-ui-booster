@@ -21,7 +21,22 @@ export const SearchInput: React.FC<Props> = ({
       id={name}
       type="text"
       disabled={disabled}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={debounce((e) => onChange(e.target.value), 200)}
     />
   );
 };
+
+function debounce<T extends (...args: any[]) => void>(
+  callback: T,
+  delay: number
+) {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+}
