@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Search.module.scss";
+import styles from "./SearchInput.module.scss";
 
 type Props = {
   label: string;
@@ -8,7 +8,7 @@ type Props = {
   disabled?: boolean;
 };
 
-export const Search: React.FC<Props> = ({
+export const SearchInput: React.FC<Props> = ({
   label,
   name,
   onChange,

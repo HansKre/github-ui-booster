@@ -2,7 +2,7 @@ import { RestEndpointMethodTypes } from "@octokit/rest";
 import { Text } from "@primer/react";
 import React, { useState } from "react";
 import { cns } from "ts-type-safe";
-import { Search } from "../Search";
+import { SearchInput } from "../../components";
 
 import { FilesWithDiff } from "../FilesWithDiff";
 import { Files } from "../types";
@@ -24,7 +24,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
   const [map, mapSet] = useState<PrWithFiles[]>();
   return (
     <>
-      <Search
+      <SearchInput
         label="Search for file in PRs"
         name="search"
         onChange={(value) => {
