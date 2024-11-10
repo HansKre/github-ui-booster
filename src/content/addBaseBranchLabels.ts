@@ -41,7 +41,8 @@ function addLabel(
 ) {
   if (!currentPr) return;
 
-  if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
+  const baseBranchLabelClass = "gh-ui-booster-base-branch-label";
+  if (prRow.querySelector(`.${baseBranchLabelClass}`)) return;
   const text = `${currentPr.base.ref} <-- ${currentPr.head.ref}`;
 
   const basePr = prs.find((pr) => pr.head.ref === currentPr.base.ref);
@@ -49,7 +50,7 @@ function addLabel(
   const aOrSpanEl = document.createElement(basePr ? "a" : "span");
 
   aOrSpanEl.textContent = text;
-  aOrSpanEl.classList.add("ghUiBooster");
+  aOrSpanEl.classList.add(baseBranchLabelClass);
 
   aOrSpanEl.style.marginRight = "1rem";
 
