@@ -17,7 +17,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
     <span
       className={styles.fileTooltip}
       onMouseEnter={() => openSet(true)}
-      onMouseLeave={() => setTimeout(() => openSet(false), 100)}
+      onMouseLeave={() => setTimeout(() => openSet(false), 500)}
     >
       🗂️
       <div

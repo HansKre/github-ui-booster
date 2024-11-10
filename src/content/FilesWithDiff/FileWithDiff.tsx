@@ -13,14 +13,12 @@ type Props = {
 export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
   const [open, openSet] = useState<string>();
   return (
-    <>
-      <Text
-        as="li"
-        onMouseEnter={() => openSet(getKey(prTitle, index))}
-        onMouseLeave={() => openSet(undefined)}
-      >
-        {file.filename}
-      </Text>
+    <Text
+      as="li"
+      onMouseEnter={() => openSet(getKey(prTitle, index))}
+      onMouseLeave={() => setTimeout(() => openSet(undefined), 100)}
+    >
+      {file.filename}
       {/* only text-based files have a patch */}
       {file.patch && (
         <div
@@ -37,7 +35,7 @@ export const FileWithDiff: React.FC<Props> = ({ file, prTitle, index }) => {
           </div>
         </div>
       )}
-    </>
+    </Text>
   );
 };
 

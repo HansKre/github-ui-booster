@@ -13,6 +13,10 @@
   transform: translateX(-50%);
 }
 
+/* keeps popups open as long as mouse is inside of them,
+mouse does not need to stay at the tooltip.
+This gets inherited to nested popups as long as the .poupContainer is a
+child of the .fileToolTip */
 .fileTooltip:hover .popupContainer {
   display: flex;
   flex-direction: column;
