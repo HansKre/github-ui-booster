@@ -13,7 +13,7 @@ export async function injectFiles(prFilesMap: Map<number, Files>) {
     const prFiles = prFilesMap.get(parseInt(prNumber));
     // addPopover(prFiles, prRow);
     const prFilesClass = "gh-ui-booster-pr-files";
-    if (prRow.classList.contains(prFilesClass)) return;
+    if (prRow.classList.contains(prFilesClass)) continue;
     prRow.classList.add(prFilesClass);
 
     const rootSpanEl = document.createElement("span");

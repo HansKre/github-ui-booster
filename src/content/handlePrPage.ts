@@ -2,8 +2,7 @@ import { Settings } from "../services";
 import { getPrFromLocation } from "./getPrFromLocation";
 import { isOnPrPage } from "./utils/isOnPrPage";
 import { processPrFiles } from "./processPrFiles";
-
-const BLACKLIST = ["package-lock.json"];
+import { BLACKLIST } from "../config";
 
 export async function handlePrPage(settings: Settings) {
   if (!isOnPrPage(settings)) return;

@@ -1,5 +1,6 @@
 import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
+import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { Spinner } from "./content/spinner";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
@@ -48,6 +49,7 @@ async function handleContentChange(settings: Settings) {
       await handlePrFilter(settings, settings.autoFilter);
       await addBaseBranchLabels(settings);
       await addChangedFiles(settings);
+      await addTotalLines(settings);
     } catch (err) {
       alert(
         "Error in content_prs_page-script. Check console and report if the issue persists."
@@ -63,6 +65,7 @@ async function handleContentChange(settings: Settings) {
           handlePrFilter(settings, settings.autoFilter);
           addBaseBranchLabels(settings);
           addChangedFiles(settings);
+          addTotalLines(settings);
         }
       });
     });
