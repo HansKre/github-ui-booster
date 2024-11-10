@@ -1,6 +1,6 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { Text } from "@primer/react";
-import React, { useCallback, useState, useTransition } from "react";
+import React, { useCallback, useMemo, useState, useTransition } from "react";
 import { cns } from "ts-type-safe";
 import { SearchInput } from "../../components";
 
@@ -21,14 +21,29 @@ export type Props = {
 };
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
+  const allFiles = useMemo(() => {
+    const files: PrWithFiles[] = [];
+    prFilesMap.forEach((filesData, prNumber) => {
+      const prData = prs.find((pr) => pr.number === prNumber);
+      if (!prData) return;
+      files.push({
+        title: `${prData.number}: ${prData.title}`,
+        url: `${prData.html_url}/files`,
+        files: filesData,
+      });
+    });
+    return files;
+  }, [prFilesMap]);
+
   const [map, mapSet] = useState<PrWithFiles[]>();
+
   const [, startTransition] = useTransition();
   const filterPrs = useCallback(
     (value: string) =>
       startTransition(() => {
         const terms = value.trim().toLowerCase().split(" ").filter(Boolean);
         if (terms.length === 0) {
-          mapSet(undefined);
+          mapSet(allFiles);
           return;
         }
 
@@ -64,6 +79,16 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
         label="Search for file in PRs"
         name="search"
         onChange={filterPrs}
+        onFocus={(value) => {
+          if (value) {
+            filterPrs(value);
+          } else if (!map) {
+            mapSet(allFiles);
+          }
+        }}
+        onBlur={() => {
+          mapSet(undefined);
+        }}
       />
       <div
         className={cns(

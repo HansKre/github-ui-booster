@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./SearchInput.module.scss";
 
 type Props = {
@@ -6,6 +6,8 @@ type Props = {
   name: string;
   onChange: (value: string) => void;
   disabled?: boolean;
+  onFocus?: (value: string) => void;
+  onBlur?: () => void;
 };
 
 export const SearchInput: React.FC<Props> = ({
@@ -13,7 +15,10 @@ export const SearchInput: React.FC<Props> = ({
   name,
   onChange,
   disabled,
+  onFocus,
+  onBlur,
 }) => {
+  const [value, valueSet] = useState("");
   return (
     <input
       placeholder={label}
@@ -21,7 +26,15 @@ export const SearchInput: React.FC<Props> = ({
       id={name}
       type="text"
       disabled={disabled}
-      onChange={debounce((e) => onChange(e.target.value), 200)}
+      value={value}
+      onChange={(e) => {
+        const newValue = e.target.value;
+        valueSet(newValue);
+        debounce((newValue) => onChange(newValue), 200);
+        onChange(newValue);
+      }}
+      onFocus={() => onFocus?.(value)}
+      onBlur={onBlur}
     />
   );
 };
