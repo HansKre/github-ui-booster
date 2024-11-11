@@ -20,7 +20,11 @@
   "content_scripts": [
     {
       "matches": ["https://*/*"],
-      "js": ["js/vendor.js", "js/content_script.js"]
+      "js": ["js/vendor.js", "js/content_pr_page.js"]
+    },
+    {
+      "matches": ["https://*/*"],
+      "js": ["js/vendor.js", "js/content_prs_page.js"]
     }
   ],
 

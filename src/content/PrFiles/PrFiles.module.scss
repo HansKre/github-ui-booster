@@ -1,0 +1,23 @@
+@import "../../shared-component-styles.scss";
+
+.fileTooltip {
+  padding-left: 0.25rem;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.popupContainer {
+  @extend .popupContainer;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* keeps popups open as long as mouse is inside of them,
+mouse does not need to stay at the tooltip.
+This gets inherited to nested popups as long as the .poupContainer is a
+child of the .fileToolTip */
+.fileTooltip:hover .popupContainer {
+  display: flex;
+  flex-direction: column;
+}

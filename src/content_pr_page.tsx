@@ -1,4 +1,6 @@
-import { handlePrFilter, handlePrPage, handlePrsPage } from "./content";
+import { handlePrPage } from "./content";
+import { Spinner } from "./content/spinner";
+import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { urls } from "./content/utils/urls";
 import { Settings, getSettings } from "./services";
 
@@ -18,30 +20,35 @@ const observeContentChanges = (observer: MutationObserver) => {
 
 getSettings({
   onSuccess: handleContentChange,
-  onError: () => alert("Couldn't load your Settings from chrome storage"),
+  onError: () =>
+    alert("Couldn't load your Settings from chrome storage (content_pr_page)"),
 });
 
 /**
- * This method of content_scripts is automatically executed on initial page load, refreshes, and full navigations.
+ * This method is automatically executed on initial page load, refreshes, and full navigations.
  *
  * For SPAs and dynamic content, additional strategies like Mutation Observer
  * are needed to ensure the content script is triggered when the page content
  * changes without a full reload.
  */
-function handleContentChange(settings: Settings) {
+async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
+    if (!isOnPrPage(settings)) return;
+
     if (observer) return;
 
-    // handlers take care of checking for conditions to run on their own
-    handlePrFilter(settings, settings.autoFilter);
-    handlePrsPage(settings);
-    handlePrPage(settings);
+    Spinner.showSpinner(
+      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+      "ghuibooster__spinner__large"
+    );
+
+    await handlePrPage(settings);
+
+    Spinner.hideSpinner();
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          handlePrFilter(settings, settings.autoFilter);
-          handlePrsPage(settings);
           handlePrPage(settings);
         }
       });
