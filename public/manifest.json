@@ -3,7 +3,7 @@
 
   "name": "GitHub UI Booster",
   "description": "Boost your GitHub UI. Works with GitHub Enterprise!",
-  "version": "1.0",
+  "version": "1.1",
 
   "action": {
     "default_icon": "icon16.png",
