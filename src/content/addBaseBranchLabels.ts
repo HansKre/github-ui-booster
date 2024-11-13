@@ -24,7 +24,7 @@ export async function addBaseBranchLabels(settings: Settings) {
       // Add labels indicating the base-ref to every PR row
       const [, prNumber] = prRow.id.split("_");
       const prData = prs.find((pr) => pr.number === parseInt(prNumber));
-      addLabel(prData, prRow);
+      addLabel(prs, prData, prRow);
     });
   } catch (err) {
     alert("Error fetching PR data. Check console");
@@ -33,18 +33,47 @@ export async function addBaseBranchLabels(settings: Settings) {
 }
 
 function addLabel(
-  prData:
+  prs: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"],
+  currentPr:
     | RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number]
     | undefined,
   prRow: Element
 ) {
-  if (!prData) return;
-  if (prRow.querySelector(".ghUiBooster.IssueLabel.hx_IssueLabel")) return;
-  const text = `${prData.base.ref} <-- ${prData.head.ref}`;
-  const spanEl = document.createElement("span");
-  spanEl.textContent = text;
-  spanEl.classList.add("ghUiBooster");
-  spanEl.classList.add("IssueLabel");
-  spanEl.classList.add("hx_IssueLabel");
-  prRow.children[0].children[2].appendChild(spanEl);
+  if (!currentPr) return;
+
+  const baseBranchLabelClass = "gh-ui-booster-base-branch-label";
+  if (prRow.querySelector(`.${baseBranchLabelClass}`)) return;
+  const baseBranchText = currentPr.base.ref;
+  const featureBranchText = ` ← ${currentPr.head.ref}`;
+
+  const basePr = prs.find((pr) => pr.head.ref === currentPr.base.ref);
+
+  const baseBranchContainer = document.createElement("div");
+  baseBranchContainer.style.color = "initial";
+  baseBranchContainer.style.marginRight = "1rem";
+
+  // Create a link to the base PR if it exists
+  const aOrSpanEl = document.createElement(basePr ? "a" : "span");
+  aOrSpanEl.textContent = baseBranchText;
+  aOrSpanEl.classList.add(baseBranchLabelClass);
+  baseBranchContainer.appendChild(aOrSpanEl);
+
+  // Append the feature branch text
+  const featureBranchEl = document.createElement("span");
+  featureBranchEl.textContent = featureBranchText;
+  featureBranchEl.classList.add(baseBranchLabelClass);
+  baseBranchContainer.appendChild(featureBranchEl);
+
+  if (basePr && aOrSpanEl instanceof HTMLAnchorElement) {
+    aOrSpanEl.target = "_blank";
+    aOrSpanEl.rel = "noopener noreferrer";
+    aOrSpanEl.href = basePr.html_url;
+  }
+
+  const parent = prRow.children[0].children[2].querySelector(
+    "div.d-flex.mt-1.text-small.color-fg-muted"
+  );
+
+  // Insert as the very first element
+  parent?.insertBefore(baseBranchContainer, parent.firstChild);
 }
