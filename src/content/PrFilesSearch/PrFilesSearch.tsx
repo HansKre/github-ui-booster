@@ -1,6 +1,6 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { Text } from "@primer/react";
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState, useTransition } from "react";
 import { cns } from "ts-type-safe";
 import { SearchInput } from "../../components";
 
@@ -21,36 +21,73 @@ export type Props = {
 };
 
 export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
+  const allFiles = useMemo(() => {
+    const files: PrWithFiles[] = [];
+    prFilesMap.forEach((filesData, prNumber) => {
+      const prData = prs.find((pr) => pr.number === prNumber);
+      if (!prData) return;
+      files.push({
+        title: `${prData.number}: ${prData.title}`,
+        url: `${prData.html_url}/files`,
+        files: filesData,
+      });
+    });
+    return files;
+  }, [prFilesMap]);
+
   const [map, mapSet] = useState<PrWithFiles[]>();
+
+  const [, startTransition] = useTransition();
+  const filterPrs = useCallback(
+    (value: string) =>
+      startTransition(() => {
+        const terms = value.trim().toLowerCase().split(" ").filter(Boolean);
+        if (terms.length === 0) {
+          mapSet(allFiles);
+          return;
+        }
+
+        const matchingMap: PrWithFiles[] = [];
+
+        prFilesMap.forEach((files, prNumber) => {
+          // Apply each search term sequentially to narrow down matching files
+          const matchingFiles = terms.reduce((currentFiles, term) => {
+            return currentFiles.filter((file) =>
+              file.filename.toLowerCase().includes(term)
+            );
+          }, files);
+
+          if (matchingFiles.length > 0) {
+            const prData = prs.find((pr) => pr.number === prNumber);
+            if (!prData) return;
+            matchingMap.push({
+              title: `${prData.number}: ${prData.title}`,
+              url: `${prData.html_url}/files`,
+              files: matchingFiles,
+            });
+          }
+        });
+
+        mapSet(matchingMap);
+      }),
+    [prs, prFilesMap]
+  );
+
   return (
     <>
       <SearchInput
         label="Search for file in PRs"
         name="search"
-        onChange={(value) => {
-          if (value.trim() === "") {
-            mapSet(undefined);
-            return;
+        onChange={filterPrs}
+        onFocus={(value) => {
+          if (value) {
+            filterPrs(value);
+          } else if (!map) {
+            mapSet(allFiles);
           }
-
-          const matchingMap: PrWithFiles[] = [];
-
-          prFilesMap.forEach((files, prNumber) => {
-            const matchingFiles = files.filter((file) =>
-              file.filename.toLowerCase().includes(value.toLowerCase())
-            );
-            if (matchingFiles.length > 0) {
-              const prData = prs.find((pr) => pr.number === prNumber);
-              if (!prData) return;
-              matchingMap.push({
-                title: `${prData.number}: ${prData.title}`,
-                url: `${prData.html_url}/files`,
-                files: matchingFiles,
-              });
-            }
-          });
-
-          mapSet(matchingMap);
+        }}
+        onBlur={() => {
+          mapSet(undefined);
         }}
       />
       <div
