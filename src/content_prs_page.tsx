@@ -39,29 +39,32 @@ const SPINNER_PARENT =
  */
 async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (!isOnPrsPage(settings)) return;
-
     if (observer) return;
 
-    try {
-      Spinner.showSpinner(SPINNER_PARENT);
+    if (isOnPrsPage(settings)) {
+      try {
+        Spinner.showSpinner(SPINNER_PARENT);
 
-      await handlePrFilter(settings, settings.autoFilter);
-      await addBaseBranchLabels(settings);
-      await addChangedFiles(settings);
-      await addTotalLines(settings);
-    } catch (err) {
-      alert(
-        "Error in content_prs_page-script. Check console and report if the issue persists."
-      );
-      console.error(err);
-    } finally {
-      Spinner.hideSpinner();
+        await handlePrFilter(settings, settings.autoFilter);
+        await addBaseBranchLabels(settings);
+        await addChangedFiles(settings);
+        await addTotalLines(settings);
+      } catch (err) {
+        alert(
+          "Error in content_prs_page-script. Check console and report if the issue persists."
+        );
+        console.error(err);
+      } finally {
+        Spinner.hideSpinner();
+      }
     }
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === "childList" || mutation.type === "attributes") {
+        if (
+          (mutation.type === "childList" || mutation.type === "attributes") &&
+          isOnPrsPage(settings)
+        ) {
           handlePrFilter(settings, settings.autoFilter);
           addBaseBranchLabels(settings);
           addChangedFiles(settings);

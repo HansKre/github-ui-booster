@@ -33,22 +33,25 @@ getSettings({
  */
 async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (!isOnPrPage(settings)) return;
-
     if (observer) return;
 
-    Spinner.showSpinner(
-      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
-      "ghuibooster__spinner__large"
-    );
+    if (isOnPrPage(settings)) {
+      Spinner.showSpinner(
+        "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+        "ghuibooster__spinner__large"
+      );
 
-    await handlePrPage(settings);
+      await handlePrPage(settings);
 
-    Spinner.hideSpinner();
+      Spinner.hideSpinner();
+    }
 
     observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === "childList" || mutation.type === "attributes") {
+        if (
+          (mutation.type === "childList" || mutation.type === "attributes") &&
+          isOnPrPage(settings)
+        ) {
           handlePrPage(settings);
         }
       });
