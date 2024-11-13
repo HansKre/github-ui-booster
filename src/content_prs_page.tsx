@@ -39,33 +39,33 @@ const SPINNER_PARENT =
  */
 async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (!isOnPrsPage(settings)) return;
-
     if (observer) return;
 
-    try {
-      Spinner.showSpinner(SPINNER_PARENT);
+    async function executeScripts() {
+      if (!isOnPrsPage(settings)) return;
+      try {
+        Spinner.showSpinner(SPINNER_PARENT);
 
-      await handlePrFilter(settings, settings.autoFilter);
-      await addBaseBranchLabels(settings);
-      await addChangedFiles(settings);
-      await addTotalLines(settings);
-    } catch (err) {
-      alert(
-        "Error in content_prs_page-script. Check console and report if the issue persists."
-      );
-      console.error(err);
-    } finally {
-      Spinner.hideSpinner();
+        await handlePrFilter(settings, settings.autoFilter);
+        await addBaseBranchLabels(settings);
+        await addChangedFiles(settings);
+        await addTotalLines(settings);
+      } catch (err) {
+        alert(
+          "Error in content_prs_page-script. Check console and report if the issue persists."
+        );
+        console.error(err);
+      } finally {
+        Spinner.hideSpinner();
+      }
     }
 
+    await executeScripts();
+
     observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+      mutations.forEach(async (mutation) => {
         if (mutation.type === "childList" || mutation.type === "attributes") {
-          handlePrFilter(settings, settings.autoFilter);
-          addBaseBranchLabels(settings);
-          addChangedFiles(settings);
-          addTotalLines(settings);
+          await executeScripts();
         }
       });
     });

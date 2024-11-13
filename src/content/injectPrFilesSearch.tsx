@@ -7,7 +7,9 @@ export function injectPrFilesSearch(
   prs: Props["prs"],
   prFilesMap: Props["prFilesMap"]
 ) {
-  const contentEl = document.querySelector(".repository-content");
+  const contentEl =
+    document.querySelector(".repository-content") ||
+    document.getElementById("repo-content-turbo-frame");
   if (!contentEl) return;
 
   const prFilesSearchClass = "gh-ui-booster-pr-files-search";
