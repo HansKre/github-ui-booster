@@ -41,7 +41,8 @@ async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
 
-    if (isOnPrsPage(settings)) {
+    async function executeScripts() {
+      if (!isOnPrsPage(settings)) return;
       try {
         Spinner.showSpinner(SPINNER_PARENT);
 
@@ -59,16 +60,12 @@ async function handleContentChange(settings: Settings) {
       }
     }
 
+    await executeScripts();
+
     observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          (mutation.type === "childList" || mutation.type === "attributes") &&
-          isOnPrsPage(settings)
-        ) {
-          handlePrFilter(settings, settings.autoFilter);
-          addBaseBranchLabels(settings);
-          addChangedFiles(settings);
-          addTotalLines(settings);
+      mutations.forEach(async (mutation) => {
+        if (mutation.type === "childList" || mutation.type === "attributes") {
+          await executeScripts();
         }
       });
     });

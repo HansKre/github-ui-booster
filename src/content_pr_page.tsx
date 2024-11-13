@@ -35,24 +35,31 @@ async function handleContentChange(settings: Settings) {
   if (window.location.href.startsWith(urls(settings).urlUiBase)) {
     if (observer) return;
 
-    if (isOnPrPage(settings)) {
-      Spinner.showSpinner(
-        "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
-        "ghuibooster__spinner__large"
-      );
+    async function executeScripts() {
+      if (!isOnPrPage(settings)) return;
 
-      await handlePrPage(settings);
-
-      Spinner.hideSpinner();
+      try {
+        Spinner.showSpinner(
+          "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+          "ghuibooster__spinner__large"
+        );
+        await handlePrPage(settings);
+      } catch (err) {
+        alert(
+          "Error in content_prs_page-script. Check console and report if the issue persists."
+        );
+        console.error(err);
+      } finally {
+        Spinner.hideSpinner();
+      }
     }
 
+    await executeScripts();
+
     observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (
-          (mutation.type === "childList" || mutation.type === "attributes") &&
-          isOnPrPage(settings)
-        ) {
-          handlePrPage(settings);
+      mutations.forEach(async (mutation) => {
+        if (mutation.type === "childList" || mutation.type === "attributes") {
+          await executeScripts();
         }
       });
     });
