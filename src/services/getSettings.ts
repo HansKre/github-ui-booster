@@ -1,5 +1,5 @@
-import { DeepKeysOf } from "ts-type-safe";
-import { boolean, InferType, object, string } from "yup";
+import { DeepKeysOf } from 'ts-type-safe';
+import { boolean, InferType, object, string } from 'yup';
 
 const autoFilterSchema = object({
   active: boolean().optional(),
@@ -9,7 +9,7 @@ const autoFilterSchema = object({
 export type AutoFilter = InferType<typeof autoFilterSchema>;
 
 export const settingsSchema = object({
-  pat: string().required().matches(/^ghp_/, "Should start with ghp_").min(30),
+  pat: string().required().matches(/^ghp_/, 'Should start with ghp_').min(30),
   org: string().required(),
   repo: string().required(),
   ghBaseUrl: string().required().url(),
@@ -20,11 +20,11 @@ export type Settings = InferType<typeof settingsSchema>;
 export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES = {
-  pat: "",
-  org: "",
-  repo: "",
-  ghBaseUrl: "https://api.github.com",
-  autoFilter: { filter: "", active: false },
+  pat: '',
+  org: '',
+  repo: '',
+  ghBaseUrl: 'https://github.com/api/v3',
+  autoFilter: { filter: '', active: false },
 };
 
 type Params = {
