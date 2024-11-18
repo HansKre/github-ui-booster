@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import styles from "./Content.module.scss";
-import { SettingsTab } from "./Tabs";
-import { Tab, TabNavigation } from "../components";
-import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { Form, Formik, FormikErrors, FormikHelpers } from "formik";
+import React, { useEffect, useState } from "react";
+import { Tab, TabNavigation } from "../components";
 import {
   INITIAL_VALUES,
   Settings,
   getSettings,
   settingsSchema,
 } from "../services";
-import { Button } from "./Button";
+import { SubmitButton } from "./Button";
+import styles from "./Content.module.scss";
+import { SettingsTab } from "./Tabs";
+import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 
 const tabs: Array<Tab> = ["Settings", "Auto filter"];
 type FormValues = Settings;
@@ -72,19 +72,17 @@ export const Content = () => {
           enableReinitialize
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={settingsSchema}
-        >
+          validationSchema={settingsSchema}>
           {({ errors, isValid, dirty, isSubmitting }) => {
             return (
               <Form className={styles.form}>
                 {mapTabToComponent(activeTab, errors)}
-                <Button
-                  type="submit"
-                  disabled={!isValid || !dirty || isSubmitting}
-                  result={isSubmitting ? undefined : result}
-                >
-                  {isSubmitting ? "Submitting..." : "Save"}
-                </Button>
+                <SubmitButton
+                  isValid={isValid}
+                  dirty={dirty}
+                  isSubmitting={isSubmitting}
+                  result={result}
+                />
               </Form>
             );
           }}
