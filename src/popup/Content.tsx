@@ -70,6 +70,7 @@ export const Content = () => {
         />
         <Formik
           enableReinitialize
+          validateOnMount
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={settingsSchema}>
@@ -77,7 +78,7 @@ export const Content = () => {
             return (
               <Form className={styles.form}>
                 {mapTabToComponent(activeTab, values)}
-                <AddButton disabled={false} />
+                <AddButton disabled={!isValid} />
                 <SubmitButton
                   isValid={isValid}
                   dirty={dirty}
