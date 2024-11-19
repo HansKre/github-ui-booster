@@ -11,6 +11,7 @@ export const RemoveButton: React.FC<Props> = ({ disabled, onClick }) => {
     <Button
       disabled={disabled}
       variant="danger"
+      size="small"
       leadingVisual={() => (
         <span role="icon" aria-label="icon">
           ⛔️
