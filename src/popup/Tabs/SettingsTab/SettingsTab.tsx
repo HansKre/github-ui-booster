@@ -3,7 +3,7 @@ import { FieldArray } from "formik";
 import React from "react";
 import { isNonEmptyArray } from "ts-type-safe";
 import { Settings } from "../../../services";
-import { AddButton } from "../../Button";
+import { AddButton, RemoveButton } from "../../Button";
 import { FormField } from "../../FormField";
 import styles from "./SettingsTab.module.scss";
 
@@ -20,9 +20,15 @@ export const SettingsTab = ({ values, isValid }: Props) => {
           {isNonEmptyArray(values.instances) &&
             values.instances.map((_, index) => (
               <React.Fragment key={index}>
-                <Text as="h2" className={styles.heading}>
-                  {`GH Instance ${index + 1}`}
-                </Text>
+                <div className={styles.container}>
+                  <Text as="h2" className={styles.heading}>
+                    {`GH Instance ${index + 1}`}
+                  </Text>
+                  <RemoveButton
+                    disabled={values.instances.length === 1}
+                    onClick={() => remove(index)}
+                  />
+                </div>
                 <FormField
                   label="Personal Access Token"
                   name={`instances[${index}].pat`}

@@ -1,10 +1,15 @@
 @import "../../../shared-component-styles.scss";
 
-.heading {
-  color: $fontColor;
-  margin-bottom: 0.5rem;
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
   &:not(:first-of-type) {
     margin-top: 0.5rem;
   }
+}
+
+.heading {
+  color: $fontColor;
 }
