@@ -1,8 +1,8 @@
 import { handlePrPage } from "./content";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
-import { urls } from "./content/utils/urls";
-import { Settings, getSettings } from "./services";
+import { getInstanceConfig } from "./getInstanceConfig";
+import { InstanceConfig, Settings, getSettings } from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -32,38 +32,39 @@ getSettings({
  * changes without a full reload.
  */
 async function handleContentChange(settings: Settings) {
-  if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (observer) return;
+  if (observer) return;
 
-    async function executeScripts() {
-      if (!isOnPrPage(settings)) return;
+  const instanceConfig = getInstanceConfig(settings);
+  if (!instanceConfig) return;
 
-      try {
-        Spinner.showSpinner(
-          "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
-          "ghuibooster__spinner__large"
-        );
-        await handlePrPage(settings);
-      } catch (err) {
-        alert(
-          "Error in content_prs_page-script. Check console and report if the issue persists."
-        );
-        console.error(err);
-      } finally {
-        Spinner.hideSpinner();
+  await executeScripts(instanceConfig);
+
+  observer = new MutationObserver((mutations) => {
+    mutations.forEach(async (mutation) => {
+      if (mutation.type === "childList" || mutation.type === "attributes") {
+        await executeScripts(instanceConfig);
       }
-    }
-
-    await executeScripts();
-
-    observer = new MutationObserver((mutations) => {
-      mutations.forEach(async (mutation) => {
-        if (mutation.type === "childList" || mutation.type === "attributes") {
-          await executeScripts();
-        }
-      });
     });
+  });
 
-    observeContentChanges(observer);
+  observeContentChanges(observer);
+}
+
+async function executeScripts(instanceConfig: InstanceConfig) {
+  if (!isOnPrPage(instanceConfig)) return;
+
+  try {
+    Spinner.showSpinner(
+      "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
+      "ghuibooster__spinner__large"
+    );
+    await handlePrPage(instanceConfig);
+  } catch (err) {
+    alert(
+      "Error in content_prs_page-script. Check console and report if the issue persists."
+    );
+    console.error(err);
+  } finally {
+    Spinner.hideSpinner();
   }
 }

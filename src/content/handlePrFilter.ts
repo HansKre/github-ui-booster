@@ -1,20 +1,20 @@
-import { AutoFilter, Settings } from "../services";
+import { AutoFilter, InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
 let intercepted = false;
-let theSettings: Settings | undefined;
+let theInstanceConfig: InstanceConfig | undefined;
 /**
- * Replace current PR-Filter by the filter from Settings by simulating an Input-Event, i.e. as if user had typed in the new filter himself and then triggering GitHub's built-in Handling of a new filter through form-Submit.
+ * Replace current PR-Filter by the filter from InstanceConfig by simulating an Input-Event, i.e. as if user had typed in the new filter himself and then triggering GitHub's built-in Handling of a new filter through form-Submit.
  */
 export function handlePrFilter(
-  settings: Settings,
+  instanceConfig: InstanceConfig,
   { filter, active }: AutoFilter,
   filterIntercepted?: string
 ) {
-  theSettings = settings;
+  theInstanceConfig = instanceConfig;
   if (!active || intercepted) return;
 
-  if (!isOnPrsPage(settings)) {
+  if (!isOnPrsPage(instanceConfig)) {
     document.removeEventListener("click", onQuickFilterClick);
     return;
   }
@@ -54,7 +54,7 @@ function replaceFilter(filter: string | undefined, filterIntercepted?: string) {
 // The quick filter is so smart that it just appends itself to the current filter,
 // so we can just replace the filter stored by the user without actually losing it
 function onQuickFilterClick(event: MouseEvent) {
-  if (!theSettings) return;
+  if (!theInstanceConfig) return;
   if (!(event.target instanceof HTMLElement)) return;
   intercepted = false;
   const quickFilter = event.target.closest("a.btn-link");
@@ -67,7 +67,7 @@ function onQuickFilterClick(event: MouseEvent) {
       event.preventDefault();
       const decodedFilter = decodeQueryString(params.toString());
       handlePrFilter(
-        theSettings,
+        theInstanceConfig,
         { filter: decodedFilter, active: true },
         decodedFilter
       );

@@ -2,10 +2,10 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { TotalLines } from "../components";
 import { BLACKLIST } from "../config";
-import { Settings } from "../services";
+import { InstanceConfig } from "../services";
 import { processPrFiles } from "./processPrFiles";
 
-export async function addTotalLines(settings: Settings) {
+export async function addTotalLines(instanceConfig: InstanceConfig) {
   const prRows = document.querySelectorAll("div[id^=issue_]");
   for await (const prRow of prRows) {
     const [, prNumber] = prRow.id.split("_");
@@ -14,7 +14,7 @@ export async function addTotalLines(settings: Settings) {
     let totalLinesAdded = 0;
     let totalLinesRemoved = 0;
 
-    await processPrFiles(settings, parseInt(prNumber), (files) => {
+    await processPrFiles(instanceConfig, parseInt(prNumber), (files) => {
       files.forEach((file) => {
         if (BLACKLIST.some((name) => file.filename.includes(name))) return;
         totalLinesAdded += file.additions;
