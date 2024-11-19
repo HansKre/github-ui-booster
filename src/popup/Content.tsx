@@ -7,7 +7,7 @@ import {
   getSettings,
   settingsSchema,
 } from "../services";
-import { AddButton, SubmitButton } from "./Button";
+import { SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
 import { SettingsTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
@@ -47,12 +47,12 @@ export const Content = () => {
       .finally(() => setSubmitting(false));
   };
 
-  const mapTabToComponent = (tab: Tab, values: Settings) => {
+  const mapTabToComponent = (tab: Tab, values: Settings, isValid: boolean) => {
     switch (tab) {
       case "Auto filter":
         return <AutoFilterTab disabled={!initialValues.autoFilter.active} />;
       case "Settings":
-        return <SettingsTab values={values} />;
+        return <SettingsTab values={values} isValid={isValid} />;
     }
   };
 
@@ -77,8 +77,7 @@ export const Content = () => {
           {({ isValid, dirty, isSubmitting, values }) => {
             return (
               <Form className={styles.form}>
-                {mapTabToComponent(activeTab, values)}
-                <AddButton disabled={!isValid} />
+                {mapTabToComponent(activeTab, values, isValid)}
                 <SubmitButton
                   isValid={isValid}
                   dirty={dirty}

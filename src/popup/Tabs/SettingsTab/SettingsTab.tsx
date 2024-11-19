@@ -3,17 +3,19 @@ import { FieldArray } from "formik";
 import React from "react";
 import { isNonEmptyArray } from "ts-type-safe";
 import { Settings } from "../../../services";
+import { AddButton } from "../../Button";
 import { FormField } from "../../FormField";
 import styles from "./SettingsTab.module.scss";
 
 type Props = {
   values: Settings;
+  isValid: boolean;
 };
 
-export const SettingsTab = ({ values }: Props) => {
+export const SettingsTab = ({ values, isValid }: Props) => {
   return (
     <FieldArray name="instances">
-      {({ insert, remove, push }) => (
+      {({ push, remove }) => (
         <>
           {isNonEmptyArray(values.instances) &&
             values.instances.map((_, index) => (
@@ -39,6 +41,7 @@ export const SettingsTab = ({ values }: Props) => {
                 />
               </React.Fragment>
             ))}
+          <AddButton disabled={!isValid} push={push} />
         </>
       )}
     </FieldArray>

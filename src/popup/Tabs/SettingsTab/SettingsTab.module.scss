@@ -1,6 +1,10 @@
-@import '../../../shared-component-styles.scss';
+@import "../../../shared-component-styles.scss";
 
 .heading {
   color: $fontColor;
   margin-bottom: 0.5rem;
+
+  &:not(:first-of-type) {
+    margin-top: 0.5rem;
+  }
 }

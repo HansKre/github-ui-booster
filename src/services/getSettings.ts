@@ -27,7 +27,7 @@ export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES: Settings = {
   instances: [
-    { pat: "", org: "", repo: "", ghBaseUrl: "https://github.com/api/v3" },
+    { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
   ],
   autoFilter: { filter: "", active: false },
 };

@@ -11,6 +11,7 @@ type Props = {
   variant?: VariantType;
   loading?: boolean;
   icon?: React.ElementType;
+  onClick?: () => void;
 };
 
 export const Button: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const Button: React.FC<Props> = ({
   variant,
   loading,
   icon,
+  onClick,
 }) => {
   return (
     <>
@@ -31,6 +33,7 @@ export const Button: React.FC<Props> = ({
         variant={variant}
         leadingVisual={icon}
         loading={loading}
+        onClick={onClick}
         block>
         {children}
       </PrimerButton>
