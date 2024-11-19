@@ -1,3 +1,5 @@
+import { Button as PrimerButton } from "@primer/react";
+import { VariantType } from "@primer/react/lib-esm/Button/types";
 import React from "react";
 import styles from "./Button.module.scss";
 
@@ -6,6 +8,9 @@ type Props = {
   disabled?: boolean;
   children?: React.ReactNode;
   result?: string;
+  variant?: VariantType;
+  loading?: boolean;
+  icon?: React.ElementType;
 };
 
 export const Button: React.FC<Props> = ({
@@ -13,12 +18,22 @@ export const Button: React.FC<Props> = ({
   disabled,
   type,
   result,
+  variant,
+  loading,
+  icon,
 }) => {
   return (
     <>
-      <button type={type} disabled={disabled} className={styles.button}>
+      <PrimerButton
+        type={type}
+        disabled={disabled}
+        className={styles.button}
+        variant={variant}
+        leadingVisual={icon}
+        loading={loading}
+        block>
         {children}
-      </button>
+      </PrimerButton>
       {result && <p className={styles.result}>{result}</p>}
     </>
   );

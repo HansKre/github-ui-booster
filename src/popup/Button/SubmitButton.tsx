@@ -19,8 +19,14 @@ export const SubmitButton: React.FC<Props> = ({
       type="submit"
       disabled={!isValid || !dirty || isSubmitting}
       result={isSubmitting ? undefined : result}
-      loading={isSubmitting}>
-      {isSubmitting ? "Submitting..." : "💽 Save"}
+      loading={isSubmitting}
+      variant="primary"
+      icon={() => (
+        <span role="icon" aria-label="icon">
+          💿
+        </span>
+      )}>
+      Save
     </Button>
   );
 };

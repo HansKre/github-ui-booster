@@ -6,5 +6,17 @@ export type Props = {
 };
 
 export const AddButton: React.FC<Props> = ({ disabled }) => {
-  return <Button disabled={disabled}>✚ Add instance</Button>;
+  return (
+    <Button
+      type="button"
+      variant="default"
+      disabled={disabled}
+      icon={() => (
+        <span role="icon" aria-label="icon">
+          ✚
+        </span>
+      )}>
+      Add instance
+    </Button>
+  );
 };
