@@ -18,7 +18,8 @@ export const SubmitButton: React.FC<Props> = ({
     <Button
       type="submit"
       disabled={!isValid || !dirty || isSubmitting}
-      result={isSubmitting ? undefined : result}>
+      result={isSubmitting ? undefined : result}
+      loading={isSubmitting}>
       {isSubmitting ? "Submitting..." : "💽 Save"}
     </Button>
   );

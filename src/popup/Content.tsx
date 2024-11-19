@@ -1,4 +1,4 @@
-import { Form, Formik, FormikErrors, FormikHelpers } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import React, { useEffect, useState } from "react";
 import { Tab, TabNavigation } from "../components";
 import {
@@ -7,7 +7,7 @@ import {
   getSettings,
   settingsSchema,
 } from "../services";
-import { SubmitButton } from "./Button";
+import { AddButton, SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
 import { SettingsTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
@@ -47,12 +47,12 @@ export const Content = () => {
       .finally(() => setSubmitting(false));
   };
 
-  const mapTabToComponent = (tab: Tab, errors: FormikErrors<FormValues>) => {
+  const mapTabToComponent = (tab: Tab, values: Settings) => {
     switch (tab) {
       case "Auto filter":
         return <AutoFilterTab disabled={!initialValues.autoFilter.active} />;
       case "Settings":
-        return <SettingsTab errors={errors} />;
+        return <SettingsTab values={values} />;
     }
   };
 
@@ -73,10 +73,11 @@ export const Content = () => {
           initialValues={initialValues}
           onSubmit={handleSubmit}
           validationSchema={settingsSchema}>
-          {({ errors, isValid, dirty, isSubmitting }) => {
+          {({ isValid, dirty, isSubmitting, values }) => {
             return (
               <Form className={styles.form}>
-                {mapTabToComponent(activeTab, errors)}
+                {mapTabToComponent(activeTab, values)}
+                <AddButton disabled={false} />
                 <SubmitButton
                   isValid={isValid}
                   dirty={dirty}

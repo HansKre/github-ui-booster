@@ -1,28 +1,46 @@
 import { Text } from "@primer/react";
-import { FormikErrors } from "formik";
+import { FieldArray } from "formik";
 import React from "react";
+import { isNonEmptyArray } from "ts-type-safe";
 import { Settings } from "../../../services";
 import { FormField } from "../../FormField";
 import styles from "./SettingsTab.module.scss";
 
 type Props = {
-  errors: FormikErrors<Settings>;
+  values: Settings;
 };
 
-export const SettingsTab = ({ errors }: Props) => {
+export const SettingsTab = ({ values }: Props) => {
   return (
-    <>
-      <Text as="h2" className={styles.heading}>
-        GH Instance 1
-      </Text>
-      <FormField label="Personal Access Token" name="pat" error={errors.pat} />
-      <FormField label="Organization" name="org" error={errors.org} />
-      <FormField label="Repository" name="repo" error={errors.repo} />
-      <FormField
-        label="GitHub API Base URL"
-        name="ghBaseUrl"
-        error={errors.ghBaseUrl}
-      />
-    </>
+    <FieldArray name="instances">
+      {({ insert, remove, push }) => (
+        <>
+          {isNonEmptyArray(values.instances) &&
+            values.instances.map((_, index) => (
+              <React.Fragment key={index}>
+                <Text as="h2" className={styles.heading}>
+                  {`GH Instance ${index + 1}`}
+                </Text>
+                <FormField
+                  label="Personal Access Token"
+                  name={`instances[${index}].pat`}
+                />
+                <FormField
+                  label="Organization"
+                  name={`instances[${index}].org`}
+                />
+                <FormField
+                  label="Repository"
+                  name={`instances[${index}].repo`}
+                />
+                <FormField
+                  label="GitHub API Base URL"
+                  name={`instances[${index}].ghBaseUrl`}
+                />
+              </React.Fragment>
+            ))}
+        </>
+      )}
+    </FieldArray>
   );
 };
