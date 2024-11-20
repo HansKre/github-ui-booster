@@ -1,6 +1,7 @@
 import { ErrorMessage, Field } from "formik";
 import React from "react";
 import { SettingName } from "../../services";
+import { Paragraph } from "../Typography";
 import styles from "./FormField.module.scss";
 
 type Props = {
@@ -21,7 +22,7 @@ export const FormField: React.FC<Props> = ({
       <label className={styles.label} htmlFor={name}>
         {label}
       </label>
-      {description && <p className={styles.description}>{description}</p>}
+      {description && <Paragraph>{description}</Paragraph>}
       <Field
         className={styles.field}
         id={name}

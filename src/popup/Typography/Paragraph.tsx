@@ -11,7 +11,7 @@ export const Paragraph: React.FC<Props> = ({ sx, children }) => {
       as="p"
       sx={{
         color: "fg.muted",
-        mb: 0.75,
+        mb: "0.75rem",
         ...sx,
       }}>
       {children}

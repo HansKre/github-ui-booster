@@ -14,7 +14,7 @@ type Props = {
 
 export const ToggleField: React.FC<Props> = ({ label, name, description }) => {
   return (
-    <div className={styles.container}>
+    <>
       <div className={styles.toggleWrapper}>
         <label className={formFieldStyles.label} htmlFor={name}>
           {label}
@@ -38,6 +38,6 @@ export const ToggleField: React.FC<Props> = ({ label, name, description }) => {
       {description && (
         <Paragraph sx={{ maxWidth: "75%" }}>{description}</Paragraph>
       )}
-    </div>
+    </>
   );
 };
