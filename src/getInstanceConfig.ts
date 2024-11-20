@@ -9,15 +9,11 @@ export function getInstanceConfig(
   );
   if (!instance) return undefined;
 
-  const org = instance.org
-    .split(",")
-    .find((value) => window.location.href.includes(`/${value}`));
+  const org = getCurrent(instance.org);
 
   if (!org) return undefined;
 
-  const repo = instance.repo
-    .split(",")
-    .find((value) => window.location.href.includes(`/${value}`));
+  const repo = getCurrent(instance.repo);
 
   if (!repo) return undefined;
 
@@ -28,4 +24,17 @@ export function getInstanceConfig(
   };
 
   return instanceConfig;
+}
+
+function getCurrent(value: string) {
+  return split(value).find((value) =>
+    window.location.href.includes(`/${value}`)
+  );
+}
+
+function split(value: string): string[] {
+  return value
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
 }
