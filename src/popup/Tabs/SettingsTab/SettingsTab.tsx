@@ -1,4 +1,4 @@
-import { Text } from "@primer/react";
+import { Pagehead, Text } from "@primer/react";
 import { FieldArray } from "formik";
 import React from "react";
 import { isNonEmptyArray } from "ts-type-safe";
@@ -20,7 +20,7 @@ export const SettingsTab = ({ values, isValid }: Props) => {
           {isNonEmptyArray(values.instances) &&
             values.instances.map((_, index) => (
               <React.Fragment key={index}>
-                <div className={styles.container}>
+                <Pagehead className={styles.container}>
                   <Text as="h2" className={styles.heading}>
                     {`GH Instance ${index + 1}`}
                   </Text>
@@ -28,7 +28,7 @@ export const SettingsTab = ({ values, isValid }: Props) => {
                     disabled={values.instances.length === 1}
                     onClick={() => remove(index)}
                   />
-                </div>
+                </Pagehead>
                 <FormField
                   label="Personal Access Token"
                   description="For the public GitHub-instance, go to https://github.com/settings/tokens to create a new token and check the checkbox for repo-permissions."
