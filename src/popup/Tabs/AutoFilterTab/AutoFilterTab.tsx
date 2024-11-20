@@ -1,7 +1,5 @@
 import React from "react";
 import { FormField } from "../../FormField";
-import { Paragraph } from "../../Typography";
-
 import { ToggleField } from "../../ToggleField";
 
 type Props = {
@@ -11,12 +9,17 @@ type Props = {
 export const AutoFilterTab: React.FC<Props> = ({ disabled }) => {
   return (
     <>
-      <Paragraph>
-        This setting will automatically replace the filter for pull requests by
-        the filter you enter here.
-      </Paragraph>
-      <ToggleField label="Enabled" name="autoFilter.active" />
-      <FormField label="Filter" name="autoFilter.filter" disabled={disabled} />
+      <ToggleField
+        label="Enabled"
+        name="autoFilter.active"
+        description="This setting will automatically replace the filter for pull requests by the filter you enter here."
+      />
+      <FormField
+        label="Filter"
+        name="autoFilter.filter"
+        disabled={disabled}
+        description="The filter to use for pull requests."
+      />
     </>
   );
 };
