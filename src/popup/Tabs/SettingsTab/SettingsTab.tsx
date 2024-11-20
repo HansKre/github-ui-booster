@@ -31,18 +31,22 @@ export const SettingsTab = ({ values, isValid }: Props) => {
                 </div>
                 <FormField
                   label="Personal Access Token"
+                  description="For the public GitHub-instance, go to https://github.com/settings/tokens to create a new token and check the checkbox for repo-permissions."
                   name={`instances[${index}].pat`}
                 />
                 <FormField
-                  label="Organization"
+                  label="Username or Organization"
+                  description="Your GitHub username or organization (only GitHub Enterprise). You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
                   name={`instances[${index}].org`}
                 />
                 <FormField
                   label="Repository"
+                  description="You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
                   name={`instances[${index}].repo`}
                 />
                 <FormField
                   label="GitHub API Base URL"
+                  description="Use https://api.github.com for the public GitHub-instance, or ask your IT if running your own GitHub Enterprise Server."
                   name={`instances[${index}].ghBaseUrl`}
                 />
               </React.Fragment>

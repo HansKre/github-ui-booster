@@ -5,16 +5,23 @@ import styles from "./FormField.module.scss";
 
 type Props = {
   label: string;
+  description?: string;
   name: SettingName;
   disabled?: boolean;
 };
 
-export const FormField: React.FC<Props> = ({ label, name, disabled }) => {
+export const FormField: React.FC<Props> = ({
+  label,
+  description,
+  name,
+  disabled,
+}) => {
   return (
     <div className={styles.fieldWrapper}>
       <label className={styles.label} htmlFor={name}>
         {label}
       </label>
+      {description && <p className={styles.description}>{description}</p>}
       <Field
         className={styles.field}
         id={name}
