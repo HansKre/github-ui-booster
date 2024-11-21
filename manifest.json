@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Extension",
+  "version": "1.0",
+  "description": "A Chrome extension for managing and analyzing GitHub repositories.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html"
+}
