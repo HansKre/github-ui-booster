@@ -13,7 +13,7 @@ export const RemoveButton: React.FC<Props> = ({ disabled, onClick }) => {
       disabled={disabled}
       variant="danger"
       size="small"
-      leadingVisual={NoEntryIcon}
+      trailingVisual={NoEntryIcon}
       onClick={onClick}
     >
       Remove

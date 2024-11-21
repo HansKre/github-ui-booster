@@ -31,10 +31,11 @@ export const Button: React.FC<Props> = ({
         disabled={disabled}
         className={styles.button}
         variant={variant}
-        leadingVisual={icon}
+        trailingVisual={icon}
         loading={loading}
         onClick={onClick}
-        block>
+        block
+      >
         {children}
       </PrimerButton>
       {result && <p className={styles.result}>{result}</p>}
