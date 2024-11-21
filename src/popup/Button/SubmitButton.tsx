@@ -1,3 +1,4 @@
+import { FileSubmoduleIcon } from "@primer/octicons-react";
 import React from "react";
 import { Button } from "./Button";
 
@@ -21,11 +22,8 @@ export const SubmitButton: React.FC<Props> = ({
       result={isSubmitting ? undefined : result}
       loading={isSubmitting}
       variant="primary"
-      icon={() => (
-        <span role="icon" aria-label="icon">
-          💿
-        </span>
-      )}>
+      icon={FileSubmoduleIcon}
+    >
       Save
     </Button>
   );

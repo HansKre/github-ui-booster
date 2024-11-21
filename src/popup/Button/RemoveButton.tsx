@@ -1,3 +1,4 @@
+import { NoEntryIcon } from "@primer/octicons-react";
 import { Button } from "@primer/react";
 import React from "react";
 
@@ -12,12 +13,9 @@ export const RemoveButton: React.FC<Props> = ({ disabled, onClick }) => {
       disabled={disabled}
       variant="danger"
       size="small"
-      leadingVisual={() => (
-        <span role="icon" aria-label="icon">
-          ⛔️
-        </span>
-      )}
-      onClick={onClick}>
+      trailingVisual={NoEntryIcon}
+      onClick={onClick}
+    >
       Remove
     </Button>
   );
