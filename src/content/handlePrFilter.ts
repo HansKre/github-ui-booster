@@ -8,11 +8,11 @@ let theInstanceConfig: InstanceConfig | undefined;
  */
 export function handlePrFilter(
   instanceConfig: InstanceConfig,
-  { filter, active }: AutoFilter,
+  { filter }: AutoFilter,
   filterIntercepted?: string
 ) {
   theInstanceConfig = instanceConfig;
-  if (!active || intercepted) return;
+  if (intercepted) return;
 
   if (!isOnPrsPage(instanceConfig)) {
     document.removeEventListener("click", onQuickFilterClick);
@@ -68,7 +68,7 @@ function onQuickFilterClick(event: MouseEvent) {
       const decodedFilter = decodeQueryString(params.toString());
       handlePrFilter(
         theInstanceConfig,
-        { filter: decodedFilter, active: true },
+        { filter: decodedFilter },
         decodedFilter
       );
       intercepted = true;

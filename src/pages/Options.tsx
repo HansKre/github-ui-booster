@@ -7,16 +7,11 @@ import {
   ToggleSwitch,
   Flash,
 } from "@primer/react";
-
-type FeatureState = {
-  baseBranchLabels: boolean;
-  changedFiles: boolean;
-  totalLines: boolean;
-  autoFilter: boolean;
-};
+import { Features } from "../services/getSettings";
+import styles from "./Options.module.scss";
 
 export const Options = () => {
-  const [features, setFeatures] = useState<FeatureState>({
+  const [features, setFeatures] = useState<Features>({
     baseBranchLabels: true,
     changedFiles: true,
     totalLines: true,
@@ -26,7 +21,7 @@ export const Options = () => {
 
   useEffect(() => {
     try {
-      chrome.storage.sync.get("features", (data) => {
+      chrome.storage.local.get("features", (data) => {
         if (chrome.runtime.lastError) {
           setError(chrome.runtime.lastError.message ?? "");
           return;
@@ -40,14 +35,14 @@ export const Options = () => {
     }
   }, []);
 
-  const handleToggle = (key: keyof FeatureState) => {
+  const handleToggle = (key: keyof Features) => {
     try {
       const updatedFeatures = {
         ...features,
         [key]: !features[key],
       };
       setFeatures(updatedFeatures);
-      chrome.storage.sync.set({ features: updatedFeatures }, () => {
+      chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
           setError(chrome.runtime.lastError.message ?? "");
         }
@@ -58,75 +53,113 @@ export const Options = () => {
   };
 
   return (
-    <PageLayout>
-      <PageLayout.Content>
-        <Box sx={{ maxWidth: 800, mx: "auto", py: 4, px: 3 }}>
-          {error && (
-            <Flash variant="danger" sx={{ mb: 3 }}>
-              {error}
-            </Flash>
-          )}
+    <Box
+      className={styles.container}
+      sx={{ backgroundColor: "canvas.default" }}
+    >
+      <PageLayout padding="none" containerWidth="full">
+        <PageLayout.Content>
+          <Box className={styles.content}>
+            {error && (
+              <Flash variant="danger" sx={{ mb: 3 }}>
+                {error}
+              </Flash>
+            )}
 
-          <Text as="h1" sx={{ fontSize: 24, fontWeight: "bold", mb: 4 }}>
-            Features
-          </Text>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-            <FormControl>
-              <FormControl.Label>Base Branch Labels</FormControl.Label>
-              <ToggleSwitch
-                size="small"
-                checked={features.baseBranchLabels}
-                onClick={() => handleToggle("baseBranchLabels")}
-                aria-label="Toggle base branch labels"
+            <Box className={styles.header}>
+              <img
+                src="/icon128.png"
+                alt="GitHub UI Booster Logo"
+                className={styles.logo}
               />
-              <FormControl.Caption>
-                Show base branch information for each pull request
-              </FormControl.Caption>
-            </FormControl>
+              <Box>
+                <Text as="h1" className={styles.title}>
+                  GitHub UI Booster Options
+                </Text>
+                <Text as="p" className={styles.subtitle}>
+                  Making your GitHub experience smoother than a freshly polished
+                  commit 🚀
+                </Text>
+              </Box>
+            </Box>
 
-            <FormControl>
-              <FormControl.Label>Changed Files</FormControl.Label>
-              <ToggleSwitch
-                size="small"
-                checked={features.changedFiles}
-                onClick={() => handleToggle("changedFiles")}
-                aria-label="Toggle changed files display"
-              />
-              <FormControl.Caption>
-                Display changed files information and enable file search
-                functionality
-              </FormControl.Caption>
-            </FormControl>
+            <Text as="h2" className={styles.sectionTitle}>
+              Features
+            </Text>
 
-            <FormControl>
-              <FormControl.Label>Total Lines Counter</FormControl.Label>
-              <ToggleSwitch
-                size="small"
-                checked={features.totalLines}
-                onClick={() => handleToggle("totalLines")}
-                aria-label="Toggle total lines counter"
-              />
-              <FormControl.Caption>
-                Show total lines added and removed in pull requests
-              </FormControl.Caption>
-            </FormControl>
+            <Box className={styles.featuresList}>
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Base Branch Labels
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    Show base branch information for each pull request
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.baseBranchLabels}
+                  onClick={() => handleToggle("baseBranchLabels")}
+                  aria-label="Toggle base branch labels"
+                />
+              </Box>
 
-            <FormControl>
-              <FormControl.Label>Auto Filter</FormControl.Label>
-              <ToggleSwitch
-                size="small"
-                checked={features.autoFilter}
-                onClick={() => handleToggle("autoFilter")}
-                aria-label="Toggle auto filter"
-              />
-              <FormControl.Caption>
-                Automatically apply filters to pull requests list
-              </FormControl.Caption>
-            </FormControl>
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Changed Files
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    Display changed files information and enable file search
+                    functionality
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.changedFiles}
+                  onClick={() => handleToggle("changedFiles")}
+                  aria-label="Toggle changed files display"
+                />
+              </Box>
+
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Total Lines Counter
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    Show total lines added and removed in pull requests
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.totalLines}
+                  onClick={() => handleToggle("totalLines")}
+                  aria-label="Toggle total lines counter"
+                />
+              </Box>
+
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Auto Filter
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    Automatically apply filters to pull requests list
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.autoFilter}
+                  onClick={() => handleToggle("autoFilter")}
+                  aria-label="Toggle auto filter"
+                />
+              </Box>
+            </Box>
           </Box>
-        </Box>
-      </PageLayout.Content>
-    </PageLayout>
+        </PageLayout.Content>
+      </PageLayout>
+    </Box>
   );
 };

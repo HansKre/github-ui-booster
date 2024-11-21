@@ -1,0 +1,65 @@
+
+.container {
+  width: 100%;
+  height: 100%;
+}
+
+.content {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px 16px;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  margin-right: 16px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-style: italic;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+.featuresList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.featureItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.featureText {
+  flex: 1;
+}
+
+.featureLabel {
+  margin-bottom: 4px;
+}
+

@@ -3,6 +3,7 @@ import { addChangedFiles } from "./content/addChangedFiles";
 import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { Spinner } from "./content/spinner";
+import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { AutoFilter, getSettings, InstanceConfig, Settings } from "./services";
@@ -64,10 +65,24 @@ async function executeScripts(
   try {
     Spinner.showSpinner(SPINNER_PARENT);
 
-    await handlePrFilter(instanceConfig, autoFilter);
-    await addBaseBranchLabels(instanceConfig);
-    await addChangedFiles(instanceConfig);
-    await addTotalLines(instanceConfig);
+    const { features } = await chrome.storage.local.get("features");
+    if (!isFeaturesObject(features)) throw new Error("Invalid features object");
+
+    if (features.autoFilter) {
+      await handlePrFilter(instanceConfig, autoFilter);
+    }
+
+    if (features.baseBranchLabels) {
+      await addBaseBranchLabels(instanceConfig);
+    }
+
+    if (features.changedFiles) {
+      await addChangedFiles(instanceConfig);
+    }
+
+    if (features.totalLines) {
+      await addTotalLines(instanceConfig);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."

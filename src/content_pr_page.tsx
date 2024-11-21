@@ -1,8 +1,9 @@
 import { handlePrPage } from "./content";
 import { Spinner } from "./content/spinner";
+import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { InstanceConfig, Settings, getSettings } from "./services";
+import { Features, InstanceConfig, Settings, getSettings } from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -58,7 +59,13 @@ async function executeScripts(instanceConfig: InstanceConfig) {
       "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
       "ghuibooster__spinner__large"
     );
-    await handlePrPage(instanceConfig);
+
+    const { features } = await chrome.storage.local.get("features");
+    if (!isFeaturesObject(features)) throw new Error("Invalid features object");
+
+    if (features.totalLines) {
+      await handlePrPage(instanceConfig);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."
