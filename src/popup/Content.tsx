@@ -1,16 +1,16 @@
+import { Form, Formik, FormikHelpers } from "formik";
 import React, { useEffect, useState } from "react";
-import styles from "./Content.module.scss";
-import { SettingsTab } from "./Tabs";
 import { Tab, TabNavigation } from "../components";
-import { AutoFilterTab } from "./Tabs/AutoFilterTab";
-import { Form, Formik, FormikErrors, FormikHelpers } from "formik";
 import {
   INITIAL_VALUES,
   Settings,
   getSettings,
   settingsSchema,
 } from "../services";
-import { Button } from "./Button";
+import { SubmitButton } from "./Button";
+import styles from "./Content.module.scss";
+import { SettingsTab } from "./Tabs";
+import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 
 const tabs: Array<Tab> = ["Settings", "Auto filter"];
 type FormValues = Settings;
@@ -47,12 +47,12 @@ export const Content = () => {
       .finally(() => setSubmitting(false));
   };
 
-  const mapTabToComponent = (tab: Tab, errors: FormikErrors<FormValues>) => {
+  const mapTabToComponent = (tab: Tab, values: Settings, isValid: boolean) => {
     switch (tab) {
       case "Auto filter":
         return <AutoFilterTab disabled={!initialValues.autoFilter.active} />;
       case "Settings":
-        return <SettingsTab errors={errors} />;
+        return <SettingsTab values={values} isValid={isValid} />;
     }
   };
 
@@ -70,21 +70,20 @@ export const Content = () => {
         />
         <Formik
           enableReinitialize
+          validateOnMount
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={settingsSchema}
-        >
-          {({ errors, isValid, dirty, isSubmitting }) => {
+          validationSchema={settingsSchema}>
+          {({ isValid, dirty, isSubmitting, values }) => {
             return (
               <Form className={styles.form}>
-                {mapTabToComponent(activeTab, errors)}
-                <Button
-                  type="submit"
-                  disabled={!isValid || !dirty || isSubmitting}
-                  result={isSubmitting ? undefined : result}
-                >
-                  {isSubmitting ? "Submitting..." : "Save"}
-                </Button>
+                {mapTabToComponent(activeTab, values, isValid)}
+                <SubmitButton
+                  isValid={isValid}
+                  dirty={dirty}
+                  isSubmitting={isSubmitting}
+                  result={result}
+                />
               </Form>
             );
           }}

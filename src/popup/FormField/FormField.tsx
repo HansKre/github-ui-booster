@@ -1,19 +1,20 @@
-import { Field } from "formik";
+import { ErrorMessage, Field } from "formik";
 import React from "react";
-import styles from "./FormField.module.scss";
 import { SettingName } from "../../services";
+import { Paragraph } from "../Typography";
+import styles from "./FormField.module.scss";
 
 type Props = {
   label: string;
+  description?: string;
   name: SettingName;
-  error?: string;
   disabled?: boolean;
 };
 
 export const FormField: React.FC<Props> = ({
   label,
+  description,
   name,
-  error,
   disabled,
 }) => {
   return (
@@ -21,6 +22,7 @@ export const FormField: React.FC<Props> = ({
       <label className={styles.label} htmlFor={name}>
         {label}
       </label>
+      {description && <Paragraph>{description}</Paragraph>}
       <Field
         className={styles.field}
         id={name}
@@ -28,7 +30,9 @@ export const FormField: React.FC<Props> = ({
         type="text"
         disabled={disabled}
       />
-      {error && <p className={styles.error}>{error}</p>}
+      <p className={styles.error}>
+        <ErrorMessage name={name} />
+      </p>
     </div>
   );
 };

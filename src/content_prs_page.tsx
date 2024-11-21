@@ -4,8 +4,8 @@ import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { Spinner } from "./content/spinner";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
-import { urls } from "./content/utils/urls";
-import { getSettings, Settings } from "./services";
+import { getInstanceConfig } from "./getInstanceConfig";
+import { AutoFilter, getSettings, InstanceConfig, Settings } from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -38,38 +38,42 @@ const SPINNER_PARENT =
  * changes without a full reload.
  */
 async function handleContentChange(settings: Settings) {
-  if (window.location.href.startsWith(urls(settings).urlUiBase)) {
-    if (observer) return;
+  if (observer) return;
 
-    async function executeScripts() {
-      if (!isOnPrsPage(settings)) return;
-      try {
-        Spinner.showSpinner(SPINNER_PARENT);
+  const instanceConfig = getInstanceConfig(settings);
+  if (!instanceConfig) return;
 
-        await handlePrFilter(settings, settings.autoFilter);
-        await addBaseBranchLabels(settings);
-        await addChangedFiles(settings);
-        await addTotalLines(settings);
-      } catch (err) {
-        alert(
-          "Error in content_prs_page-script. Check console and report if the issue persists."
-        );
-        console.error(err);
-      } finally {
-        Spinner.hideSpinner();
+  await executeScripts(instanceConfig, settings.autoFilter);
+
+  observer = new MutationObserver((mutations) => {
+    mutations.forEach(async (mutation) => {
+      if (mutation.type === "childList" || mutation.type === "attributes") {
+        await executeScripts(instanceConfig, settings.autoFilter);
       }
-    }
-
-    await executeScripts();
-
-    observer = new MutationObserver((mutations) => {
-      mutations.forEach(async (mutation) => {
-        if (mutation.type === "childList" || mutation.type === "attributes") {
-          await executeScripts();
-        }
-      });
     });
+  });
 
-    observeContentChanges(observer);
+  observeContentChanges(observer);
+}
+
+async function executeScripts(
+  instanceConfig: InstanceConfig,
+  autoFilter: AutoFilter
+) {
+  if (!isOnPrsPage(instanceConfig)) return;
+  try {
+    Spinner.showSpinner(SPINNER_PARENT);
+
+    await handlePrFilter(instanceConfig, autoFilter);
+    await addBaseBranchLabels(instanceConfig);
+    await addChangedFiles(instanceConfig);
+    await addTotalLines(instanceConfig);
+  } catch (err) {
+    alert(
+      "Error in content_prs_page-script. Check console and report if the issue persists."
+    );
+    console.error(err);
+  } finally {
+    Spinner.hideSpinner();
   }
 }

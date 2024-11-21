@@ -1,6 +1,6 @@
-import { Settings } from "../../services";
+import { InstanceConfig } from "../../services";
 import { urls } from "./urls";
 
-export function isOnPrPage(settings: Settings) {
-  return window.location.href.includes(urls(settings).urlUiPr);
+export function isOnPrPage(instanceConfig: InstanceConfig) {
+  return window.location.href.includes(urls(instanceConfig).urlUiPr);
 }

@@ -1,16 +1,16 @@
 import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
-import { Settings } from "../services";
+import { InstanceConfig } from "../services";
 
 export async function processPrFiles(
-  settings: Settings,
+  instanceConfig: InstanceConfig,
   prNumber: number,
   cb: (
     files: RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"]
   ) => void
 ) {
   const octokit = new Octokit({
-    auth: settings.pat,
-    baseUrl: settings.ghBaseUrl,
+    auth: instanceConfig.pat,
+    baseUrl: instanceConfig.ghBaseUrl,
   });
 
   const per_page = 100;
@@ -20,8 +20,8 @@ export async function processPrFiles(
   try {
     while (hasNextPage) {
       const { data: files } = await octokit.pulls.listFiles({
-        owner: settings.org,
-        repo: settings.repo,
+        owner: instanceConfig.org,
+        repo: instanceConfig.repo,
         pull_number: prNumber,
         per_page,
         page,

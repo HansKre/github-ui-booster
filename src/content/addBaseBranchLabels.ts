@@ -1,19 +1,19 @@
 import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
-import { Settings } from "../services";
+import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
-export async function addBaseBranchLabels(settings: Settings) {
+export async function addBaseBranchLabels(instanceConfig: InstanceConfig) {
   const octokit = new Octokit({
-    auth: settings.pat,
-    baseUrl: settings.ghBaseUrl,
+    auth: instanceConfig.pat,
+    baseUrl: instanceConfig.ghBaseUrl,
   });
-  if (!isOnPrsPage(settings)) return;
+  if (!isOnPrsPage(instanceConfig)) return;
 
   try {
     // Fetch PRs
     const { data: prs } = await octokit.pulls.list({
-      owner: settings.org,
-      repo: settings.repo,
+      owner: instanceConfig.org,
+      repo: instanceConfig.repo,
       state: "open",
       per_page: 100,
       page: 1,

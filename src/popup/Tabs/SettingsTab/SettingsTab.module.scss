@@ -1,0 +1,19 @@
+@import "../../../shared-component-styles.scss";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* reset Pagehead defaults */
+  padding-top: 0 !important;
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 0 !important;
+
+  &:not(:first-of-type) {
+    margin-top: 0.5rem;
+  }
+}
+
+.heading {
+  color: $fontColor;
+}

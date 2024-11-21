@@ -1,20 +1,20 @@
-import { Settings } from "../services";
+import { InstanceConfig } from "../services";
 import { getPrFromLocation } from "./getPrFromLocation";
 import { isOnPrPage } from "./utils/isOnPrPage";
 import { processPrFiles } from "./processPrFiles";
 import { BLACKLIST } from "../config";
 
-export async function handlePrPage(settings: Settings) {
-  if (!isOnPrPage(settings)) return;
+export async function handlePrPage(instanceConfig: InstanceConfig) {
+  const urlUiPr = isOnPrPage(instanceConfig);
+  if (!urlUiPr) return;
 
   const prNumber = getPrFromLocation();
-
   if (!prNumber) return;
 
   let totalLinesAdded = 0;
   let totalLinesRemoved = 0;
 
-  await processPrFiles(settings, prNumber, (files) => {
+  await processPrFiles(instanceConfig, prNumber, (files) => {
     files.forEach((file) => {
       if (BLACKLIST.some((name) => file.filename.includes(name))) return;
       totalLinesAdded += file.additions;
