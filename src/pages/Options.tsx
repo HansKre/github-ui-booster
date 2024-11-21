@@ -5,11 +5,11 @@ import {
   PageLayout,
   Text,
   ToggleSwitch,
-  Flash,
 } from "@primer/react";
 import { Features } from "../services/getSettings";
 import styles from "./Options.module.scss";
 import { isFeaturesObject } from "../content/utils/isFeaturesObject";
+import { Banner } from "@primer/react/drafts";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>({
@@ -61,11 +61,7 @@ export const Options = () => {
       <PageLayout padding="none" containerWidth="full">
         <PageLayout.Content>
           <Box className={styles.content}>
-            {error && (
-              <Flash variant="danger" sx={{ mb: 3 }}>
-                {error}
-              </Flash>
-            )}
+            {error && <Banner variant="critical">{error}</Banner>}
 
             <Box className={styles.header}>
               <img
@@ -120,7 +116,7 @@ export const Options = () => {
                   size="small"
                   checked={features.changedFiles}
                   onClick={() => handleToggle("changedFiles")}
-                  aria-label="Toggle changed files display"
+                  aria-label="Toggle changed files"
                 />
               </Box>
 
