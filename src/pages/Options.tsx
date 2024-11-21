@@ -9,6 +9,7 @@ import {
 } from "@primer/react";
 import { Features } from "../services/getSettings";
 import styles from "./Options.module.scss";
+import { isFeaturesObject } from "../content/utils/isFeaturesObject";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>({
@@ -17,16 +18,16 @@ export const Options = () => {
     totalLines: true,
     autoFilter: false,
   });
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string | undefined>();
 
   useEffect(() => {
     try {
       chrome.storage.local.get("features", (data) => {
         if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message ?? "");
+          setError(chrome.runtime.lastError.message);
           return;
         }
-        if (data.features) {
+        if (data.features && isFeaturesObject(data.features)) {
           setFeatures(data.features);
         }
       });
@@ -44,7 +45,7 @@ export const Options = () => {
       setFeatures(updatedFeatures);
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message ?? "");
+          setError(chrome.runtime.lastError.message);
         }
       });
     } catch (err) {
