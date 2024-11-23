@@ -1,5 +1,6 @@
 import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
+import { reOrderPrs } from "../content/reOrderPrs";
 
 const autoFilterSchema = object({
   filter: string().optional(),
@@ -18,6 +19,7 @@ const featuresSchema = object({
   baseBranchLabels: boolean().default(true),
   changedFiles: boolean().default(true),
   totalLines: boolean().default(true),
+  reOrderPrs: boolean().default(true),
   autoFilter: boolean().default(false),
 });
 
@@ -41,6 +43,7 @@ export const INITIAL_VALUES: Settings = {
     baseBranchLabels: true,
     changedFiles: true,
     totalLines: true,
+    reOrderPrs: true,
     autoFilter: false,
   },
 };

@@ -85,8 +85,10 @@ async function executeScripts(
       await addTotalLines(instanceConfig);
     }
 
-    // should always be the last script to run
-    await reOrderPrs(instanceConfig);
+    if (features.reOrderPrs) {
+      // should always be the last script to run
+      await reOrderPrs(instanceConfig);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."

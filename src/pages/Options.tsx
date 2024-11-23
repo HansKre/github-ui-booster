@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -6,16 +5,18 @@ import {
   Text,
   ToggleSwitch,
 } from "@primer/react";
+import { Banner } from "@primer/react/drafts";
+import React, { useEffect, useState } from "react";
+import { isFeaturesObject } from "../content/utils/isFeaturesObject";
 import { Features } from "../services/getSettings";
 import styles from "./Options.module.scss";
-import { isFeaturesObject } from "../content/utils/isFeaturesObject";
-import { Banner } from "@primer/react/drafts";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>({
     baseBranchLabels: true,
     changedFiles: true,
     totalLines: true,
+    reOrderPrs: true,
     autoFilter: false,
   });
   const [error, setError] = useState<string | undefined>();
@@ -134,6 +135,25 @@ export const Options = () => {
                   checked={features.totalLines}
                   onClick={() => handleToggle("totalLines")}
                   aria-label="Toggle total lines counter"
+                />
+              </Box>
+
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Reorder Pull Requests
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    Automatically organize pull requests by base branch,
+                    visually nesting child pull requests under their parent for
+                    clearer hierarchy
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.reOrderPrs}
+                  onClick={() => handleToggle("reOrderPrs")}
+                  aria-label="Toggle reorder pull requests"
                 />
               </Box>
 
