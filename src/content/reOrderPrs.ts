@@ -63,6 +63,7 @@ export async function reOrderPrs(instanceConfig: InstanceConfig) {
       );
       if (!lastColumn) return;
 
+      // remove this element, as it is always empty and takes up space
       const firstChild = lastColumn.querySelector("span");
       if (firstChild) {
         lastColumn.removeChild(firstChild);
@@ -71,7 +72,8 @@ export async function reOrderPrs(instanceConfig: InstanceConfig) {
       lastColumn.classList.remove("col-4", "col-md-3");
       lastColumn.classList.add("col-2");
 
-      // insert the current PR after the PR it depends on
+      // append the rowCurrentPr as a child of rowBasePr
+      // this moves rowCurrentPr away from it's current position
       rowBasePr.append(rowCurrentPr);
     });
   } catch (err) {
