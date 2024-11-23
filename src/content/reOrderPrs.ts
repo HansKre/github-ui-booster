@@ -1,4 +1,4 @@
-import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
