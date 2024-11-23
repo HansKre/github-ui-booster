@@ -2,6 +2,7 @@ import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
 import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
+import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
 import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
@@ -83,6 +84,9 @@ async function executeScripts(
     if (features.totalLines) {
       await addTotalLines(instanceConfig);
     }
+
+    // should always be the last script to run
+    await reOrderPrs(instanceConfig);
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."
