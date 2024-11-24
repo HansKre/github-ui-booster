@@ -2,6 +2,7 @@ import { Octokit } from "@octokit/rest";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { UpdateBranchButton } from "../components";
+import { ConflictsHint } from "../components/ConflictsHint";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
@@ -32,12 +33,27 @@ export async function addUpdateBranchButton(
       if (prDetails.mergeable_state === "dirty") {
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
-        const spanEl = document.createElement("span");
-        spanEl.textContent = "☣️";
-        spanEl.style.padding = "0 1rem";
-        prRow.children[0].children[2].insertBefore(
-          spanEl,
-          prRow.children[0].children[2].children[0]
+
+        const prDescriptionContainer = prRow.children[0];
+        if (!prDescriptionContainer) continue;
+
+        const conflictsHintClass = "gh-ui-booster-conflicts-hint";
+        if (prDescriptionContainer.classList.contains(conflictsHintClass))
+          continue;
+        prDescriptionContainer.classList.add(conflictsHintClass);
+
+        const rootSpanEl = document.createElement("span");
+        rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
+        prDescriptionContainer.insertBefore(
+          rootSpanEl,
+          prDescriptionContainer.children[2]
+        );
+        const root = createRoot(rootSpanEl);
+
+        root.render(
+          <React.StrictMode>
+            <ConflictsHint />
+          </React.StrictMode>
         );
         continue;
       }
