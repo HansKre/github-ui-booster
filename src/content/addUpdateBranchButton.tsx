@@ -34,21 +34,8 @@ export async function addUpdateBranchButton(
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
 
-        const prDescriptionContainer = prRow.children[0];
-        if (!prDescriptionContainer) continue;
-
-        const conflictsHintClass = "gh-ui-booster-conflicts-hint";
-        if (prDescriptionContainer.classList.contains(conflictsHintClass))
-          continue;
-        prDescriptionContainer.classList.add(conflictsHintClass);
-
-        const rootSpanEl = document.createElement("span");
-        rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
-        prDescriptionContainer.insertBefore(
-          rootSpanEl,
-          prDescriptionContainer.children[2]
-        );
-        const root = createRoot(rootSpanEl);
+        const root = createReactRoot(prRow, "gh-ui-booster-conflicts-hint");
+        if (!root) continue;
 
         root.render(
           <React.StrictMode>
@@ -70,20 +57,8 @@ export async function addUpdateBranchButton(
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
 
-        const prDescriptionContainer = prRow.children[0];
-        if (!prDescriptionContainer) continue;
-
-        const updateBtnClass = "gh-ui-booster-update-branch-btn";
-        if (prDescriptionContainer.classList.contains(updateBtnClass)) continue;
-        prDescriptionContainer.classList.add(updateBtnClass);
-
-        const rootSpanEl = document.createElement("span");
-        rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
-        prDescriptionContainer.insertBefore(
-          rootSpanEl,
-          prDescriptionContainer.children[2]
-        );
-        const root = createRoot(rootSpanEl);
+        const root = createReactRoot(prRow, "gh-ui-booster-update-branch-btn");
+        if (!root) continue;
 
         root.render(
           <React.StrictMode>
@@ -99,4 +74,22 @@ export async function addUpdateBranchButton(
   } catch (error) {
     console.error("Error processing pull requests:", error);
   }
+}
+
+function createReactRoot(prRow: Element, className: string) {
+  const prDescriptionContainer = prRow.children[0];
+  if (!prDescriptionContainer) return null;
+
+  if (prDescriptionContainer.classList.contains(className)) return null;
+
+  prDescriptionContainer.classList.add(className);
+
+  const rootSpanEl = document.createElement("span");
+  rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
+  prDescriptionContainer.insertBefore(
+    rootSpanEl,
+    prDescriptionContainer.children[2]
+  );
+
+  return createRoot(rootSpanEl);
 }
