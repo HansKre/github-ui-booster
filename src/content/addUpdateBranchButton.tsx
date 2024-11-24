@@ -1,4 +1,7 @@
 import { Octokit } from "@octokit/rest";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { UpdateBranchButton } from "../components";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
@@ -51,51 +54,29 @@ export async function addUpdateBranchButton(
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
 
-        const prDescriptionContainer = prRow.children[0].children[2];
+        const prDescriptionContainer = prRow.children[0];
         if (!prDescriptionContainer) continue;
 
         const updateBtnClass = "gh-ui-booster-update-branch-btn";
         if (prDescriptionContainer.classList.contains(updateBtnClass)) continue;
         prDescriptionContainer.classList.add(updateBtnClass);
 
-        const spanEl = document.createElement("span");
-        spanEl.textContent = "⬆";
-        spanEl.style.padding = "0 1rem";
-        spanEl.style.cursor = "pointer";
-
-        // Update the branch to include changes from the base branch
-        const handleClick = () => {
-          octokit.pulls
-            .updateBranch({
-              owner: instanceConfig.org,
-              repo: instanceConfig.repo,
-              pull_number: pr.number,
-            })
-            .then(() => {
-              // prompt user if to refresh page and refresh only if user agrees
-              if (
-                window.confirm(
-                  "Branch updated successfully. Refresh the page to see the changes?"
-                )
-              ) {
-                window.location.reload();
-              }
-            })
-            .catch((error) => {
-              if (error.message) {
-                alert(`Error updating branch: ${error.message}`);
-              } else {
-                alert("Error updating branch. Check console for details.");
-              }
-              console.error("Error updating branch:", error);
-            });
-        };
-        spanEl.addEventListener("click", handleClick);
-        // TODO: cleanup event listener
-
+        const rootSpanEl = document.createElement("span");
+        rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
         prDescriptionContainer.insertBefore(
-          spanEl,
-          prDescriptionContainer.children[0]
+          rootSpanEl,
+          prDescriptionContainer.children[2]
+        );
+        const root = createRoot(rootSpanEl);
+
+        root.render(
+          <React.StrictMode>
+            <UpdateBranchButton
+              octokit={octokit}
+              instanceConfig={instanceConfig}
+              prNumber={pr.number}
+            />
+          </React.StrictMode>
         );
       }
     }

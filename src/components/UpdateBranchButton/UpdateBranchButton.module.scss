@@ -1,0 +1,11 @@
+.icon {
+  cursor: pointer;
+
+  &__loading {
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
