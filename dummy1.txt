@@ -6,3 +6,4 @@ bar
 baz
 foo
 foo
+foo
