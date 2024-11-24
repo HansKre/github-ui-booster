@@ -1,5 +1,6 @@
 import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
+import { addUpdateBranchButton } from "../content/addUpdateBranchButton";
 
 const autoFilterSchema = object({
   filter: string().optional(),
@@ -19,6 +20,7 @@ const featuresSchema = object({
   changedFiles: boolean().default(true),
   totalLines: boolean().default(true),
   reOrderPrs: boolean().default(true),
+  addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
 });
 
@@ -43,6 +45,7 @@ export const INITIAL_VALUES: Settings = {
     changedFiles: true,
     totalLines: true,
     reOrderPrs: true,
+    addUpdateBranchButton: true,
     autoFilter: false,
   },
 };

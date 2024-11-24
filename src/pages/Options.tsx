@@ -17,6 +17,7 @@ export const Options = () => {
     changedFiles: true,
     totalLines: true,
     reOrderPrs: true,
+    addUpdateBranchButton: true,
     autoFilter: false,
   });
   const [error, setError] = useState<string | undefined>();
@@ -154,6 +155,25 @@ export const Options = () => {
                   checked={features.reOrderPrs}
                   onClick={() => handleToggle("reOrderPrs")}
                   aria-label="Toggle reorder pull requests"
+                />
+              </Box>
+
+              <Box className={styles.featureItem}>
+                <Box className={styles.featureText}>
+                  <FormControl.Label sx={[styles.featureLabel]}>
+                    Add Update Branch Button
+                  </FormControl.Label>
+                  <FormControl.Caption>
+                    If a pull request is behind the base branch, this feature
+                    adds a button to update the branch of a pull request to
+                    include changes from the base branch
+                  </FormControl.Caption>
+                </Box>
+                <ToggleSwitch
+                  size="small"
+                  checked={features.addUpdateBranchButton}
+                  onClick={() => handleToggle("addUpdateBranchButton")}
+                  aria-label="Toggle add update branch button"
                 />
               </Box>
 

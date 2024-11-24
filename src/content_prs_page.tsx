@@ -1,6 +1,7 @@
 import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
 import { addTotalLines } from "./content/addTotalLines";
+import { addUpdateBranchButton } from "./content/addUpdateBranchButton";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
@@ -86,6 +87,10 @@ async function executeScripts(
 
     if (features.totalLines) {
       await addTotalLines(octokit, instanceConfig);
+    }
+
+    if (features.addUpdateBranchButton) {
+      await addUpdateBranchButton(octokit, instanceConfig);
     }
 
     if (features.reOrderPrs) {
