@@ -6,21 +6,25 @@ type OctokitRequestResult<T extends (...args: any) => any> = Awaited<
   ReturnType<T>
 >;
 
+export type OctokitWithCache = Octokit & {
+  clearCache: () => void;
+};
+
 function createGetOctoInstance() {
   // Singleton of Octokit instances
-  const instances = new Map<string, Octokit>();
+  const instances = new Map<string, OctokitWithCache>();
   // Singleton cache
   const cache = new Map<
     CacheKey,
     Promise<OctokitRequestResult<Octokit["request"]>>
   >();
 
-  return (instanceConfig: InstanceConfig): Octokit => {
+  return (instanceConfig: InstanceConfig): OctokitWithCache => {
     const instanceKey = `${instanceConfig.pat}:${instanceConfig.ghBaseUrl}`; // Unique key for each instanceConfig
 
     // If an instance already exists for the given key, return it
     if (instances.has(instanceKey)) {
-      return instances.get(instanceKey) as Octokit;
+      return instances.get(instanceKey) as OctokitWithCache;
     }
 
     // Create a new Octokit instance
@@ -28,6 +32,11 @@ function createGetOctoInstance() {
       auth: instanceConfig.pat,
       baseUrl: instanceConfig.ghBaseUrl,
     });
+
+    // Add a clearCache method
+    const clearCache = () => {
+      cache.clear();
+    };
 
     // Add caching behavior using octokit hooks
     octokit.hook.wrap("request", async (request, options) => {
@@ -69,9 +78,10 @@ function createGetOctoInstance() {
     });
 
     // Store the new Octokit instance in the map
-    instances.set(instanceKey, octokit);
+    const instanceWithClearCache = Object.assign(octokit, { clearCache });
+    instances.set(instanceKey, instanceWithClearCache);
 
-    return octokit;
+    return instanceWithClearCache;
   };
 }
 

@@ -1,6 +1,5 @@
 import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
-import { addUpdateBranchButton } from "../content/addUpdateBranchButton";
 
 const autoFilterSchema = object({
   filter: string().optional(),

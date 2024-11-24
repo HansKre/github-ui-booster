@@ -11,12 +11,14 @@ type Props = {
   octokit: Octokit;
   instanceConfig: InstanceConfig;
   prNumber: number;
+  onSuccess: () => void;
 };
 
 export const UpdateBranchButton: React.FC<Props> = ({
   octokit,
   instanceConfig,
   prNumber,
+  onSuccess,
 }) => {
   const [isLoading, isLoadingSet] = useState(false);
 
@@ -34,14 +36,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
         pull_number: prNumber,
       })
       .then(() => {
-        // prompt user if to refresh page and refresh only if user agrees
-        if (
-          window.confirm(
-            "Branch updated successfully. Refresh the page to see the changes?"
-          )
-        ) {
-          window.location.reload();
-        }
+        onSuccess();
       })
       .catch((error) => {
         if (error.message) {

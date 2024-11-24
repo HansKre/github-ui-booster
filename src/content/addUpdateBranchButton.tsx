@@ -1,13 +1,18 @@
-import { Octokit } from "@octokit/rest";
 import React from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import { UpdateBranchButton } from "../components";
 import { ConflictsHint } from "../components/ConflictsHint";
 import { InstanceConfig } from "../services";
+import { OctokitWithCache } from "../services/getOctoInstance";
+import { Spinner } from "./spinner";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
+const UPDATE_BRANCH_BUTTON_CLASS = "gh-ui-booster-update-branch-btn";
+const SPINNER_PARENT =
+  "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+
 export async function addUpdateBranchButton(
-  octokit: Octokit,
+  octokit: OctokitWithCache,
   instanceConfig: InstanceConfig
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
@@ -34,7 +39,8 @@ export async function addUpdateBranchButton(
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
 
-        const root = createReactRoot(prRow, "gh-ui-booster-conflicts-hint");
+        const { root } =
+          createReactRoot(prRow, "gh-ui-booster-conflicts-hint") || {};
         if (!root) continue;
 
         root.render(
@@ -57,7 +63,8 @@ export async function addUpdateBranchButton(
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
         if (!prRow) continue;
 
-        const root = createReactRoot(prRow, "gh-ui-booster-update-branch-btn");
+        const { root, rootSpanEl } =
+          createReactRoot(prRow, UPDATE_BRANCH_BUTTON_CLASS) || {};
         if (!root) continue;
 
         root.render(
@@ -66,6 +73,15 @@ export async function addUpdateBranchButton(
               octokit={octokit}
               instanceConfig={instanceConfig}
               prNumber={pr.number}
+              onSuccess={() =>
+                removeAndReaddUpdateBranchButton(
+                  root,
+                  rootSpanEl,
+                  prRow,
+                  octokit,
+                  instanceConfig
+                )
+              }
             />
           </React.StrictMode>
         );
@@ -91,5 +107,34 @@ function createReactRoot(prRow: Element, className: string) {
     prDescriptionContainer.children[2]
   );
 
-  return createRoot(rootSpanEl);
+  return { root: createRoot(rootSpanEl), rootSpanEl };
+}
+
+export async function removeAndReaddUpdateBranchButton(
+  root: Root,
+  rootSpanEl: HTMLSpanElement | undefined,
+  prRow: Element,
+  octokit: OctokitWithCache,
+  instanceConfig: InstanceConfig
+) {
+  // unmount and remove react-component
+  root.unmount();
+  rootSpanEl?.remove();
+
+  // remove marker-class
+  const prDescriptionContainer = prRow.children[0];
+  if (!prDescriptionContainer) return null;
+  prDescriptionContainer.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
+  try {
+    Spinner.showSpinner(SPINNER_PARENT);
+    octokit.clearCache();
+    await addUpdateBranchButton(octokit, instanceConfig);
+  } catch (err) {
+    alert(
+      "Error in content_prs_page-script. Check console and report if the issue persists."
+    );
+    console.error(err);
+  } finally {
+    Spinner.hideSpinner();
+  }
 }
