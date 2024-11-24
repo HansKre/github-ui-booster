@@ -8,6 +8,7 @@ import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { AutoFilter, getSettings, InstanceConfig, Settings } from "./services";
+import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
 
@@ -73,21 +74,23 @@ async function executeScripts(
       await handlePrFilter(instanceConfig, autoFilter);
     }
 
+    const octokit = getOctoInstance(instanceConfig);
+
     if (features.baseBranchLabels) {
-      await addBaseBranchLabels(instanceConfig);
+      await addBaseBranchLabels(octokit, instanceConfig);
     }
 
     if (features.changedFiles) {
-      await addChangedFiles(instanceConfig);
+      await addChangedFiles(octokit, instanceConfig);
     }
 
     if (features.totalLines) {
-      await addTotalLines(instanceConfig);
+      await addTotalLines(octokit, instanceConfig);
     }
 
     if (features.reOrderPrs) {
       // should always be the last script to run
-      await reOrderPrs(instanceConfig);
+      await reOrderPrs(octokit, instanceConfig);
     }
   } catch (err) {
     alert(

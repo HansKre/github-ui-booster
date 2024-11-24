@@ -3,7 +3,8 @@ import { Spinner } from "./content/spinner";
 import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { Features, InstanceConfig, Settings, getSettings } from "./services";
+import { InstanceConfig, Settings, getSettings } from "./services";
+import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
 
@@ -63,8 +64,10 @@ async function executeScripts(instanceConfig: InstanceConfig) {
     const { features } = await chrome.storage.local.get("features");
     if (!isFeaturesObject(features)) throw new Error("Invalid features object");
 
+    const octokit = getOctoInstance(instanceConfig);
+
     if (features.totalLines) {
-      await handlePrPage(instanceConfig);
+      await handlePrPage(octokit, instanceConfig);
     }
   } catch (err) {
     alert(

@@ -1,3 +1,4 @@
+import { Octokit } from "@octokit/rest";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { TotalLines } from "../components";
@@ -5,7 +6,10 @@ import { BLACKLIST } from "../config";
 import { InstanceConfig } from "../services";
 import { processPrFiles } from "./processPrFiles";
 
-export async function addTotalLines(instanceConfig: InstanceConfig) {
+export async function addTotalLines(
+  octokit: Octokit,
+  instanceConfig: InstanceConfig
+) {
   const prRows = document.querySelectorAll("div[id^=issue_]");
   for await (const prRow of prRows) {
     const [, prNumber] = prRow.id.split("_");
@@ -14,13 +18,18 @@ export async function addTotalLines(instanceConfig: InstanceConfig) {
     let totalLinesAdded = 0;
     let totalLinesRemoved = 0;
 
-    await processPrFiles(instanceConfig, parseInt(prNumber), (files) => {
-      files.forEach((file) => {
-        if (BLACKLIST.some((name) => file.filename.includes(name))) return;
-        totalLinesAdded += file.additions;
-        totalLinesRemoved += file.deletions;
-      });
-    });
+    await processPrFiles(
+      octokit,
+      instanceConfig,
+      parseInt(prNumber),
+      (files) => {
+        files.forEach((file) => {
+          if (BLACKLIST.some((name) => file.filename.includes(name))) return;
+          totalLinesAdded += file.additions;
+          totalLinesRemoved += file.deletions;
+        });
+      }
+    );
 
     const prTotalLinesClass = "gh-ui-booster-total-lines";
     if (prRow.classList.contains(prTotalLinesClass)) continue;
