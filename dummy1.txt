@@ -3,3 +3,4 @@ bar
 baz
 foo
 bar
+baz
