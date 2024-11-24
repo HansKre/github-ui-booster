@@ -31,8 +31,15 @@ function createGetOctoInstance() {
 
     // Add caching behavior using octokit hooks
     octokit.hook.wrap("request", async (request, options) => {
-      // due to the  [key: string]: unknown;-signature,
-      // the options-object has the keys only at runtime, hence the need to stringify it
+      const nonCacheableMethods = ["POST", "PUT", "DELETE"];
+
+      // If the request method is non-cacheable, bypass the cache
+      if (nonCacheableMethods.includes(options.method)) {
+        return request(options); // Execute the request directly
+      }
+
+      // Due to the [key: string]: unknown; signature,
+      // the options object has the keys only at runtime, hence the need to stringify it
       const optionsForCacheKey: Partial<typeof options> = { ...options };
       delete optionsForCacheKey.headers;
       delete optionsForCacheKey.request;
