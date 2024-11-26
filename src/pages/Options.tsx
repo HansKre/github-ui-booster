@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -6,26 +6,29 @@ import {
   Text,
   ToggleSwitch,
 } from "@primer/react";
-import { Features, getSettings } from "../services/getSettings";
+import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import styles from "./Options.module.scss";
 import { Banner } from "@primer/react/drafts";
+import { FeatureItem } from "../components/FeatureItem/FeatureItem";
 
 export const Options = () => {
-  const [features, setFeatures] = useState<Features>({
-    baseBranchLabels: true,
-    changedFiles: true,
-    totalLines: true,
-    autoFilter: false,
-  });
+  const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, setError] = useState<string | undefined>();
 
-  getSettings({
-    onSuccess: (settings) => setFeatures(settings.features),
-    onError: () =>
-      alert(
-        "Couldn't load your Settings from chrome storage (content_pr_page)"
-      ),
-  });
+  const loadSettings = useCallback(
+    () =>
+      getSettings({
+        onSuccess: (settings) => {
+          setFeatures(settings.features);
+        },
+        onError: () => alert("Couldn't load your settings from chrome storage"),
+      }),
+    []
+  );
+
+  useEffect(() => {
+    loadSettings();
+  }, [loadSettings]);
 
   const handleToggle = (key: keyof Features) => {
     try {
@@ -40,7 +43,11 @@ export const Options = () => {
         }
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while saving your settings"
+      );
     }
   };
 
@@ -76,74 +83,37 @@ export const Options = () => {
             </Text>
 
             <Box className={styles.featuresList}>
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Base Branch Labels
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Show base branch information for each pull request
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.baseBranchLabels}
-                  onClick={() => handleToggle("baseBranchLabels")}
-                  aria-label="Toggle base branch labels"
-                />
-              </Box>
+              <FeatureItem
+                label="Base Branch Labels"
+                caption="Show base branch information for each pull request"
+                checked={features.baseBranchLabels}
+                onClick={() => handleToggle("baseBranchLabels")}
+                ariaLabel="Toggle base branch labels"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Changed Files
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Display changed files information and enable file search
-                    functionality
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.changedFiles}
-                  onClick={() => handleToggle("changedFiles")}
-                  aria-label="Toggle changed files"
-                />
-              </Box>
+              <FeatureItem
+                label="Changed Files"
+                caption="Display changed files information and enable file search functionality"
+                checked={features.changedFiles}
+                onClick={() => handleToggle("changedFiles")}
+                ariaLabel="Toggle changed files"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Total Lines Counter
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Show total lines added and removed in pull requests
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.totalLines}
-                  onClick={() => handleToggle("totalLines")}
-                  aria-label="Toggle total lines counter"
-                />
-              </Box>
+              <FeatureItem
+                label="Total Lines Counter"
+                caption="Show total lines added and removed in pull requests"
+                checked={features.totalLines}
+                onClick={() => handleToggle("totalLines")}
+                ariaLabel="Toggle total lines counter"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Auto Filter
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Automatically apply filters to pull requests list
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.autoFilter}
-                  onClick={() => handleToggle("autoFilter")}
-                  aria-label="Toggle auto filter"
-                />
-              </Box>
+              <FeatureItem
+                label="Auto Filter"
+                caption="Automatically apply filters to pull requests list"
+                checked={features.autoFilter}
+                onClick={() => handleToggle("autoFilter")}
+                ariaLabel="Toggle auto filter"
+              />
             </Box>
           </Box>
         </PageLayout.Content>
