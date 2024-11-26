@@ -1,6 +1,5 @@
 import { handlePrPage } from "./content";
 import { Spinner } from "./content/spinner";
-import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { Features, InstanceConfig, Settings, getSettings } from "./services";

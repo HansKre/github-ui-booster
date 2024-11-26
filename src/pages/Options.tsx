@@ -6,9 +6,8 @@ import {
   Text,
   ToggleSwitch,
 } from "@primer/react";
-import { Features } from "../services/getSettings";
+import { Features, getSettings } from "../services/getSettings";
 import styles from "./Options.module.scss";
-import { isFeaturesObject } from "../content/utils/isFeaturesObject";
 import { Banner } from "@primer/react/drafts";
 
 export const Options = () => {
@@ -20,21 +19,13 @@ export const Options = () => {
   });
   const [error, setError] = useState<string | undefined>();
 
-  useEffect(() => {
-    try {
-      chrome.storage.local.get("features", (data) => {
-        if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message);
-          return;
-        }
-        if (data.features && isFeaturesObject(data.features)) {
-          setFeatures(data.features);
-        }
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    }
-  }, []);
+  getSettings({
+    onSuccess: (settings) => setFeatures(settings.features),
+    onError: () =>
+      alert(
+        "Couldn't load your Settings from chrome storage (content_pr_page)"
+      ),
+  });
 
   const handleToggle = (key: keyof Features) => {
     try {
