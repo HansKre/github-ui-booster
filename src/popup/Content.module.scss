@@ -30,6 +30,7 @@
 .headingContainer {
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 
 .form {
@@ -40,11 +41,12 @@ $fontColor: rgba(255, 255, 255);
 
 .heading {
   color: $fontColor;
-  padding: 1rem;
   font-size: 20px;
   font-weight: 400;
+  padding: 1rem;
 }
 
 .divider {
   border-bottom: 0.8px solid rgb(33, 38, 45);
 }
+

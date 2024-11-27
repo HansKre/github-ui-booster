@@ -2,7 +2,6 @@ import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
 
 const autoFilterSchema = object({
-  active: boolean().optional(),
   filter: string().optional(),
 });
 
@@ -15,21 +14,37 @@ const instanceConfigSchema = object({
   ghBaseUrl: string().required().url(),
 });
 
+const featuresSchema = object({
+  baseBranchLabels: boolean().default(true),
+  changedFiles: boolean().default(true),
+  totalLines: boolean().default(true),
+  reOrderPrs: boolean().default(true),
+  autoFilter: boolean().default(false),
+});
+
 export const settingsSchema = object({
   instances: array(instanceConfigSchema).required(),
   autoFilter: autoFilterSchema,
+  features: featuresSchema,
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
+export type Features = InferType<typeof featuresSchema>;
 export type Settings = InferType<typeof settingsSchema>;
-
 export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES: Settings = {
   instances: [
     { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
   ],
-  autoFilter: { filter: "", active: false },
+  autoFilter: { filter: "" },
+  features: {
+    baseBranchLabels: true,
+    changedFiles: true,
+    totalLines: true,
+    reOrderPrs: true,
+    autoFilter: false,
+  },
 };
 
 type Params = {

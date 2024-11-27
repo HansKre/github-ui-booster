@@ -2,17 +2,13 @@ import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
 import { InstanceConfig } from "../services";
 
 export async function processPrFiles(
+  octokit: Octokit,
   instanceConfig: InstanceConfig,
   prNumber: number,
   cb: (
     files: RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"]
   ) => void
 ) {
-  const octokit = new Octokit({
-    auth: instanceConfig.pat,
-    baseUrl: instanceConfig.ghBaseUrl,
-  });
-
   const per_page = 100;
   let page = 1;
   let hasNextPage = true;

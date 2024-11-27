@@ -3,6 +3,7 @@ import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { InstanceConfig, Settings, getSettings } from "./services";
+import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
 
@@ -37,12 +38,12 @@ async function handleContentChange(settings: Settings) {
   const instanceConfig = getInstanceConfig(settings);
   if (!instanceConfig) return;
 
-  await executeScripts(instanceConfig);
+  await executeScripts(instanceConfig, settings.features);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(instanceConfig);
+        await executeScripts(instanceConfig, settings.features);
       }
     });
   });
@@ -50,7 +51,10 @@ async function handleContentChange(settings: Settings) {
   observeContentChanges(observer);
 }
 
-async function executeScripts(instanceConfig: InstanceConfig) {
+async function executeScripts(
+  instanceConfig: InstanceConfig,
+  features: Features
+) {
   if (!isOnPrPage(instanceConfig)) return;
 
   try {
@@ -58,7 +62,12 @@ async function executeScripts(instanceConfig: InstanceConfig) {
       "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
       "ghuibooster__spinner__large"
     );
-    await handlePrPage(instanceConfig);
+
+    const octokit = getOctoInstance(instanceConfig);
+
+    if (features.totalLines) {
+      await handlePrPage(octokit, instanceConfig);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."
