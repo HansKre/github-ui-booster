@@ -1,6 +1,5 @@
 import { handlePrPage } from "./content";
 import { Spinner } from "./content/spinner";
-import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { InstanceConfig, Settings, getSettings } from "./services";
@@ -39,12 +38,12 @@ async function handleContentChange(settings: Settings) {
   const instanceConfig = getInstanceConfig(settings);
   if (!instanceConfig) return;
 
-  await executeScripts(instanceConfig);
+  await executeScripts(instanceConfig, settings.features);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(instanceConfig);
+        await executeScripts(instanceConfig, settings.features);
       }
     });
   });
@@ -52,7 +51,10 @@ async function handleContentChange(settings: Settings) {
   observeContentChanges(observer);
 }
 
-async function executeScripts(instanceConfig: InstanceConfig) {
+async function executeScripts(
+  instanceConfig: InstanceConfig,
+  features: Features
+) {
   if (!isOnPrPage(instanceConfig)) return;
 
   try {
@@ -60,9 +62,6 @@ async function executeScripts(instanceConfig: InstanceConfig) {
       "#repo-content-pjax-container > div > div.clearfix.js-issues-results > div.px-3.px-md-0.ml-n3.mr-n3.mx-md-0.tabnav > nav",
       "ghuibooster__spinner__large"
     );
-
-    const { features } = await chrome.storage.local.get("features");
-    if (!isFeaturesObject(features)) throw new Error("Invalid features object");
 
     const octokit = getOctoInstance(instanceConfig);
 

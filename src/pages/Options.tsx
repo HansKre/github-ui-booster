@@ -1,41 +1,28 @@
-import {
-  Box,
-  FormControl,
-  PageLayout,
-  Text,
-  ToggleSwitch,
-} from "@primer/react";
+import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
-import React, { useEffect, useState } from "react";
-import { isFeaturesObject } from "../content/utils/isFeaturesObject";
-import { Features } from "../services/getSettings";
+import React, { useCallback, useEffect, useState } from "react";
+import { FeatureItem } from "../components";
+import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
-  const [features, setFeatures] = useState<Features>({
-    baseBranchLabels: true,
-    changedFiles: true,
-    totalLines: true,
-    reOrderPrs: true,
-    autoFilter: false,
-  });
+  const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, setError] = useState<string | undefined>();
 
+  const loadSettings = useCallback(
+    () =>
+      getSettings({
+        onSuccess: (settings) => {
+          setFeatures(settings.features);
+        },
+        onError: () => alert("Couldn't load your settings from chrome storage"),
+      }),
+    []
+  );
+
   useEffect(() => {
-    try {
-      chrome.storage.local.get("features", (data) => {
-        if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message);
-          return;
-        }
-        if (data.features && isFeaturesObject(data.features)) {
-          setFeatures(data.features);
-        }
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    }
-  }, []);
+    loadSettings();
+  }, [loadSettings]);
 
   const handleToggle = (key: keyof Features) => {
     try {
@@ -50,15 +37,18 @@ export const Options = () => {
         }
       });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while saving your settings"
+      );
     }
   };
 
   return (
     <Box
       className={styles.container}
-      sx={{ backgroundColor: "canvas.default" }}
-    >
+      sx={{ backgroundColor: "canvas.default" }}>
       <PageLayout padding="none" containerWidth="full">
         <PageLayout.Content>
           <Box className={styles.content}>
@@ -86,93 +76,47 @@ export const Options = () => {
             </Text>
 
             <Box className={styles.featuresList}>
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Base Branch Labels
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Show base branch information for each pull request
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.baseBranchLabels}
-                  onClick={() => handleToggle("baseBranchLabels")}
-                  aria-label="Toggle base branch labels"
-                />
-              </Box>
+              <FeatureItem
+                label="Base Branch Labels"
+                caption="Show base branch information for each pull request"
+                checked={features.baseBranchLabels}
+                onClick={() => handleToggle("baseBranchLabels")}
+                ariaLabel="Toggle base branch labels"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Changed Files
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Display changed files information and enable file search
-                    functionality
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.changedFiles}
-                  onClick={() => handleToggle("changedFiles")}
-                  aria-label="Toggle changed files"
-                />
-              </Box>
+              <FeatureItem
+                label="Changed Files"
+                caption="Display changed files information and enable file search functionality"
+                checked={features.changedFiles}
+                onClick={() => handleToggle("changedFiles")}
+                ariaLabel="Toggle changed files"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Total Lines Counter
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Show total lines added and removed in pull requests
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.totalLines}
-                  onClick={() => handleToggle("totalLines")}
-                  aria-label="Toggle total lines counter"
-                />
-              </Box>
+              <FeatureItem
+                label="Total Lines Counter"
+                caption="Show total lines added and removed in pull requests"
+                checked={features.totalLines}
+                onClick={() => handleToggle("totalLines")}
+                ariaLabel="Toggle total lines counter"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Reorder Pull Requests
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Automatically organize pull requests by base branch,
+              <FeatureItem
+                label="Reorder Pull Requests"
+                caption="Automatically organize pull requests by base branch,
                     visually nesting child pull requests under their parent for
-                    clearer hierarchy
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.reOrderPrs}
-                  onClick={() => handleToggle("reOrderPrs")}
-                  aria-label="Toggle reorder pull requests"
-                />
-              </Box>
+                    clearer hierarchy"
+                checked={features.reOrderPrs}
+                onClick={() => handleToggle("reOrderPrs")}
+                ariaLabel="Toggle reorder pull requests"
+              />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Auto Filter
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Automatically apply filters to pull requests list
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.autoFilter}
-                  onClick={() => handleToggle("autoFilter")}
-                  aria-label="Toggle auto filter"
-                />
-              </Box>
+              <FeatureItem
+                label="Auto Filter"
+                caption="Automatically apply filters to pull requests list"
+                checked={features.autoFilter}
+                onClick={() => handleToggle("autoFilter")}
+                ariaLabel="Toggle auto filter"
+              />
             </Box>
           </Box>
         </PageLayout.Content>
