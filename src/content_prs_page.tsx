@@ -4,10 +4,15 @@ import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
-import { isFeaturesObject } from "./content/utils/isFeaturesObject";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { AutoFilter, getSettings, InstanceConfig, Settings } from "./services";
+import {
+  AutoFilter,
+  Features,
+  getSettings,
+  InstanceConfig,
+  Settings,
+} from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -45,12 +50,16 @@ async function handleContentChange(settings: Settings) {
   const instanceConfig = getInstanceConfig(settings);
   if (!instanceConfig) return;
 
-  await executeScripts(instanceConfig, settings.autoFilter);
+  await executeScripts(instanceConfig, settings.autoFilter, settings.features);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(instanceConfig, settings.autoFilter);
+        await executeScripts(
+          instanceConfig,
+          settings.autoFilter,
+          settings.features
+        );
       }
     });
   });
@@ -60,14 +69,12 @@ async function handleContentChange(settings: Settings) {
 
 async function executeScripts(
   instanceConfig: InstanceConfig,
-  autoFilter: AutoFilter
+  autoFilter: AutoFilter,
+  features: Features
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
   try {
     Spinner.showSpinner(SPINNER_PARENT);
-
-    const { features } = await chrome.storage.local.get("features");
-    if (!isFeaturesObject(features)) throw new Error("Invalid features object");
 
     if (features.autoFilter) {
       await handlePrFilter(instanceConfig, autoFilter);
