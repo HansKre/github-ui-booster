@@ -67,24 +67,22 @@ export async function addUpdateBranchButton(
           createReactRoot(prRow, UPDATE_BRANCH_BUTTON_CLASS) || {};
         if (!root) continue;
 
-        const initialLastDeviatingSha = comparison.merge_base_commit.sha;
+        const lastDeviatingSha = comparison.merge_base_commit.sha;
 
         root.render(
           <React.StrictMode>
             <UpdateBranchButton
               octokit={octokit}
               instanceConfig={instanceConfig}
-              prNumber={pr.number}
+              pr={pr}
+              lastDeviatingSha={lastDeviatingSha}
               onSuccess={() =>
                 removeAndReaddUpdateBranchButton(
                   root,
                   rootSpanEl,
                   prRow,
                   octokit,
-                  instanceConfig,
-                  initialLastDeviatingSha,
-                  pr.base.ref,
-                  pr.head.ref
+                  instanceConfig
                 )
               }
             />
@@ -120,13 +118,8 @@ export async function removeAndReaddUpdateBranchButton(
   rootSpanEl: HTMLSpanElement | undefined,
   prRow: Element,
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig,
-  initialLastDeviatingSha: string,
-  base: string,
-  head: string
+  instanceConfig: InstanceConfig
 ) {
-  Spinner.showSpinner(SPINNER_PARENT);
-
   // Unmount and remove the React component
   root.unmount();
   rootSpanEl?.remove();
@@ -136,39 +129,9 @@ export async function removeAndReaddUpdateBranchButton(
   if (!prDescriptionContainer) return null;
   prDescriptionContainer.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
 
-  // Poll until the `merge_base_commit.sha` changes
-  const timeoutMs = 90000; // Timeout after 90 seconds
-  const pollingInterval = 3000; // Check every 3 seconds
-  const startTime = Date.now();
-
-  while (Date.now() - startTime < timeoutMs) {
-    octokit.clearCache();
-    try {
-      const { data: newComparison } = await octokit.repos.compareCommits({
-        owner: instanceConfig.org,
-        repo: instanceConfig.repo,
-        base,
-        head,
-      });
-      if (newComparison.merge_base_commit.sha !== initialLastDeviatingSha) {
-        break;
-      }
-    } catch (err) {
-      console.error("Error polling comparison data:", err);
-    }
-
-    await delay(pollingInterval);
-  }
-
-  // If the timeout is reached, log a warning
-  if (Date.now() - startTime >= timeoutMs) {
-    console.warn(
-      "Timed out waiting for GitHub to propagate the update-branch change."
-    );
-  }
-
   // Re-add the update branch button
   try {
+    Spinner.showSpinner(SPINNER_PARENT);
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
     alert(
@@ -178,8 +141,4 @@ export async function removeAndReaddUpdateBranchButton(
   } finally {
     Spinner.hideSpinner();
   }
-}
-
-async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
