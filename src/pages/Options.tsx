@@ -17,7 +17,7 @@ export const Options = () => {
         },
         onError: () => alert("Couldn't load your settings from chrome storage"),
       }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const Options = () => {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while saving your settings"
+          : "An error occurred while saving your settings",
       );
     }
   };
@@ -48,7 +48,8 @@ export const Options = () => {
   return (
     <Box
       className={styles.container}
-      sx={{ backgroundColor: "canvas.default" }}>
+      sx={{ backgroundColor: "canvas.default" }}
+    >
       <PageLayout padding="none" containerWidth="full">
         <PageLayout.Content>
           <Box className={styles.content}>

@@ -7,7 +7,7 @@ import { Files } from "./types";
 
 export async function addChangedFiles(
   octokit: Octokit,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   // Fetch PRs
   const { data: prs } = await octokit.pulls.list({
@@ -20,7 +20,7 @@ export async function addChangedFiles(
 
   // Fetch PR files
   const prFilesMap = new Map<number, Files>();
-  for await (const pr of prs) {
+  for (const pr of prs) {
     await processPrFiles(octokit, instanceConfig, pr.number, (files) => {
       prFilesMap.set(pr.number, files);
     });

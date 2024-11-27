@@ -4,7 +4,7 @@ import { isOnPrsPage } from "./utils/isOnPrsPage";
 
 export async function addBaseBranchLabels(
   octokit: Octokit,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
 
@@ -36,7 +36,7 @@ function addLabel(
   currentPr:
     | RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number]
     | undefined,
-  prRow: Element
+  prRow: Element,
 ) {
   if (!currentPr) return;
 
@@ -70,7 +70,7 @@ function addLabel(
   }
 
   const parent = prRow.children[0].children[2].querySelector(
-    "div.d-flex.mt-1.text-small.color-fg-muted"
+    "div.d-flex.mt-1.text-small.color-fg-muted",
   );
 
   // Insert as the very first element

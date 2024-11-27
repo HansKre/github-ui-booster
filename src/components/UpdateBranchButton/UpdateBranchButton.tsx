@@ -5,8 +5,8 @@ import { Tooltip } from "@primer/react/next";
 import React, { useState } from "react";
 import { cns } from "ts-type-safe";
 import { InstanceConfig } from "../../services";
-import styles from "./UpdateBranchButton.module.scss";
 import { OctokitWithCache } from "../../services/getOctoInstance";
+import styles from "./UpdateBranchButton.module.scss";
 
 type Props = {
   octokit: OctokitWithCache;
@@ -26,14 +26,14 @@ export const UpdateBranchButton: React.FC<Props> = ({
   const [isLoading, isLoadingSet] = useState(false);
 
   // Update the branch to include changes from the base branch
-  const handleClick = async () => {
-    await updateBranchAndPoll(
+  const handleClick = () => {
+    void updateBranchAndPoll(
       octokit,
       instanceConfig,
       pr,
       lastDeviatingSha,
       onSuccess,
-      isLoadingSet
+      isLoadingSet,
     );
   };
 
@@ -44,7 +44,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
         className={cns(
           "color-fg-muted",
           styles.icon,
-          isLoading && styles.icon__loading
+          isLoading && styles.icon__loading,
         )}
         onClick={handleClick}
       >
@@ -60,7 +60,7 @@ async function updateBranchAndPoll(
   pr: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number],
   lastDeviatingSha: string,
   onSuccess: () => void,
-  isLoadingSet: React.Dispatch<React.SetStateAction<boolean>>
+  isLoadingSet: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   isLoadingSet(true);
   try {
@@ -75,7 +75,7 @@ async function updateBranchAndPoll(
         pr.base.ref,
         pr.head.ref,
         octokit,
-        instanceConfig
+        instanceConfig,
       );
     } catch (error) {
       handleError(error, "Error while waiting for the update to propagate");
@@ -102,7 +102,7 @@ async function pollUntilUpdated(
   base: string,
   head: string,
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   // Poll until the `merge_base_commit.sha` changes
   const timeoutMs = 90000; // Timeout after 90 seconds
@@ -131,7 +131,7 @@ async function pollUntilUpdated(
   // If the timeout is reached, log a warning
   if (Date.now() - startTime >= timeoutMs) {
     console.warn(
-      "Timed out waiting for GitHub to propagate the update-branch change."
+      "Timed out waiting for GitHub to propagate the update-branch change.",
     );
   }
 }

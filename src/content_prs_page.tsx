@@ -55,12 +55,12 @@ async function handleContentChange(settings: Settings) {
   await executeScripts(instanceConfig, settings.autoFilter, settings.features);
 
   observer = new MutationObserver((mutations) => {
-    mutations.forEach(async (mutation) => {
+    mutations.forEach((mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(
+        void executeScripts(
           instanceConfig,
           settings.autoFilter,
-          settings.features
+          settings.features,
         );
       }
     });
@@ -72,7 +72,7 @@ async function handleContentChange(settings: Settings) {
 async function executeScripts(
   instanceConfig: InstanceConfig,
   autoFilter: AutoFilter,
-  features: Features
+  features: Features,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
   try {
@@ -109,7 +109,7 @@ async function executeScripts(
     await Promise.all(promises);
   } catch (err) {
     alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists."
+      "Error in content_prs_page-script. Check console and report if the issue persists.",
     );
     console.error(err);
   } finally {

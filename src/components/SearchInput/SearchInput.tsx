@@ -39,9 +39,9 @@ export const SearchInput: React.FC<Props> = ({
   );
 };
 
-function debounce<T extends (...args: any[]) => void>(
+function debounce<T extends (...args: string[]) => void>(
   callback: T,
-  delay: number
+  delay: number,
 ) {
   let timeoutId: NodeJS.Timeout;
   return (...args: Parameters<T>) => {
