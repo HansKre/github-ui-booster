@@ -18,6 +18,7 @@ const featuresSchema = object({
   baseBranchLabels: boolean().default(true),
   changedFiles: boolean().default(true),
   totalLines: boolean().default(true),
+  reOrderPrs: boolean().default(true),
   autoFilter: boolean().default(false),
 });
 
@@ -41,6 +42,7 @@ export const INITIAL_VALUES: Settings = {
     baseBranchLabels: true,
     changedFiles: true,
     totalLines: true,
+    reOrderPrs: true,
     autoFilter: false,
   },
 };

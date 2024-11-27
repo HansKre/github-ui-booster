@@ -2,6 +2,7 @@ import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
 import { addTotalLines } from "./content/addTotalLines";
 import { handlePrFilter } from "./content/handlePrFilter";
+import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
@@ -89,6 +90,11 @@ async function executeScripts(
 
     if (features.totalLines) {
       await addTotalLines(instanceConfig);
+    }
+
+    if (features.reOrderPrs) {
+      // should always be the last script to run
+      await reOrderPrs(instanceConfig);
     }
   } catch (err) {
     alert(

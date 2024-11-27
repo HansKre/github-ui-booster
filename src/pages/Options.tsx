@@ -1,15 +1,9 @@
+import { Box, PageLayout, Text } from "@primer/react";
+import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  Box,
-  FormControl,
-  PageLayout,
-  Text,
-  ToggleSwitch,
-} from "@primer/react";
+import { FeatureItem } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import styles from "./Options.module.scss";
-import { Banner } from "@primer/react/drafts";
-import { FeatureItem } from "../components/FeatureItem/FeatureItem";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
@@ -54,8 +48,7 @@ export const Options = () => {
   return (
     <Box
       className={styles.container}
-      sx={{ backgroundColor: "canvas.default" }}
-    >
+      sx={{ backgroundColor: "canvas.default" }}>
       <PageLayout padding="none" containerWidth="full">
         <PageLayout.Content>
           <Box className={styles.content}>
@@ -105,6 +98,16 @@ export const Options = () => {
                 checked={features.totalLines}
                 onClick={() => handleToggle("totalLines")}
                 ariaLabel="Toggle total lines counter"
+              />
+
+              <FeatureItem
+                label="Reorder Pull Requests"
+                caption="Automatically organize pull requests by base branch,
+                    visually nesting child pull requests under their parent for
+                    clearer hierarchy"
+                checked={features.reOrderPrs}
+                onClick={() => handleToggle("reOrderPrs")}
+                ariaLabel="Toggle reorder pull requests"
               />
 
               <FeatureItem
