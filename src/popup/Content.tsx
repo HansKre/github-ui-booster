@@ -11,6 +11,8 @@ import { SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
 import { SettingsTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
+import { Link } from "@primer/react";
+import { Paragraph } from "./Typography";
 
 const tabs: Array<Tab> = ["Settings", "Auto filter"];
 type FormValues = Settings;
@@ -50,7 +52,7 @@ export const Content = () => {
   const mapTabToComponent = (tab: Tab, values: Settings, isValid: boolean) => {
     switch (tab) {
       case "Auto filter":
-        return <AutoFilterTab disabled={!initialValues.autoFilter.active} />;
+        return <AutoFilterTab disabled={!values.features.autoFilter} />;
       case "Settings":
         return <SettingsTab values={values} isValid={isValid} />;
     }
@@ -61,6 +63,12 @@ export const Content = () => {
       <div className={styles.container}>
         <div className={styles.headingContainer}>
           <h1 className={styles.heading}>GitHub UI Booster - Settings</h1>
+          <Paragraph sx={{ paddingLeft: "1rem" }}>
+            Enable/disable features in the{" "}
+            <Link href={chrome.runtime.getURL("options.html")} target="_blank">
+              options page
+            </Link>
+          </Paragraph>
         </div>
         <div className={styles.divider} />
         <TabNavigation
@@ -73,7 +81,8 @@ export const Content = () => {
           validateOnMount
           initialValues={initialValues}
           onSubmit={handleSubmit}
-          validationSchema={settingsSchema}>
+          validationSchema={settingsSchema}
+        >
           {({ isValid, dirty, isSubmitting, values }) => {
             return (
               <Form className={styles.form}>

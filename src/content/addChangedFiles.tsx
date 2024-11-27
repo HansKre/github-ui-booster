@@ -5,11 +5,10 @@ import { injectPrFilesSearch } from "./injectPrFilesSearch";
 import { processPrFiles } from "./processPrFiles";
 import { Files } from "./types";
 
-export async function addChangedFiles(instanceConfig: InstanceConfig) {
-  const octokit = new Octokit({
-    auth: instanceConfig.pat,
-    baseUrl: instanceConfig.ghBaseUrl,
-  });
+export async function addChangedFiles(
+  octokit: Octokit,
+  instanceConfig: InstanceConfig
+) {
   // Fetch PRs
   const { data: prs } = await octokit.pulls.list({
     owner: instanceConfig.org,
@@ -22,7 +21,7 @@ export async function addChangedFiles(instanceConfig: InstanceConfig) {
   // Fetch PR files
   const prFilesMap = new Map<number, Files>();
   for await (const pr of prs) {
-    await processPrFiles(instanceConfig, pr.number, (files) => {
+    await processPrFiles(octokit, instanceConfig, pr.number, (files) => {
       prFilesMap.set(pr.number, files);
     });
   }
