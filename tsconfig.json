@@ -10,8 +10,7 @@
     "outDir": "dist/js",
     "noEmitOnError": true,
     "jsx": "react",
-    "typeRoots": ["node_modules/@types"],
-    "skipLibCheck": true
+    "typeRoots": ["node_modules/@types"]
   },
   "exclude": ["node_modules"]
 }

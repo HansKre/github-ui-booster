@@ -9,12 +9,13 @@ import reactHooksAddons from "eslint-plugin-react-hooks-addons";
 
 export default [
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx", "**/*d.ts"],
     languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.node,
         chrome: "readonly", // Declare chrome as a global variable
+        NodeJS: "readonly", // Add NodeJS explicitly
       },
       ecmaVersion: "latest",
       sourceType: "module",
@@ -53,6 +54,7 @@ export default [
           argsIgnorePattern: "^[_]*$",
         },
       ],
+      "react/prop-types": "off",
     },
   },
   {
