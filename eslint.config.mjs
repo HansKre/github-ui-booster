@@ -1,49 +1,73 @@
-import globals from 'globals';
-import pluginJs from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
-import pluginReactHooks from 'eslint-plugin-react-hooks';
+// @ts-check
+import { fixupConfigRules } from "@eslint/compat";
+import { FlatCompat } from "@eslint/eslintrc";
+import eslintJs from "@eslint/js";
+import globals from "globals";
+import tsEslint from "typescript-eslint";
 
-// https://github.com/jsx-eslint/eslint-plugin-react#plugin
+const compat = new FlatCompat();
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
+const languageOptions = {
+  globals: {
+    ...globals.browser,
+    ...globals.node,
+  },
+  ecmaVersion: "latest",
+  sourceType: "module",
+};
+
+const typescriptConfig = {
+  languageOptions: {
+    ...languageOptions,
+    parser: tsEslint.parser,
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
+      },
+      project: "**/tsconfig.json",
+    },
+  },
+
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
+
+  rules: {
+    "react/prop-types": [
+      "off",
+      {
+        ignore: ["children"],
+      },
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        args: "all",
+        argsIgnorePattern: "^[_]*$",
+      },
+    ],
+  },
+};
+
+export default tsEslint.config(
+  eslintJs.configs.recommended,
+  ...tsEslint.configs.recommendedTypeChecked,
+  ...fixupConfigRules(
+    compat.extends(
+      "plugin:react/recommended",
+      "plugin:react/jsx-runtime",
+      "plugin:react-hooks/recommended"
+    )
+  ),
   {
-    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
-      pluginReact,
-      pluginReactHooks,
+      "@typescript-eslint": tsEslint.plugin,
     },
+    ...typescriptConfig,
   },
   {
-    languageOptions: {
-      globals: globals.browser,
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-  },
-  pluginJs.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  {
-    rules: {
-      // ...pluginReactHooks.configs.recommended.rules, // Add react-hooks rules
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-    },
-    // rules: {
-    //   'react/jsx-uses-react': 'error',
-    //   'react/jsx-uses-vars': 'error',
-    // },
-  },
-  {
-    settings: {
-      react: {
-        version: 'detect', // Automatically detect the React version
-      },
-    },
-  },
-];
+    ignores: ["**/node_modules/**", "**/build/**"],
+  }
+);
