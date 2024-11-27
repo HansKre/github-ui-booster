@@ -5,7 +5,7 @@ import styles from "./ConflictsHint.module.scss";
 
 export const ConflictsHint: React.FC = () => {
   return (
-    <Tooltip text="The base branch contains changes which need manual conflict resolution">
+    <Tooltip text="This branch has conflicts that must be resolved">
       <span className={cns("color-fg-muted", styles.icon)}>☣️</span>
     </Tooltip>
   );
