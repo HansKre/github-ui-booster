@@ -137,7 +137,7 @@ export async function removeAndReaddUpdateBranchButton(
   prDescriptionContainer.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
 
   // Poll until the `merge_base_commit.sha` changes
-  const timeoutMs = 60000; // Timeout after 60 seconds
+  const timeoutMs = 90000; // Timeout after 90 seconds
   const pollingInterval = 3000; // Check every 3 seconds
   const startTime = Date.now();
 
