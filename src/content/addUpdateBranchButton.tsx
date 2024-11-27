@@ -169,7 +169,6 @@ export async function removeAndReaddUpdateBranchButton(
 
   // Re-add the update branch button
   try {
-    octokit.clearCache();
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
     alert(
