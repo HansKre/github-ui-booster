@@ -5,7 +5,13 @@ import { handlePrFilter } from "./content/handlePrFilter";
 import { Spinner } from "./content/spinner";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { AutoFilter, getSettings, InstanceConfig, Settings } from "./services";
+import {
+  AutoFilter,
+  Features,
+  getSettings,
+  InstanceConfig,
+  Settings,
+} from "./services";
 
 let observer: MutationObserver | null = null;
 
@@ -43,12 +49,16 @@ async function handleContentChange(settings: Settings) {
   const instanceConfig = getInstanceConfig(settings);
   if (!instanceConfig) return;
 
-  await executeScripts(instanceConfig, settings.autoFilter);
+  await executeScripts(instanceConfig, settings.autoFilter, settings.features);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(instanceConfig, settings.autoFilter);
+        await executeScripts(
+          instanceConfig,
+          settings.autoFilter,
+          settings.features
+        );
       }
     });
   });
@@ -58,16 +68,28 @@ async function handleContentChange(settings: Settings) {
 
 async function executeScripts(
   instanceConfig: InstanceConfig,
-  autoFilter: AutoFilter
+  autoFilter: AutoFilter,
+  features: Features
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
   try {
     Spinner.showSpinner(SPINNER_PARENT);
 
-    await handlePrFilter(instanceConfig, autoFilter);
-    await addBaseBranchLabels(instanceConfig);
-    await addChangedFiles(instanceConfig);
-    await addTotalLines(instanceConfig);
+    if (features.autoFilter) {
+      await handlePrFilter(instanceConfig, autoFilter);
+    }
+
+    if (features.baseBranchLabels) {
+      await addBaseBranchLabels(instanceConfig);
+    }
+
+    if (features.changedFiles) {
+      await addChangedFiles(instanceConfig);
+    }
+
+    if (features.totalLines) {
+      await addTotalLines(instanceConfig);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists."
