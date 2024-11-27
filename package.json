@@ -8,7 +8,16 @@
     "build": "webpack --config webpack/webpack.prod.js",
     "clean": "rimraf dist",
     "test": "npx jest",
-    "style": "prettier --write \"src/**/*.{ts,tsx}\""
+    "style": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "lint": "eslint ./**/*.{ts,tsx,d.ts}",
+    "lint:fix": "eslint ./**/*.{ts,tsx,d.ts} --fix",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*": "prettier --write",
+    "*.{js,ts,tsx}": [
+      "eslint --fix --no-warn-ignored --max-warnings=0"
+    ]
   },
   "license": "ISC",
   "maintainers": [
@@ -39,14 +48,21 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "@types/chrome": "^0.0.269",
     "@types/jest": "^29.5.0",
     "@types/react": "^18.0.29",
     "@types/react-dom": "^18.0.11",
     "copy-webpack-plugin": "^12.0.0",
     "css-loader": "^7.1.2",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
     "glob": "^11.0.0",
+    "globals": "^15.12.0",
+    "husky": "^9.1.7",
     "jest": "^29.5.0",
+    "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.0",
     "sass": "^1.77.8",
@@ -55,6 +71,7 @@
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.0.0",
     "typescript": "^5.0.4",
+    "typescript-eslint": "^8.16.0",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
     "webpack-merge": "^6.0.0"
