@@ -2,7 +2,7 @@ import { handlePrPage } from "./content";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { InstanceConfig, Settings, getSettings } from "./services";
+import { Features, InstanceConfig, Settings, getSettings } from "./services";
 import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
