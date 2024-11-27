@@ -18,7 +18,7 @@ export async function injectFiles(prFilesMap: Map<number, Files>) {
 
     const rootSpanEl = document.createElement("span");
     // Insert between the first and second child
-    prRow.children[0].children[2].insertBefore(
+    prRow.children[0].children[2]?.insertBefore(
       rootSpanEl,
       prRow.children[0].children[2].children[1]
     );

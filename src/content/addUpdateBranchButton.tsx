@@ -67,6 +67,8 @@ export async function addUpdateBranchButton(
           createReactRoot(prRow, UPDATE_BRANCH_BUTTON_CLASS) || {};
         if (!root) continue;
 
+        const initialLastDeviatingSha = comparison.merge_base_commit.sha;
+
         root.render(
           <React.StrictMode>
             <UpdateBranchButton
@@ -79,7 +81,10 @@ export async function addUpdateBranchButton(
                   rootSpanEl,
                   prRow,
                   octokit,
-                  instanceConfig
+                  instanceConfig,
+                  initialLastDeviatingSha,
+                  pr.base.ref,
+                  pr.head.ref
                 )
               }
             />
@@ -115,18 +120,55 @@ export async function removeAndReaddUpdateBranchButton(
   rootSpanEl: HTMLSpanElement | undefined,
   prRow: Element,
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
+  initialLastDeviatingSha: string,
+  base: string,
+  head: string
 ) {
-  // unmount and remove react-component
+  Spinner.showSpinner(SPINNER_PARENT);
+
+  // Unmount and remove the React component
   root.unmount();
   rootSpanEl?.remove();
 
-  // remove marker-class
+  // Remove the marker class
   const prDescriptionContainer = prRow.children[0];
   if (!prDescriptionContainer) return null;
   prDescriptionContainer.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
+
+  // Poll until the `merge_base_commit.sha` changes
+  const timeoutMs = 60000; // Timeout after 60 seconds
+  const pollingInterval = 3000; // Check every 3 seconds
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < timeoutMs) {
+    octokit.clearCache();
+    try {
+      const { data: newComparison } = await octokit.repos.compareCommits({
+        owner: instanceConfig.org,
+        repo: instanceConfig.repo,
+        base,
+        head,
+      });
+      if (newComparison.merge_base_commit.sha !== initialLastDeviatingSha) {
+        break;
+      }
+    } catch (err) {
+      console.error("Error polling comparison data:", err);
+    }
+
+    await delay(pollingInterval);
+  }
+
+  // If the timeout is reached, log a warning
+  if (Date.now() - startTime >= timeoutMs) {
+    console.warn(
+      "Timed out waiting for GitHub to propagate the update-branch change."
+    );
+  }
+
+  // Re-add the update branch button
   try {
-    Spinner.showSpinner(SPINNER_PARENT);
     octokit.clearCache();
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
@@ -137,4 +179,8 @@ export async function removeAndReaddUpdateBranchButton(
   } finally {
     Spinner.hideSpinner();
   }
+}
+
+async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

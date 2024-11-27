@@ -43,7 +43,7 @@ export async function addTotalLines(
        since the div has a display: flex and hence displays as a block-element
        in an own line
     */
-    prRow.children[0].children[2].insertBefore(
+    prRow.children[0].children[2]?.insertBefore(
       rootSpanEl,
       prRow.children[0].children[2].querySelector(
         "div.d-flex.mt-1.text-small.color-fg-muted"

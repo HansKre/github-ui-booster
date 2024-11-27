@@ -18,7 +18,7 @@ export function injectPrFilesSearch(
   const rootDivEl = document.createElement("div");
   rootDivEl.classList.add(prFilesSearchClass);
 
-  contentEl.children[0].children[2].insertBefore(
+  contentEl.children[0].children[2]?.insertBefore(
     rootDivEl,
     contentEl.children[0].children[2].children[1]
   );
