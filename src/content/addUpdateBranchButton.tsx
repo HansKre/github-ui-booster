@@ -11,11 +11,20 @@ const UPDATE_BRANCH_BUTTON_CLASS = "gh-ui-booster-update-branch-btn";
 const SPINNER_PARENT =
   "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
+let abortController: AbortController | null = null;
+
 export async function addUpdateBranchButton(
   octokit: OctokitWithCache,
   instanceConfig: InstanceConfig
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
+
+  if (abortController) {
+    abortController.abort();
+  }
+
+  abortController = new AbortController();
+  const { signal } = abortController;
 
   try {
     // List all open pull requests
@@ -25,15 +34,21 @@ export async function addUpdateBranchButton(
       state: "open",
       per_page: 100,
       page: 1,
+      request: { signal },
     });
 
     for (const pr of prs) {
+      if (signal.aborted) return;
+
       // Fetch PR details
       const { data: prDetails } = await octokit.pulls.get({
         owner: instanceConfig.org,
         repo: instanceConfig.repo,
         pull_number: pr.number,
+        request: { signal },
       });
+
+      if (signal.aborted) return;
 
       if (prDetails.mergeable_state === "dirty") {
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
@@ -57,7 +72,10 @@ export async function addUpdateBranchButton(
         repo: instanceConfig.repo,
         base: pr.base.ref,
         head: pr.head.ref,
+        request: { signal },
       });
+
+      if (signal.aborted) return;
 
       if (comparison.behind_by > 0) {
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
@@ -91,7 +109,13 @@ export async function addUpdateBranchButton(
       }
     }
   } catch (error) {
-    console.error("Error processing pull requests:", error);
+    if (signal.aborted) {
+      console.log("Execution aborted.");
+    } else {
+      console.error("Error processing pull requests:", error);
+    }
+  } finally {
+    abortController = null;
   }
 }
 
