@@ -1,3 +1,4 @@
+export * from "./FeatureItem";
 export * from "./SearchInput";
 export * from "./TabNavigation";
 export * from "./TotalLines";

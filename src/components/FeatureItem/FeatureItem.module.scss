@@ -1,0 +1,14 @@
+.featureItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.featureText {
+  flex: 1;
+}
+
+.featureLabel {
+  margin-bottom: 4px;
+}
