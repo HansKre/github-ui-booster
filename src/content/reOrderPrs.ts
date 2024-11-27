@@ -2,11 +2,10 @@ import { Octokit } from "@octokit/rest";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
 
-export async function reOrderPrs(instanceConfig: InstanceConfig) {
-  const octokit = new Octokit({
-    auth: instanceConfig.pat,
-    baseUrl: instanceConfig.ghBaseUrl,
-  });
+export async function reOrderPrs(
+  octokit: Octokit,
+  instanceConfig: InstanceConfig
+) {
   if (!isOnPrsPage(instanceConfig)) return;
 
   try {
