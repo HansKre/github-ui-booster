@@ -3,6 +3,10 @@
 
   &__loading {
     cursor: not-allowed;
+
+    /* move the spinner down a bit */
+    display: block;
+    margin-top: 2px;
   }
 
   &:hover {
