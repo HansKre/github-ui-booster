@@ -1,10 +1,4 @@
-import {
-  Box,
-  FormControl,
-  PageLayout,
-  Text,
-  ToggleSwitch,
-} from "@primer/react";
+import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem } from "../components";
@@ -106,24 +100,15 @@ export const Options = () => {
                 ariaLabel="Toggle total lines counter"
               />
 
-              <Box className={styles.featureItem}>
-                <Box className={styles.featureText}>
-                  <FormControl.Label sx={[styles.featureLabel]}>
-                    Reorder Pull Requests
-                  </FormControl.Label>
-                  <FormControl.Caption>
-                    Automatically organize pull requests by base branch,
+              <FeatureItem
+                label="Reorder Pull Requests"
+                caption="Automatically organize pull requests by base branch,
                     visually nesting child pull requests under their parent for
-                    clearer hierarchy
-                  </FormControl.Caption>
-                </Box>
-                <ToggleSwitch
-                  size="small"
-                  checked={features.reOrderPrs}
-                  onClick={() => handleToggle("reOrderPrs")}
-                  aria-label="Toggle reorder pull requests"
-                />
-              </Box>
+                    clearer hierarchy"
+                checked={features.reOrderPrs}
+                onClick={() => handleToggle("reOrderPrs")}
+                ariaLabel="Toggle reorder pull requests"
+              />
 
               <FeatureItem
                 label="Auto Filter"
