@@ -26,11 +26,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
   const [isLoading, isLoadingSet] = useState(false);
 
   // Update the branch to include changes from the base branch
-  const handleClick = async (
-    octokit: OctokitWithCache,
-    instanceConfig: InstanceConfig,
-    pr: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number]
-  ) => {
+  const handleClick = async () => {
     await updateBranchAndPoll(
       octokit,
       instanceConfig,
@@ -50,7 +46,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
           styles.icon,
           isLoading && styles.icon__loading
         )}
-        onClick={() => handleClick(octokit, instanceConfig, pr)}
+        onClick={handleClick}
       >
         {isLoading ? <Spinner size="small" /> : <SyncIcon size="small" />}
       </span>
