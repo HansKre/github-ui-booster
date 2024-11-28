@@ -1,3 +1,9 @@
 .icon {
   cursor: default;
+  padding: 1.5px;
+
+  & > path {
+    /* center inside parent */
+    transform: translate(0.3px, -1px);
+  }
 }
