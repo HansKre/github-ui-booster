@@ -6,8 +6,8 @@ export async function processPrFiles(
   instanceConfig: InstanceConfig,
   prNumber: number,
   cb: (
-    files: RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"]
-  ) => void
+    files: RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"],
+  ) => void,
 ) {
   const per_page = 100;
   let page = 1;

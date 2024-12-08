@@ -11,5 +11,5 @@ root.render(
     <ThemeProvider colorMode="dark">
       <Content />
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

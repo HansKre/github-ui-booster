@@ -1,6 +1,7 @@
 import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
 import { addTotalLines } from "./content/addTotalLines";
+import { addUpdateBranchButton } from "./content/addUpdateBranchButton";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
@@ -54,12 +55,12 @@ async function handleContentChange(settings: Settings) {
   await executeScripts(instanceConfig, settings.autoFilter, settings.features);
 
   observer = new MutationObserver((mutations) => {
-    mutations.forEach(async (mutation) => {
+    mutations.forEach((mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        await executeScripts(
+        void executeScripts(
           instanceConfig,
           settings.autoFilter,
-          settings.features
+          settings.features,
         );
       }
     });
@@ -71,37 +72,44 @@ async function handleContentChange(settings: Settings) {
 async function executeScripts(
   instanceConfig: InstanceConfig,
   autoFilter: AutoFilter,
-  features: Features
+  features: Features,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
   try {
     Spinner.showSpinner(SPINNER_PARENT);
 
+    const promises = [];
+
     if (features.autoFilter) {
-      await handlePrFilter(instanceConfig, autoFilter);
+      promises.push(handlePrFilter(instanceConfig, autoFilter));
     }
 
     const octokit = getOctoInstance(instanceConfig);
 
     if (features.baseBranchLabels) {
-      await addBaseBranchLabels(octokit, instanceConfig);
+      promises.push(addBaseBranchLabels(octokit, instanceConfig));
     }
 
     if (features.changedFiles) {
-      await addChangedFiles(octokit, instanceConfig);
+      promises.push(addChangedFiles(octokit, instanceConfig));
     }
 
     if (features.totalLines) {
-      await addTotalLines(octokit, instanceConfig);
+      promises.push(addTotalLines(octokit, instanceConfig));
+    }
+
+    if (features.addUpdateBranchButton) {
+      promises.push(addUpdateBranchButton(octokit, instanceConfig));
     }
 
     if (features.reOrderPrs) {
-      // should always be the last script to run
-      await reOrderPrs(octokit, instanceConfig);
+      promises.push(reOrderPrs(octokit, instanceConfig));
     }
+
+    await Promise.all(promises);
   } catch (err) {
     alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists."
+      "Error in content_prs_page-script. Check console and report if the issue persists.",
     );
     console.error(err);
   } finally {

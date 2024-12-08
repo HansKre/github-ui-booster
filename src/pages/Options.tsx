@@ -17,7 +17,7 @@ export const Options = () => {
         },
         onError: () => alert("Couldn't load your settings from chrome storage"),
       }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const Options = () => {
       setError(
         err instanceof Error
           ? err.message
-          : "An error occurred while saving your settings"
+          : "An error occurred while saving your settings",
       );
     }
   };
@@ -48,7 +48,8 @@ export const Options = () => {
   return (
     <Box
       className={styles.container}
-      sx={{ backgroundColor: "canvas.default" }}>
+      sx={{ backgroundColor: "canvas.default" }}
+    >
       <PageLayout padding="none" containerWidth="full">
         <PageLayout.Content>
           <Box className={styles.content}>
@@ -108,6 +109,14 @@ export const Options = () => {
                 checked={features.reOrderPrs}
                 onClick={() => handleToggle("reOrderPrs")}
                 ariaLabel="Toggle reorder pull requests"
+              />
+
+              <FeatureItem
+                label="Add Update Branch Button"
+                caption="If a pull request is behind the base branch, this feature adds a button to update the branch of a pull request to include changes from the base branch"
+                checked={features.addUpdateBranchButton}
+                onClick={() => handleToggle("addUpdateBranchButton")}
+                ariaLabel="Toggle add update branch button"
               />
 
               <FeatureItem

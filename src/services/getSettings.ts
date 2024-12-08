@@ -19,6 +19,7 @@ const featuresSchema = object({
   changedFiles: boolean().default(true),
   totalLines: boolean().default(true),
   reOrderPrs: boolean().default(true),
+  addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
 });
 
@@ -43,12 +44,13 @@ export const INITIAL_VALUES: Settings = {
     changedFiles: true,
     totalLines: true,
     reOrderPrs: true,
+    addUpdateBranchButton: true,
     autoFilter: false,
   },
 };
 
 type Params = {
-  onSuccess: (settings: Settings) => void;
+  onSuccess: (settings: Settings) => void | Promise<void>;
   onError: () => void;
 };
 
@@ -57,7 +59,7 @@ export function getSettings({ onSuccess, onError }: Params) {
     .get(Object.keys(settingsSchema.fields))
     .then((entries) => {
       if (Object.keys(entries).length === 0) {
-        onSuccess(INITIAL_VALUES);
+        void onSuccess(INITIAL_VALUES);
       } else {
         settingsSchema
           .validate(entries)
@@ -67,5 +69,6 @@ export function getSettings({ onSuccess, onError }: Params) {
             onError();
           });
       }
-    });
+    })
+    .catch(onError);
 }

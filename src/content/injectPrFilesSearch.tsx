@@ -5,7 +5,7 @@ import { Props } from "./PrFilesSearch/PrFilesSearch";
 
 export function injectPrFilesSearch(
   prs: Props["prs"],
-  prFilesMap: Props["prFilesMap"]
+  prFilesMap: Props["prFilesMap"],
 ) {
   const contentEl =
     document.querySelector(".repository-content") ||
@@ -18,14 +18,14 @@ export function injectPrFilesSearch(
   const rootDivEl = document.createElement("div");
   rootDivEl.classList.add(prFilesSearchClass);
 
-  contentEl.children[0].children[2].insertBefore(
+  contentEl.children[0].children[2]?.insertBefore(
     rootDivEl,
-    contentEl.children[0].children[2].children[1]
+    contentEl.children[0].children[2].children[1],
   );
   const newRoot = createRoot(rootDivEl);
   newRoot.render(
     <React.StrictMode>
       <PrFilesSearch prs={prs} prFilesMap={prFilesMap} />
-    </React.StrictMode>
+    </React.StrictMode>,
   );
 }

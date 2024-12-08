@@ -33,7 +33,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
       });
     });
     return files;
-  }, [prFilesMap]);
+  }, [prFilesMap, prs]);
 
   const [map, mapSet] = useState<PrWithFiles[]>();
 
@@ -53,7 +53,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
           // Apply each search term sequentially to narrow down matching files
           const matchingFiles = terms.reduce((currentFiles, term) => {
             return currentFiles.filter((file) =>
-              file.filename.toLowerCase().includes(term)
+              file.filename.toLowerCase().includes(term),
             );
           }, files);
 
@@ -70,7 +70,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
 
         mapSet(matchingMap);
       }),
-    [prs, prFilesMap]
+    [prFilesMap, allFiles, prs],
   );
 
   return (
@@ -93,7 +93,7 @@ export const PrFilesSearch: React.FC<Props> = ({ prs, prFilesMap }) => {
       <div
         className={cns(
           styles.searchPopupContainer,
-          !!map?.length && styles.popupContainer__hovered
+          !!map?.length && styles.popupContainer__hovered,
         )}
       >
         <div className={styles.popupContent}>
