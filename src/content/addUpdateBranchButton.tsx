@@ -15,7 +15,7 @@ let abortController: AbortController | null = null;
 
 export async function addUpdateBranchButton(
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
 
@@ -61,7 +61,7 @@ export async function addUpdateBranchButton(
         root.render(
           <React.StrictMode>
             <ConflictsHint />
-          </React.StrictMode>
+          </React.StrictMode>,
         );
         continue;
       }
@@ -95,16 +95,16 @@ export async function addUpdateBranchButton(
               pr={pr}
               lastDeviatingSha={lastDeviatingSha}
               onSuccess={() =>
-                removeAndReaddUpdateBranchButton(
+                void removeAndReaddUpdateBranchButton(
                   root,
                   rootSpanEl,
                   prRow,
                   octokit,
-                  instanceConfig
+                  instanceConfig,
                 )
               }
             />
-          </React.StrictMode>
+          </React.StrictMode>,
         );
       }
     }
@@ -131,7 +131,7 @@ function createReactRoot(prRow: Element, className: string) {
   rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
   prDescriptionContainer.insertBefore(
     rootSpanEl,
-    prDescriptionContainer.children[2]
+    prDescriptionContainer.children[2],
   );
 
   return { root: createRoot(rootSpanEl), rootSpanEl };
@@ -142,7 +142,7 @@ export async function removeAndReaddUpdateBranchButton(
   rootSpanEl: HTMLSpanElement | undefined,
   prRow: Element,
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   // Unmount and remove the React component
   root.unmount();
@@ -159,7 +159,7 @@ export async function removeAndReaddUpdateBranchButton(
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
     alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists."
+      "Error in content_prs_page-script. Check console and report if the issue persists.",
     );
     console.error(err);
   } finally {

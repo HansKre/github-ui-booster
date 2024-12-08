@@ -9,7 +9,7 @@ let theInstanceConfig: InstanceConfig | undefined;
 export function handlePrFilter(
   instanceConfig: InstanceConfig,
   { filter }: AutoFilter,
-  filterIntercepted?: string
+  filterIntercepted?: string,
 ) {
   theInstanceConfig = instanceConfig;
   if (intercepted) return;
@@ -46,7 +46,7 @@ function replaceFilter(filter: string | undefined, filterIntercepted?: string) {
   const form = searchInput.closest("form");
   if (form)
     form.dispatchEvent(
-      new Event("submit", { bubbles: true, cancelable: true })
+      new Event("submit", { bubbles: true, cancelable: true }),
     );
 }
 
@@ -69,7 +69,7 @@ function onQuickFilterClick(event: MouseEvent) {
       handlePrFilter(
         theInstanceConfig,
         { filter: decodedFilter },
-        decodedFilter
+        decodedFilter,
       );
       intercepted = true;
     }
@@ -79,6 +79,6 @@ function onQuickFilterClick(event: MouseEvent) {
 function decodeQueryString(encodedQuery: string) {
   return decodeURIComponent(encodedQuery.replace(/\+/g, " ")).replace(
     /^q=/,
-    ""
+    "",
   );
 }

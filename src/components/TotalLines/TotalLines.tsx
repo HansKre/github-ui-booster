@@ -38,7 +38,7 @@ const BLOCKS = 5;
 const DiffStat: React.FC<Props> = ({ totalLinesAdded, totalLinesRemoved }) => {
   const totalLines = totalLinesAdded + totalLinesRemoved;
   const positiveBlocksCount = Math.round(
-    (totalLinesAdded / totalLines) * BLOCKS
+    (totalLinesAdded / totalLines) * BLOCKS,
   );
 
   const blocks = Array.from({ length: BLOCKS }, (_, index) => {

@@ -13,7 +13,8 @@ export const Paragraph: React.FC<Props> = ({ sx, children }) => {
         color: "fg.muted",
         mb: "0.75rem",
         ...sx,
-      }}>
+      }}
+    >
       {children}
     </Text>
   );
