@@ -8,10 +8,10 @@ import { processPrFiles } from "./processPrFiles";
 
 export async function addTotalLines(
   octokit: Octokit,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   const prRows = document.querySelectorAll("div[id^=issue_]");
-  for await (const prRow of prRows) {
+  for (const prRow of prRows) {
     const [, prNumber] = prRow.id.split("_");
     if (!prNumber) continue;
 
@@ -28,7 +28,7 @@ export async function addTotalLines(
           totalLinesAdded += file.additions;
           totalLinesRemoved += file.deletions;
         });
-      }
+      },
     );
 
     const prTotalLinesClass = "gh-ui-booster-total-lines";
@@ -46,8 +46,8 @@ export async function addTotalLines(
     prRow.children[0].children[2]?.insertBefore(
       rootSpanEl,
       prRow.children[0].children[2].querySelector(
-        "div.d-flex.mt-1.text-small.color-fg-muted"
-      )
+        "div.d-flex.mt-1.text-small.color-fg-muted",
+      ),
     );
 
     const root = createRoot(rootSpanEl);
@@ -58,7 +58,7 @@ export async function addTotalLines(
           totalLinesAdded={totalLinesAdded}
           totalLinesRemoved={totalLinesRemoved}
         />
-      </React.StrictMode>
+      </React.StrictMode>,
     );
   }
 }

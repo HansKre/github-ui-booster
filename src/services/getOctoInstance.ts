@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import { InstanceConfig } from "./getSettings";
 
 type CacheKey = string;
-type OctokitRequestResult<T extends (...args: any) => any> = Awaited<
+type OctokitRequestResult<T extends (...args: unknown[]) => unknown> = Awaited<
   ReturnType<T>
 >;
 

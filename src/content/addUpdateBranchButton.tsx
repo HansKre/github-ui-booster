@@ -11,11 +11,20 @@ const UPDATE_BRANCH_BUTTON_CLASS = "gh-ui-booster-update-branch-btn";
 const SPINNER_PARENT =
   "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
+let abortController: AbortController | null = null;
+
 export async function addUpdateBranchButton(
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
+
+  if (abortController) {
+    abortController.abort();
+  }
+
+  abortController = new AbortController();
+  const { signal } = abortController;
 
   try {
     // List all open pull requests
@@ -25,15 +34,21 @@ export async function addUpdateBranchButton(
       state: "open",
       per_page: 100,
       page: 1,
+      request: { signal },
     });
 
     for (const pr of prs) {
+      if (signal.aborted) return;
+
       // Fetch PR details
       const { data: prDetails } = await octokit.pulls.get({
         owner: instanceConfig.org,
         repo: instanceConfig.repo,
         pull_number: pr.number,
+        request: { signal },
       });
+
+      if (signal.aborted) return;
 
       if (prDetails.mergeable_state === "dirty") {
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
@@ -46,7 +61,7 @@ export async function addUpdateBranchButton(
         root.render(
           <React.StrictMode>
             <ConflictsHint />
-          </React.StrictMode>
+          </React.StrictMode>,
         );
         continue;
       }
@@ -57,7 +72,10 @@ export async function addUpdateBranchButton(
         repo: instanceConfig.repo,
         base: pr.base.ref,
         head: pr.head.ref,
+        request: { signal },
       });
+
+      if (signal.aborted) return;
 
       if (comparison.behind_by > 0) {
         const prRow = document.querySelector(`div[id=issue_${pr.number}]`);
@@ -77,21 +95,27 @@ export async function addUpdateBranchButton(
               pr={pr}
               lastDeviatingSha={lastDeviatingSha}
               onSuccess={() =>
-                removeAndReaddUpdateBranchButton(
+                void removeAndReaddUpdateBranchButton(
                   root,
                   rootSpanEl,
                   prRow,
                   octokit,
-                  instanceConfig
+                  instanceConfig,
                 )
               }
             />
-          </React.StrictMode>
+          </React.StrictMode>,
         );
       }
     }
   } catch (error) {
-    console.error("Error processing pull requests:", error);
+    if (signal.aborted) {
+      console.log("Execution aborted.");
+    } else {
+      console.error("Error processing pull requests:", error);
+    }
+  } finally {
+    abortController = null;
   }
 }
 
@@ -107,7 +131,7 @@ function createReactRoot(prRow: Element, className: string) {
   rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
   prDescriptionContainer.insertBefore(
     rootSpanEl,
-    prDescriptionContainer.children[2]
+    prDescriptionContainer.children[2],
   );
 
   return { root: createRoot(rootSpanEl), rootSpanEl };
@@ -118,7 +142,7 @@ export async function removeAndReaddUpdateBranchButton(
   rootSpanEl: HTMLSpanElement | undefined,
   prRow: Element,
   octokit: OctokitWithCache,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   // Unmount and remove the React component
   root.unmount();
@@ -135,7 +159,7 @@ export async function removeAndReaddUpdateBranchButton(
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
     alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists."
+      "Error in content_prs_page-script. Check console and report if the issue persists.",
     );
     console.error(err);
   } finally {

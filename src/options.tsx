@@ -13,5 +13,5 @@ root.render(
         <Options />
       </BaseStyles>
     </ThemeProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

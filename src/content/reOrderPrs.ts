@@ -4,7 +4,7 @@ import { isOnPrsPage } from "./utils/isOnPrsPage";
 
 export async function reOrderPrs(
   octokit: Octokit,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   if (!isOnPrsPage(instanceConfig)) return;
 
@@ -58,7 +58,7 @@ export async function reOrderPrs(
 
       // free up space on the right
       const lastColumn = rowCurrentPr.children[0].querySelector(
-        ":scope > div:last-of-type"
+        ":scope > div:last-of-type",
       );
       if (!lastColumn) return;
 

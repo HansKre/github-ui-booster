@@ -15,6 +15,7 @@ type Props = {
 export const SettingsTab = ({ values, isValid }: Props) => {
   return (
     <FieldArray name="instances">
+      {/* eslint-disable-next-line @typescript-eslint/unbound-method */}
       {({ push, remove }) => (
         <>
           {isNonEmptyArray(values.instances) &&

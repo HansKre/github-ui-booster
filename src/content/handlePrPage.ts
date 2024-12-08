@@ -7,7 +7,7 @@ import { Octokit } from "@octokit/rest";
 
 export async function handlePrPage(
   octokit: Octokit,
-  instanceConfig: InstanceConfig
+  instanceConfig: InstanceConfig,
 ) {
   const urlUiPr = isOnPrPage(instanceConfig);
   if (!urlUiPr) return;
@@ -31,7 +31,7 @@ export async function handlePrPage(
 
 function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   const diffStats = document.querySelector(
-    "#diffstat > span > span[class^=diffstat-block]"
+    "#diffstat > span > span[class^=diffstat-block]",
   )?.parentElement;
 
   // if undefined, assume that this script already ran
@@ -40,7 +40,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   diffStats.remove();
 
   const linesAddedEl = document.querySelector<HTMLElement>(
-    "#diffstat > span.color-fg-success"
+    "#diffstat > span.color-fg-success",
   );
   const addedClone = linesAddedEl?.cloneNode(true);
   if (!addedClone) return;
@@ -48,7 +48,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   linesAddedEl?.parentNode?.insertBefore(addedClone, linesAddedEl);
 
   const linesRemovedEl = document.querySelector<HTMLElement>(
-    "#diffstat > span.color-fg-danger"
+    "#diffstat > span.color-fg-danger",
   );
   const removedClone = linesRemovedEl?.cloneNode(true);
   if (!removedClone) return;
