@@ -102,3 +102,35 @@ Load `dist` directory
 - Click "Upload new package"
 - Drag and drop the zip file into the dialog
 - Click "Submit for review"
+
+### Update screenshot
+
+- take screenshot and right-click > Open with > GIMP
+- CMD+A, CMD+C
+- CMD + N to create a new file
+- dimensions: 1280x800
+- SHIFT+B, choose black and colorize the layer in black
+- CMD+V
+- SHIFT+S for the Resize Tool
+- CMD+two-fingers to zoom out
+- resize the pasted image as needed
+- SHIFT+CMD+E to export
+
+### Description
+
+Boost productivity on GitHub and GitHub Enterprise with this powerful extension!
+
+Highlights:
+
+- works for GitHub and GitHub Enterprise
+- supports multiple GitHub instances
+- powered by the GitHub API, using your personal access token for secure and seamless access
+- shows the base branch for each pull request directly on the PRs page
+- refined line count, excluding non-impactful files (e.g., package-lock.json)
+- on-hover instant access to changed files and diffs from the PRs page
+- integrated search for changed files across all open PRs
+- shows merge conflicts on PRs page
+- custom pull request filter to replace GitHub’s default
+- integrated 'update branche' button in PRs page
+- nested display of dependent PRs on the PRs page, showing clear hierarchy
+- all of the above features are toggleable individually
