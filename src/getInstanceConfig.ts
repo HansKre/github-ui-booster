@@ -2,10 +2,10 @@ import { getUrlUiBase } from "./content/utils/urls";
 import { InstanceConfig, Settings } from "./services";
 
 export function getInstanceConfig(
-  settings: Settings
+  settings: Settings,
 ): InstanceConfig | undefined {
   const instance = settings.instances.find(({ ghBaseUrl }) =>
-    window.location.href.includes(getUrlUiBase(ghBaseUrl))
+    window.location.href.includes(getUrlUiBase(ghBaseUrl)),
   );
   if (!instance) return undefined;
 
@@ -28,7 +28,7 @@ export function getInstanceConfig(
 
 function getCurrent(value: string) {
   return split(value).find((value) =>
-    window.location.href.includes(`/${value}`)
+    window.location.href.includes(`/${value}`),
   );
 }
 

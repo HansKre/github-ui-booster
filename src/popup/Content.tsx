@@ -1,3 +1,4 @@
+import { Link } from "@primer/react";
 import { Form, Formik, FormikHelpers } from "formik";
 import React, { useEffect, useState } from "react";
 import { Tab, TabNavigation } from "../components";
@@ -11,7 +12,6 @@ import { SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
 import { SettingsTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
-import { Link } from "@primer/react";
 import { Paragraph } from "./Typography";
 
 const tabs: Array<Tab> = ["Settings", "Auto filter"];
@@ -28,11 +28,12 @@ export const Content = () => {
       onSuccess: initialValuesSet,
       onError: () => resultSet("Couldn't load from chrome storage"),
     });
+    // eslint-disable-next-line react-hooks-addons/no-unused-deps
   }, [initialValues]);
 
   const handleSubmit = (
     values: FormValues,
-    { setSubmitting, resetForm }: FormikHelpers<FormValues>
+    { setSubmitting, resetForm }: FormikHelpers<FormValues>,
   ) => {
     const promises = Object.entries(values).map(([key, value]) => {
       return chrome.storage.local.set({

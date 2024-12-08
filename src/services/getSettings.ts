@@ -50,7 +50,7 @@ export const INITIAL_VALUES: Settings = {
 };
 
 type Params = {
-  onSuccess: (settings: Settings) => void;
+  onSuccess: (settings: Settings) => void | Promise<void>;
   onError: () => void;
 };
 
@@ -59,7 +59,7 @@ export function getSettings({ onSuccess, onError }: Params) {
     .get(Object.keys(settingsSchema.fields))
     .then((entries) => {
       if (Object.keys(entries).length === 0) {
-        onSuccess(INITIAL_VALUES);
+        void onSuccess(INITIAL_VALUES);
       } else {
         settingsSchema
           .validate(entries)
@@ -69,5 +69,6 @@ export function getSettings({ onSuccess, onError }: Params) {
             onError();
           });
       }
-    });
+    })
+    .catch(onError);
 }

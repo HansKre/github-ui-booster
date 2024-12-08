@@ -23,7 +23,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
       <div
         className={cns(
           styles.popupContainer,
-          open && styles.popupContainer__hovered
+          open && styles.popupContainer__hovered,
         )}
       >
         <div className={styles.popupContent}>
