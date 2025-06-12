@@ -28,7 +28,10 @@
     }
   ],
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "webRequest", "webRequestBlocking", "scripting"],
   "host_permissions": ["<all_urls>"],
-  "options_page": "options.html"
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "js/background.js"
+  }
 }

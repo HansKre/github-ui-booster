@@ -1,5 +1,6 @@
 import { addBaseBranchLabels } from "./content/addBaseBranchLabels";
 import { addChangedFiles } from "./content/addChangedFiles";
+import { addJiraStatus } from "./content/addJiraStatus";
 import { addTotalLines } from "./content/addTotalLines";
 import { addUpdateBranchButton } from "./content/addUpdateBranchButton";
 import { handlePrFilter } from "./content/handlePrFilter";
@@ -98,6 +99,8 @@ async function executeScripts(
       promises.push(addTotalLines(octokit, instanceConfig));
     }
 
+    promises.push(addJiraStatus());
+
     if (features.addUpdateBranchButton) {
       promises.push(addUpdateBranchButton(octokit, instanceConfig));
     }
@@ -108,9 +111,6 @@ async function executeScripts(
 
     await Promise.all(promises);
   } catch (err) {
-    alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists.",
-    );
     console.error(err);
   } finally {
     Spinner.hideSpinner();

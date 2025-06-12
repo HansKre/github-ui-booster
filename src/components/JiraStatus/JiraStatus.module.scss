@@ -1,0 +1,18 @@
+.statusBadge {
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.2rem;
+  background-color: #6e2c2c;
+
+  &__inProgress {
+    background-color: #2c2c6e;
+  }
+
+  &__codeReview {
+    background-color: var(--color-accent-emphasis);
+  }
+
+  &__done {
+    background-color: #36363c;
+  }
+}

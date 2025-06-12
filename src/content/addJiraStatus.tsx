@@ -1,0 +1,40 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { JiraStatus } from "../components/JiraStatus";
+import { fetchJiraIssue } from "./fetchJiraIssue";
+import { fetchJiraIssueSchema } from "./types";
+
+export async function addJiraStatus() {
+  const prRows = document.querySelectorAll("div[id^=issue_]");
+  for (const prRow of prRows) {
+    const issueLink = prRow.querySelector("a[id^=issue_]");
+    if (!issueLink) continue;
+
+    const match = issueLink.textContent?.match(/PC-\d{4}/);
+    if (!match) continue;
+
+    const issueKey = match[0];
+
+    const result = await fetchJiraIssue(issueKey);
+
+    const prTotalLinesClass = "gh-ui-booster-jira-status";
+    if (prRow.classList.contains(prTotalLinesClass)) continue;
+    prRow.classList.add(prTotalLinesClass);
+
+    const rootSpanEl = document.createElement("span");
+
+    const parent = prRow.children[0].children[2];
+    parent.insertBefore(rootSpanEl, parent.firstChild);
+
+    const root = createRoot(rootSpanEl);
+
+    root.render(
+      <React.StrictMode>
+        <JiraStatus
+          result={fetchJiraIssueSchema.validateSync(result)}
+          issueKey={issueKey}
+        />
+      </React.StrictMode>,
+    );
+  }
+}
