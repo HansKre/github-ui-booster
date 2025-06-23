@@ -21,12 +21,20 @@ const featuresSchema = object({
   reOrderPrs: boolean().default(true),
   addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
+  jira: boolean().default(false),
+});
+
+const jiraSchema = object({
+  pat: string().required().min(30),
+  baseUrl: string().required().url(),
+  issueKeyRegex: string().required(),
 });
 
 export const settingsSchema = object({
   instances: array(instanceConfigSchema).required(),
   autoFilter: autoFilterSchema,
   features: featuresSchema,
+  jira: jiraSchema.optional(),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -38,6 +46,7 @@ export const INITIAL_VALUES: Settings = {
   instances: [
     { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
   ],
+  jira: { pat: "", baseUrl: "", issueKeyRegex: "" },
   autoFilter: { filter: "" },
   features: {
     baseBranchLabels: true,
@@ -46,6 +55,7 @@ export const INITIAL_VALUES: Settings = {
     reOrderPrs: true,
     addUpdateBranchButton: true,
     autoFilter: false,
+    jira: false,
   },
 };
 
@@ -62,7 +72,7 @@ export function getSettings({ onSuccess, onError }: Params) {
         void onSuccess(INITIAL_VALUES);
       } else {
         settingsSchema
-          .validate(entries)
+          .validate(entries, { strict: true })
           .then((settings) => onSuccess(settings))
           .catch((e) => {
             console.error(e);

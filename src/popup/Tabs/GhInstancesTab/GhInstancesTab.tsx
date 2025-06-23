@@ -5,7 +5,7 @@ import { isNonEmptyArray } from "ts-type-safe";
 import { Settings } from "../../../services";
 import { AddButton, RemoveButton } from "../../Button";
 import { FormField } from "../../FormField";
-import styles from "./SettingsTab.module.scss";
+import styles from "./GhInstancesTab.module.scss";
 
 type Props = {
   values: Settings;

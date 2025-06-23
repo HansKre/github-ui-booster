@@ -126,6 +126,14 @@ export const Options = () => {
                 onClick={() => handleToggle("autoFilter")}
                 ariaLabel="Toggle auto filter"
               />
+
+              <FeatureItem
+                label="Jira Integration"
+                caption="Enable Jira integration to enhance pull request management with Jira issue keys"
+                checked={features.jira}
+                onClick={() => handleToggle("jira")}
+                ariaLabel="Toggle Jira integration"
+              />
             </Box>
           </Box>
         </PageLayout.Content>

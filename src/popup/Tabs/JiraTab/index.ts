@@ -1,0 +1,1 @@
+export { JiraTab } from "./JiraTab";

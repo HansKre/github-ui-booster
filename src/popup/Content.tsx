@@ -10,11 +10,11 @@ import {
 } from "../services";
 import { SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
-import { GhInstancesTab } from "./Tabs";
+import { GhInstancesTab, JiraTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { Paragraph } from "./Typography";
 
-const tabs: Array<Tab> = ["GH Instances", "Auto filter"];
+const tabs: Array<Tab> = ["GH Instances", "Auto filter", "Jira"];
 type FormValues = Settings;
 
 export const Content = () => {
@@ -56,6 +56,8 @@ export const Content = () => {
         return <AutoFilterTab disabled={!values.features.autoFilter} />;
       case "GH Instances":
         return <GhInstancesTab values={values} isValid={isValid} />;
+      case "Jira":
+        return <JiraTab disabled={!values.features.jira} />;
     }
   };
 
