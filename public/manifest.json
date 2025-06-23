@@ -28,7 +28,7 @@
     }
   ],
 
-  "permissions": ["storage", "webRequest", "scripting"],
+  "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],
   "options_page": "options.html",
   "background": {
