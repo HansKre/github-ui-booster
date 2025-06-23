@@ -1,8 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { JiraStatus } from "../components/JiraStatus";
-import { Settings } from "../services";
-import { JiraService } from "./JiraService";
+import { JiraService, Settings } from "../services";
 import { fetchJiraIssueSchema } from "./types";
 
 export async function addJiraStatus(settings: Settings) {

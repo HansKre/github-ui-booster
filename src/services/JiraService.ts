@@ -1,5 +1,5 @@
 import { hasOwnProperties } from "ts-type-safe";
-import { Messages } from "./types";
+import { Messages } from "../content/types";
 
 // Uses the Chrome extension messaging API to fetch a JIRA issue by its key
 export const JiraService = {
