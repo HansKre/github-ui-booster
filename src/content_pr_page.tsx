@@ -21,8 +21,6 @@ const observeContentChanges = (observer: MutationObserver) => {
 
 getSettings({
   onSuccess: handleContentChange,
-  onError: () =>
-    alert("Couldn't load your Settings from chrome storage (content_pr_page)"),
 });
 
 /**

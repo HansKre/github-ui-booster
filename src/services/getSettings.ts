@@ -61,10 +61,15 @@ export const INITIAL_VALUES: Settings = {
 
 type Params = {
   onSuccess: (settings: Settings) => void | Promise<void>;
-  onError: () => void;
+  onError?: (e?: unknown) => void;
 };
 
-export function getSettings({ onSuccess, onError }: Params) {
+const defaultOnError = (e?: unknown) => {
+  console.error(e);
+  alert("Couldn't load or validate your Settings from chrome storage.");
+};
+
+export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
   chrome.storage.local
     .get(Object.keys(settingsSchema.fields))
     .then((entries) => {
@@ -75,8 +80,7 @@ export function getSettings({ onSuccess, onError }: Params) {
           .validate(entries, { strict: true })
           .then((settings) => onSuccess(settings))
           .catch((e) => {
-            console.error(e);
-            onError();
+            onError(e);
           });
       }
     })

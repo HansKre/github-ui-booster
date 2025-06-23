@@ -1,6 +1,7 @@
 import { Link, Tooltip } from "@primer/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { cns } from "ts-type-safe";
+import { getSettings, Settings } from "../../services";
 import styles from "./JiraStatus.module.scss";
 
 type Props = {
@@ -9,7 +10,18 @@ type Props = {
 };
 
 export const JiraStatus: React.FC<Props> = ({ result, issueKey }) => {
+  const [settings, settingsSet] = useState<Settings>();
+
+  useEffect(() => {
+    getSettings({
+      onSuccess: settingsSet,
+    });
+  }, []);
+
   const { status, priority, assignee } = result;
+
+  if (!settings?.jira?.baseUrl) return null;
+
   return (
     <Tooltip
       text={`priority: ${priority}, assignee: ${assignee}`}
@@ -22,7 +34,7 @@ export const JiraStatus: React.FC<Props> = ({ result, issueKey }) => {
       }}
     >
       <Link
-        href={`https://mbb-jira.mercedes-benz.polygran.de/browse/${issueKey}`}
+        href={`${settings.jira.baseUrl}/browse/${issueKey}`}
         className={cns(
           styles.statusBadge,
           status === "Code Review" && styles.statusBadge__codeReview,

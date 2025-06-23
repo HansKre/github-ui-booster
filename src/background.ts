@@ -1,12 +1,14 @@
 import axios from "axios";
 import { jiraResponseSchema, Messages } from "./content/types";
 import { hasOwnProperty, isEnumValue } from "ts-type-safe";
+import { getSettings } from "./services";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension Installed");
 });
 
 // fetchJiraIssue must happen in a service-worker because of missing CORS-headers on the Jira-API
+// sendResponse is used to send the response back to the content script
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   if (
     hasOwnProperty(message, "type") &&
@@ -15,41 +17,46 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   ) {
     if (
       !hasOwnProperty(message, "issueKey") ||
-      !(typeof message.issueKey === "string")
+      !(typeof message.issueKey === "string") ||
+      !message.issueKey
     )
       return;
-    const issueKey = message.issueKey;
+    const { issueKey } = message;
 
-    fetchJiraIssue(issueKey)
-      .then((data) => {
-        sendResponse({ success: true, data });
-      })
-      .catch((error: unknown) => {
-        console.log("Error fetching JIRA issue:", error);
-        sendResponse({
-          success: false,
-          error,
-          issueKey,
-        });
-      });
+    getSettings({
+      onSuccess: (settings) => {
+        const { baseUrl: jiraBaseUrl, pat: token } = settings.jira || {};
+
+        if (!jiraBaseUrl || !token) {
+          alert("JIRA settings are not configured properly.");
+          return;
+        }
+
+        fetchJiraIssue(jiraBaseUrl, token, issueKey)
+          .then((data) => {
+            sendResponse({ success: true, data });
+          })
+          .catch((error: unknown) => {
+            console.log("Error fetching JIRA issue:", error);
+            sendResponse({
+              success: false,
+              error,
+              issueKey,
+            });
+          });
+      },
+    });
 
     // Indicate that the response will be sent asynchronously
     return true;
   }
 });
 
-/**
-- jira instance properties:
-  - Jira-PAT
-  - Jira-API-BASE-URL
-  - Jira-issueKey-Regex
- */
-const TOKEN = "";
-const JIRA_BASE_URL = "";
-export async function fetchJiraIssue(issueKey: string) {
-  const token = TOKEN;
-  const jiraBaseUrl = JIRA_BASE_URL;
-
+export async function fetchJiraIssue(
+  jiraBaseUrl: string,
+  token: string,
+  issueKey: string,
+) {
   try {
     const response = await axios.get(
       `${jiraBaseUrl}/rest/api/2/issue/${issueKey}`,

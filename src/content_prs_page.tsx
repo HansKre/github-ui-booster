@@ -8,13 +8,7 @@ import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import {
-  AutoFilter,
-  Features,
-  getSettings,
-  InstanceConfig,
-  Settings,
-} from "./services";
+import { getSettings, Settings } from "./services";
 import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
@@ -33,8 +27,6 @@ const observeContentChanges = (observer: MutationObserver) => {
 
 getSettings({
   onSuccess: handleContentChange,
-  onError: () =>
-    alert("Couldn't load your Settings from chrome storage (content_prs_page)"),
 });
 
 const SPINNER_PARENT =
@@ -50,19 +42,12 @@ const SPINNER_PARENT =
 async function handleContentChange(settings: Settings) {
   if (observer) return;
 
-  const instanceConfig = getInstanceConfig(settings);
-  if (!instanceConfig) return;
-
-  await executeScripts(instanceConfig, settings.autoFilter, settings.features);
+  await executeScripts(settings);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        void executeScripts(
-          instanceConfig,
-          settings.autoFilter,
-          settings.features,
-        );
+        void executeScripts(settings);
       }
     });
   });
@@ -70,11 +55,12 @@ async function handleContentChange(settings: Settings) {
   observeContentChanges(observer);
 }
 
-async function executeScripts(
-  instanceConfig: InstanceConfig,
-  autoFilter: AutoFilter,
-  features: Features,
-) {
+async function executeScripts(settings: Settings) {
+  const instanceConfig = getInstanceConfig(settings);
+  if (!instanceConfig) return;
+
+  const { autoFilter, features } = settings;
+
   if (!isOnPrsPage(instanceConfig)) return;
   try {
     Spinner.showSpinner(SPINNER_PARENT);
@@ -99,7 +85,7 @@ async function executeScripts(
       promises.push(addTotalLines(octokit, instanceConfig));
     }
 
-    promises.push(addJiraStatus());
+    promises.push(addJiraStatus(settings));
 
     if (features.addUpdateBranchButton) {
       promises.push(addUpdateBranchButton(octokit, instanceConfig));

@@ -15,7 +15,6 @@ export const Options = () => {
         onSuccess: (settings) => {
           setFeatures(settings.features);
         },
-        onError: () => alert("Couldn't load your settings from chrome storage"),
       }),
     [],
   );

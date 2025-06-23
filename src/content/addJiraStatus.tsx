@@ -1,16 +1,25 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { JiraStatus } from "../components/JiraStatus";
+import { Settings } from "../services";
 import { JiraService } from "./JiraService";
 import { fetchJiraIssueSchema } from "./types";
 
-export async function addJiraStatus() {
+export async function addJiraStatus(settings: Settings) {
+  if (!settings.jira?.issueKeyRegex) {
+    alert(
+      "Jira issue key regex is not set. Please configure it in the settings.",
+    );
+    return;
+  }
   const prRows = document.querySelectorAll("div[id^=issue_]");
   for (const prRow of prRows) {
     const issueLink = prRow.querySelector("a[id^=issue_]");
     if (!issueLink) continue;
 
-    const match = issueLink.textContent?.match(/PC-\d{4}/);
+    const match = issueLink.textContent?.match(
+      new RegExp(settings.jira.issueKeyRegex),
+    );
     if (!match) continue;
 
     const issueKey = match[0];
