@@ -12,7 +12,7 @@ type Props = {
   isValid: boolean;
 };
 
-export const SettingsTab = ({ values, isValid }: Props) => {
+export const GhInstancesTab = ({ values, isValid }: Props) => {
   return (
     <FieldArray name="instances">
       {/* eslint-disable-next-line @typescript-eslint/unbound-method */}

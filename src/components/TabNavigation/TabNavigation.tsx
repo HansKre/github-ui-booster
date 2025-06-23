@@ -2,7 +2,7 @@ import { UnderlineNav } from "@primer/react";
 import { UnderlineNavItem } from "@primer/react/lib-esm/UnderlineNav/UnderlineNavItem";
 import React from "react";
 
-export type Tab = "Settings" | "Auto filter";
+export type Tab = "GH Instances" | "Auto filter";
 
 type Props = {
   tabs: Tab[];

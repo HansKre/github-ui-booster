@@ -1,2 +1,2 @@
-export * from "./SettingsTab";
+export * from "./GhInstancesTab";
 export * from "./AutoFilterTab";
