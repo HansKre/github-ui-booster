@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { JiraStatus } from "../components/JiraStatus";
-import { fetchJiraIssue } from "./fetchJiraIssue";
+import { JiraService } from "./JiraService";
 import { fetchJiraIssueSchema } from "./types";
 
 export async function addJiraStatus() {
@@ -15,7 +15,7 @@ export async function addJiraStatus() {
 
     const issueKey = match[0];
 
-    const result = await fetchJiraIssue(issueKey);
+    const result = await JiraService.fetchJiraIssue(issueKey);
 
     const prTotalLinesClass = "gh-ui-booster-jira-status";
     if (prRow.classList.contains(prTotalLinesClass)) continue;
