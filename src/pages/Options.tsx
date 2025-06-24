@@ -3,11 +3,12 @@ import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
+import { ExportBtn } from "./ExportBtn";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
-  const [error, setError] = useState<string | undefined>();
+  const [error, errorSet] = useState<string | undefined>();
 
   const loadSettings = useCallback(
     () =>
@@ -32,11 +33,11 @@ export const Options = () => {
       setFeatures(updatedFeatures);
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message);
+          errorSet(chrome.runtime.lastError.message);
         }
       });
     } catch (err) {
-      setError(
+      errorSet(
         err instanceof Error
           ? err.message
           : "An error occurred while saving your settings",
@@ -134,6 +135,18 @@ export const Options = () => {
                 ariaLabel="Toggle Jira integration"
               />
             </Box>
+
+            <Text as="h2" className={styles.sectionTitle}>
+              Import and Export Settings
+            </Text>
+
+            <Text as="p" className={styles.subtitle}>
+              You can export your current settings as a JSON file. Your settings
+              contain access tokens. Be careful and make sure to remove your
+              tokens before sharing.
+            </Text>
+
+            <ExportBtn onError={errorSet} />
           </Box>
         </PageLayout.Content>
       </PageLayout>
