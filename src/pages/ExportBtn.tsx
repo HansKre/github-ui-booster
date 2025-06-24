@@ -1,11 +1,13 @@
+import { DownloadIcon } from "@primer/octicons-react";
 import React from "react";
 import { Button } from "../popup/Button";
 import { getSettings } from "../services/getSettings";
 
 type Props = {
+  onSuccess?: () => void;
   onError?: (error: string) => void;
 };
-export const ExportBtn = ({ onError }: Props) => {
+export const ExportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
   const handleDownloadSettings = () => {
     getSettings({
       onSuccess: async (settings) => {
@@ -25,6 +27,7 @@ export const ExportBtn = ({ onError }: Props) => {
             const writable = await handle.createWritable();
             await writable.write(json);
             await writable.close();
+            onSuccess?.();
           } catch {
             onError?.("Saving cancelled or failed.");
           }
@@ -36,7 +39,15 @@ export const ExportBtn = ({ onError }: Props) => {
     });
   };
 
-  return <Button onClick={handleDownloadSettings}>Download Settings</Button>;
+  return (
+    <Button
+      onClick={handleDownloadSettings}
+      variant="danger"
+      icon={DownloadIcon}
+    >
+      Export Settings
+    </Button>
+  );
 };
 
 declare global {

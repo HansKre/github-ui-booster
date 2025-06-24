@@ -4,11 +4,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { ExportBtn } from "./ExportBtn";
+import { ImportBtn } from "./ImportBtn";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, errorSet] = useState<string | undefined>();
+  const [success, successSet] = useState<string | undefined>();
 
   const loadSettings = useCallback(
     () =>
@@ -33,16 +35,31 @@ export const Options = () => {
       setFeatures(updatedFeatures);
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
-          errorSet(chrome.runtime.lastError.message);
+          showError(chrome.runtime.lastError.message);
         }
       });
     } catch (err) {
-      errorSet(
+      showError(
         err instanceof Error
           ? err.message
           : "An error occurred while saving your settings",
       );
     }
+  };
+
+  const resetBanners = () => {
+    errorSet(undefined);
+    successSet(undefined);
+  };
+
+  const showError = (message?: string) => {
+    resetBanners();
+    errorSet(message);
+  };
+
+  const showSuccess = (message: string) => {
+    resetBanners();
+    successSet(message);
   };
 
   return (
@@ -54,6 +71,7 @@ export const Options = () => {
         <PageLayout.Content>
           <Box className={styles.content}>
             {error && <Banner variant="critical">{error}</Banner>}
+            {success && <Banner variant="success">{success}</Banner>}
 
             <Box className={styles.header}>
               <img
@@ -137,7 +155,7 @@ export const Options = () => {
             </Box>
 
             <Text as="h2" className={styles.sectionTitle}>
-              Import and Export Settings
+              Export & Import Settings
             </Text>
 
             <Text as="p" className={styles.subtitle}>
@@ -146,7 +164,16 @@ export const Options = () => {
               tokens before sharing.
             </Text>
 
-            <ExportBtn onError={errorSet} />
+            <Box display="grid" gridTemplateColumns="1fr 1fr" sx={{ gap: 4 }}>
+              <ExportBtn
+                onError={showError}
+                onSuccess={() => showSuccess("Exported settings successfully")}
+              />
+              <ImportBtn
+                onError={showError}
+                onSuccess={() => showSuccess("Imported settings successfully")}
+              />
+            </Box>
           </Box>
         </PageLayout.Content>
       </PageLayout>
