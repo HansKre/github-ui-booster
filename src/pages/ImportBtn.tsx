@@ -56,7 +56,7 @@ export const ImportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
       />
       <Button
         onClick={() => fileInputRef.current?.click()}
-        variant="danger"
+        variant="default"
         loading={importing}
         icon={UploadIcon}
       >

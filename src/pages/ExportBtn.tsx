@@ -42,7 +42,7 @@ export const ExportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
   return (
     <Button
       onClick={handleDownloadSettings}
-      variant="danger"
+      variant="default"
       icon={DownloadIcon}
     >
       Export Settings
@@ -50,6 +50,7 @@ export const ExportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
   );
 };
 
+// Type definitions for File System Access API to make TypeScript happy
 declare global {
   interface Window {
     showSaveFilePicker?: (
