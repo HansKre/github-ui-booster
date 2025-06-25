@@ -168,6 +168,7 @@ export const Options = () => {
               <ExportButton
                 onError={showError}
                 onSuccess={() => showSuccess("Exported settings successfully")}
+                onClick={resetBanners}
               />
               <ImportButton
                 onError={showError}
@@ -175,6 +176,7 @@ export const Options = () => {
                   loadSettings();
                   showSuccess("Imported settings successfully");
                 }}
+                onClick={resetBanners}
               />
             </Box>
           </Box>

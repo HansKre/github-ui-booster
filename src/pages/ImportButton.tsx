@@ -7,9 +7,14 @@ import { settingsSchema } from "../services/getSettings";
 type Props = {
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  onClick?: () => void;
 };
 
-export const ImportButton: React.FC<Props> = ({ onError, onSuccess }) => {
+export const ImportButton: React.FC<Props> = ({
+  onError,
+  onSuccess,
+  onClick,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, importingSet] = useState(false);
 
@@ -55,7 +60,10 @@ export const ImportButton: React.FC<Props> = ({ onError, onSuccess }) => {
         onChange={(e) => void handleFileChange(e)}
       />
       <Button
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => {
+          onClick?.();
+          fileInputRef.current?.click();
+        }}
         variant="default"
         loading={importing}
         icon={UploadIcon}

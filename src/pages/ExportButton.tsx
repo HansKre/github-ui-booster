@@ -6,9 +6,15 @@ import { getSettings } from "../services/getSettings";
 type Props = {
   onSuccess?: () => void;
   onError?: (error: string) => void;
+  onClick?: () => void;
 };
-export const ExportButton: React.FC<Props> = ({ onError, onSuccess }) => {
+export const ExportButton: React.FC<Props> = ({
+  onError,
+  onSuccess,
+  onClick,
+}) => {
   const handleDownloadSettings = () => {
+    onClick?.();
     getSettings({
       onSuccess: async (settings) => {
         const json = JSON.stringify(settings, null, 2);
