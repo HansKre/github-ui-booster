@@ -3,8 +3,8 @@ import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
-import { ExportBtn } from "./ExportBtn";
-import { ImportBtn } from "./ImportBtn";
+import { ExportButton } from "./ExportButton";
+import { ImportButton } from "./ImportButton";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
@@ -165,11 +165,11 @@ export const Options = () => {
             </Text>
 
             <Box display="grid" gridTemplateColumns="1fr 1fr" sx={{ gap: 4 }}>
-              <ExportBtn
+              <ExportButton
                 onError={showError}
                 onSuccess={() => showSuccess("Exported settings successfully")}
               />
-              <ImportBtn
+              <ImportButton
                 onError={showError}
                 onSuccess={() => showSuccess("Imported settings successfully")}
               />

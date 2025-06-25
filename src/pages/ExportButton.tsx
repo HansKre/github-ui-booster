@@ -7,7 +7,7 @@ type Props = {
   onSuccess?: () => void;
   onError?: (error: string) => void;
 };
-export const ExportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
+export const ExportButton: React.FC<Props> = ({ onError, onSuccess }) => {
   const handleDownloadSettings = () => {
     getSettings({
       onSuccess: async (settings) => {

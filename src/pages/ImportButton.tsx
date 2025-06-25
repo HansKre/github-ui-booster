@@ -9,7 +9,7 @@ type Props = {
   onError?: (error: string) => void;
 };
 
-export const ImportBtn: React.FC<Props> = ({ onError, onSuccess }) => {
+export const ImportButton: React.FC<Props> = ({ onError, onSuccess }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importing, importingSet] = useState(false);
 
