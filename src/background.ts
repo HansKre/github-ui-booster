@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
   }
 });
 
-export async function fetchJiraIssue(
+async function fetchJiraIssue(
   jiraBaseUrl: string,
   token: string,
   issueKey: string,
