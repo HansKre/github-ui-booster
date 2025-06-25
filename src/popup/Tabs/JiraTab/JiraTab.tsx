@@ -24,7 +24,7 @@ export const JiraTab: React.FC<Props> = ({ disabled }) => {
         label="Jira Issue Key Regex"
         name="jira.issueKeyRegex"
         disabled={disabled}
-        description="Regex to match Jira issue keys (e.g. PC-\d{4})."
+        description="Regex to match Jira issue keys (e.g. PC-\d{4}) in your Pull Request titles."
       />
     </>
   );
