@@ -10,15 +10,15 @@ import {
 } from "../services";
 import { SubmitButton } from "./Button";
 import styles from "./Content.module.scss";
-import { SettingsTab } from "./Tabs";
+import { GhInstancesTab, JiraTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { Paragraph } from "./Typography";
 
-const tabs: Array<Tab> = ["Settings", "Auto filter"];
+const tabs: Array<Tab> = ["GH Instances", "Auto filter", "Jira"];
 type FormValues = Settings;
 
 export const Content = () => {
-  const [activeTab, setActiveTab] = useState<Tab>("Settings");
+  const [activeTab, setActiveTab] = useState<Tab>("GH Instances");
   const [result, resultSet] = useState("");
   const [initialValues, initialValuesSet] =
     useState<FormValues>(INITIAL_VALUES);
@@ -54,8 +54,10 @@ export const Content = () => {
     switch (tab) {
       case "Auto filter":
         return <AutoFilterTab disabled={!values.features.autoFilter} />;
-      case "Settings":
-        return <SettingsTab values={values} isValid={isValid} />;
+      case "GH Instances":
+        return <GhInstancesTab values={values} isValid={isValid} />;
+      case "Jira":
+        return <JiraTab disabled={!values.features.jira} />;
     }
   };
 

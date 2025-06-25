@@ -5,14 +5,14 @@ import { isNonEmptyArray } from "ts-type-safe";
 import { Settings } from "../../../services";
 import { AddButton, RemoveButton } from "../../Button";
 import { FormField } from "../../FormField";
-import styles from "./SettingsTab.module.scss";
+import styles from "./GhInstancesTab.module.scss";
 
 type Props = {
   values: Settings;
   isValid: boolean;
 };
 
-export const SettingsTab = ({ values, isValid }: Props) => {
+export const GhInstancesTab = ({ values, isValid }: Props) => {
   return (
     <FieldArray name="instances">
       {/* eslint-disable-next-line @typescript-eslint/unbound-method */}

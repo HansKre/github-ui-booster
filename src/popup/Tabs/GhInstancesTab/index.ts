@@ -1,0 +1,1 @@
+export { GhInstancesTab } from "./GhInstancesTab";
