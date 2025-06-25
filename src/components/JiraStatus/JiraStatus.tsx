@@ -26,12 +26,7 @@ export const JiraStatus: React.FC<Props> = ({ result, issueKey }) => {
     <Tooltip
       text={`priority: ${priority}, assignee: ${assignee}`}
       direction="s"
-      sx={{
-        "&::after": {
-          backgroundColor: "black",
-          padding: "1rem",
-        },
-      }}
+      className={styles.toolTip}
     >
       <Link
         href={`${settings.jira.baseUrl}/browse/${issueKey}`}
