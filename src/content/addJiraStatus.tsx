@@ -25,6 +25,8 @@ export async function addJiraStatus(settings: Settings) {
 
     const result = await JiraService.fetchJiraIssue(issueKey);
 
+    if (!result) continue;
+
     const prTotalLinesClass = "gh-ui-booster-jira-status";
     if (prRow.classList.contains(prTotalLinesClass)) continue;
     prRow.classList.add(prTotalLinesClass);
