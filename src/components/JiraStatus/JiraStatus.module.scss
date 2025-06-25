@@ -16,3 +16,8 @@
     background-color: #36363c;
   }
 }
+
+.toolTip::after {
+  background-color: black;
+  padding: 1rem;
+}
