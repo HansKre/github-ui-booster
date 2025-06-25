@@ -171,7 +171,10 @@ export const Options = () => {
               />
               <ImportButton
                 onError={showError}
-                onSuccess={() => showSuccess("Imported settings successfully")}
+                onSuccess={() => {
+                  loadSettings();
+                  showSuccess("Imported settings successfully");
+                }}
               />
             </Box>
           </Box>
