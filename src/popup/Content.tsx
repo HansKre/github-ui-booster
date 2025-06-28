@@ -6,6 +6,7 @@ import {
   INITIAL_VALUES,
   Settings,
   getSettings,
+  persistSettings,
   settingsSchema,
 } from "../services";
 import { SubmitButton } from "./Button";
@@ -15,13 +16,11 @@ import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { Paragraph } from "./Typography";
 
 const tabs: Array<Tab> = ["GH Instances", "Auto filter", "Jira"];
-type FormValues = Settings;
 
 export const Content = () => {
   const [activeTab, setActiveTab] = useState<Tab>("GH Instances");
   const [result, resultSet] = useState("");
-  const [initialValues, initialValuesSet] =
-    useState<FormValues>(INITIAL_VALUES);
+  const [initialValues, initialValuesSet] = useState<Settings>(INITIAL_VALUES);
 
   useEffect(() => {
     getSettings({
@@ -32,23 +31,19 @@ export const Content = () => {
   }, [initialValues]);
 
   const handleSubmit = (
-    values: FormValues,
-    { setSubmitting, resetForm }: FormikHelpers<FormValues>,
-  ) => {
-    const promises = Object.entries(values).map(([key, value]) => {
-      return chrome.storage.local.set({
-        [key]: value,
-      });
-    });
-    Promise.all(promises)
-      .then(() => {
+    values: Settings,
+    { setSubmitting, resetForm }: FormikHelpers<Settings>,
+  ) =>
+    persistSettings({
+      values,
+      onSuccess: () => {
         // reset form-state, e.g. isDirty
         resetForm({ values });
         resultSet("Saved successfully");
-      })
-      .catch(() => resultSet("Couldn't save"))
-      .finally(() => setSubmitting(false));
-  };
+      },
+      onError: () => resultSet("Couldn't save"),
+      onSettled: () => setSubmitting(false),
+    });
 
   const mapTabToComponent = (tab: Tab, values: Settings, isValid: boolean) => {
     switch (tab) {

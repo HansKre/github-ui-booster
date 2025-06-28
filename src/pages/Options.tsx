@@ -3,11 +3,14 @@ import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
+import { ExportButton } from "./ExportButton";
+import { ImportButton } from "./ImportButton";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
-  const [error, setError] = useState<string | undefined>();
+  const [error, errorSet] = useState<string | undefined>();
+  const [success, successSet] = useState<string | undefined>();
 
   const loadSettings = useCallback(
     () =>
@@ -32,16 +35,31 @@ export const Options = () => {
       setFeatures(updatedFeatures);
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
-          setError(chrome.runtime.lastError.message);
+          showError(chrome.runtime.lastError.message);
         }
       });
     } catch (err) {
-      setError(
+      showError(
         err instanceof Error
           ? err.message
           : "An error occurred while saving your settings",
       );
     }
+  };
+
+  const resetBanners = () => {
+    errorSet(undefined);
+    successSet(undefined);
+  };
+
+  const showError = (message?: string) => {
+    resetBanners();
+    errorSet(message);
+  };
+
+  const showSuccess = (message: string) => {
+    resetBanners();
+    successSet(message);
   };
 
   return (
@@ -53,6 +71,7 @@ export const Options = () => {
         <PageLayout.Content>
           <Box className={styles.content}>
             {error && <Banner variant="critical">{error}</Banner>}
+            {success && <Banner variant="success">{success}</Banner>}
 
             <Box className={styles.header}>
               <img
@@ -132,6 +151,32 @@ export const Options = () => {
                 checked={features.jira}
                 onClick={() => handleToggle("jira")}
                 ariaLabel="Toggle Jira integration"
+              />
+            </Box>
+
+            <Text as="h2" className={styles.sectionTitle}>
+              Export & Import Settings
+            </Text>
+
+            <Text as="p" className={styles.subtitle}>
+              You can export your current settings as a JSON file. Your settings
+              contain access tokens. Be careful and make sure to remove your
+              tokens before sharing.
+            </Text>
+
+            <Box display="grid" gridTemplateColumns="1fr 1fr" sx={{ gap: 4 }}>
+              <ExportButton
+                onError={showError}
+                onSuccess={() => showSuccess("Exported settings successfully")}
+                onClick={resetBanners}
+              />
+              <ImportButton
+                onError={showError}
+                onSuccess={() => {
+                  loadSettings();
+                  showSuccess("Imported settings successfully");
+                }}
+                onClick={resetBanners}
               />
             </Box>
           </Box>
