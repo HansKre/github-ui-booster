@@ -1,58 +1,24 @@
 # GitHub UI Booster
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
-
-Chrome Extension, TypeScript and Visual Studio Code
-
-## Option
-
-- [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-- TypeScript
-- Webpack
-- React
-- Jest
-- Example Code
-  - Chrome Storage
-  - Options Version 2
-  - content script
-  - count up badge number
-  - background
-
-## Project Structure
-
-- src/typescript: TypeScript source files
-- src/assets: static files
-- dist: Chrome Extension directory
-- dist/js: Generated JavaScript files
-
 ## Setup
 
-```
+```sh
 npm install
 ```
 
-## Import as Visual Studio Code project
-
-...
-
 ## Build
 
-```
+```sh
 npm run build
 ```
 
-## Build in watch mode
+## Development
 
-### terminal
-
-```
+```sh
 npm run watch
 ```
 
-### Visual Studio Code
+## Visual Studio Code
 
 Run watch mode.
 
@@ -61,10 +27,6 @@ type `Ctrl + Shift + B`
 ## Load extension to chrome
 
 Load `dist` directory
-
-## Test
-
-`npx jest` or `npm run test`
 
 ## Links
 
@@ -92,7 +54,7 @@ Load `dist` directory
 
 - update version in `manifest.json`
 - run `npm run build`
-- zip `dist` directory
+- zip `dist` directory by running `zip -r dist.zip dist`
 
 ### Upload to Chrome Web Store
 
@@ -116,7 +78,7 @@ Load `dist` directory
 - resize the pasted image as needed
 - SHIFT+CMD+E to export
 
-### Description
+### Webstore-Description
 
 Boost productivity on GitHub and GitHub Enterprise with this powerful extension!
 
@@ -133,4 +95,5 @@ Highlights:
 - custom pull request filter to replace GitHub’s default
 - integrated 'update branche' button in PRs page
 - nested display of dependent PRs on the PRs page, showing clear hierarchy
+- integrates with your Jira to display status, prio and assignee on the prs-page
 - all of the above features are toggleable individually
