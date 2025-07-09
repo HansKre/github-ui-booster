@@ -3,12 +3,58 @@
 .searchPopupContainer {
   @extend .popupContainer;
   transform: translateX(-20%);
+  max-width: 60vw;
 }
 
 .list {
   padding-left: 1.5rem;
+
+  & > li {
+    list-style: none;
+    cursor: pointer;
+  }
+}
+
+.resultsList {
+  overflow-y: auto;
+}
+
+.card {
+  background-color: hsla(144, 72%, 37%, 0.12);
+  border: 1px solid hsla(144, 72%, 56%, 0.1);
+  border-radius: 12px;
+  /* chancel the padding of .popupContainer */
+  margin: -0.7rem -1.7rem 0.5rem -1.7rem;
+  padding: 1rem 1.7rem 1rem;
 }
 
 .prFiles:not(:first-child) {
   margin-top: 1rem;
+}
+
+.badge {
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.2rem;
+  background-color: #451e9c;
+  cursor: pointer;
+  list-style: none;
+  &:not(:first-child) {
+    margin-top: 0.5rem;
+  }
+  &::after {
+    content: "❌";
+    margin-left: 0.5rem;
+    font-size: 0.6em;
+  }
+}
+
+.badgeList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.title {
+  margin: 1rem 0;
 }
