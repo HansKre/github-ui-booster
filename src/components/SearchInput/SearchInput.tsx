@@ -21,6 +21,7 @@ export const SearchInput: React.FC<Props> = ({
   const [value, valueSet] = useState("");
   return (
     <input
+      autoComplete="off"
       placeholder={label}
       className={styles.input}
       id={name}
