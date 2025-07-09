@@ -1,3 +1,4 @@
+export * from "./ClosePopupButton";
 export * from "./FeatureItem";
 export * from "./SearchInput";
 export * from "./TabNavigation";

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { cns } from "ts-type-safe";
+import { ClosePopupButton } from "../../components";
 import { FilesWithDiff } from "../FilesWithDiff";
 import { Files } from "../types";
 import styles from "./PrFiles.module.scss";
@@ -33,15 +34,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
         )}
       >
         <div className={styles.popupContent}>
-          <button
-            onClick={closePopup}
-            className={cns(
-              "Button--secondary Button--iconOnly",
-              styles.closeButton,
-            )}
-          >
-            ❌
-          </button>
+          <ClosePopupButton onClick={closePopup} />
           <ul>
             <FilesWithDiff files={prFiles} />
           </ul>
