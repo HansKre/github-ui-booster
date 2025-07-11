@@ -152,6 +152,9 @@ const ResultsPopup: React.FC<{
       !!resultsList?.length && styles.popupContainer__hovered,
     )}
   >
+    <Text as="h4" className={styles.title}>
+      Conflicts Planer
+    </Text>
     <ClosePopupButton onClick={() => resultsListSet(undefined)} />
     <div className={cns(!!filter.size && styles.card)}>
       <SelectedFilesBadges filter={filter} filterSet={filterSet} />
@@ -177,6 +180,7 @@ const ResultsList: React.FC<{
                 onClick={() => {
                   filterSet((prev) => new Set(prev).add(file.filename));
                 }}
+                className={styles.filename}
               >
                 {file.filename}
               </li>

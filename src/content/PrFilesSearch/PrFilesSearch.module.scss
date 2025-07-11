@@ -20,9 +20,7 @@
 }
 
 .card {
-  background-color: hsla(144, 72%, 37%, 0.12);
-  border: 1px solid hsla(144, 72%, 56%, 0.1);
-  border-radius: 12px;
+  border-bottom: 1px solid hsla(144, 72%, 56%, 0.1);
   /* chancel the padding of .popupContainer */
   margin: -0.7rem -1.7rem 0.5rem -1.7rem;
   padding: 1rem 1.7rem 1rem;
@@ -57,4 +55,25 @@
 
 .title {
   margin: 1rem 0;
+}
+
+.border {
+  border: 1px solid hsla(144, 72%, 56%, 0.1);
+}
+
+.filename {
+  padding: 0.1rem 0.5rem;
+  &:hover {
+    background-color: var(
+      --control-transparent-bgColor-hover,
+      var(--color-action-list-item-default-hover-bg, rgba(177, 186, 196, 0.12))
+    );
+    color: var(--fgColor-default, var(--color-fg-default, #e6edf3));
+    box-shadow: inset 0 0 0 max(1px, 0.0625rem)
+      var(
+        --control-transparent-borderColor-active,
+        var(--color-action-list-item-default-active-border, transparent)
+      );
+    border-radius: 6px;
+  }
 }
