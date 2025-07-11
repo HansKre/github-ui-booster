@@ -35,7 +35,7 @@ export const PrFiles: React.FC<Props> = ({ prFiles }) => {
       >
         <div className={styles.popupContent}>
           <ClosePopupButton onClick={closePopup} />
-          <ul>
+          <ul className={styles.list}>
             <FilesWithDiff files={prFiles} />
           </ul>
         </div>
