@@ -1,5 +1,49 @@
 .button {
+  /* inspiration: Code > Files > Branch > notice the close button next to branch-name*/
+  color: var(--fgColor-muted, var(--color-fg-muted, #848d97));
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
+
+  display: inline-grid;
+  padding: unset;
+  place-content: center;
+  width: 32px;
+  min-width: unset;
+  border-color: transparent;
+  text-decoration: none;
+  gap: 8px;
+  transition:
+    color 80ms cubic-bezier(0.65, 0, 0.35, 1),
+    fill,
+    background-color,
+    border-color;
+  background-color: transparent;
+  box-shadow: none;
+  border-radius: 6px;
+  border-width: 1px;
+  border-style: solid;
+  border-image: initial;
+  height: 32px;
+  align-items: center;
+  user-select: none;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover:not([disabled]) {
+    background-color: var(
+      --control-transparent-bgColor-hover,
+      var(--color-action-list-item-default-hover-bg, rgba(177, 186, 196, 0.12))
+    );
+  }
+}
+
+.icon {
+  display: inline-block;
+  user-select: none;
+  vertical-align: text-bottom;
+  overflow: visible;
 }
