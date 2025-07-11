@@ -41,17 +41,34 @@ $fontColor: rgba(255, 255, 255);
   overflow: visible; /* required for popup in popup to work */
   color: #fff;
   padding: 1rem 2rem;
-  border-radius: 4px;
+  border-radius: 12px;
   white-space: nowrap;
   max-height: 80vh; /* Limit the height */
+  height: auto;
+  min-width: 192px;
   max-width: 80vw; /* Limit the width */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  width: 320px;
+  box-shadow: var(
+    --shadow-floating-small,
+    var(
+      --color-overlay-shadow,
+      0 0 0 1px #30363d,
+      0 16px 32px rgba(1, 4, 9, 0.85)
+    )
+  );
   z-index: 100;
   bottom: auto;
   height: fit-content;
   width: fit-content;
-  background-color: var(--bgColor-default, var(--color-canvas-default));
-  border: solid 1px darkgray;
+  background-color: var(
+    --overlay-bgColor,
+    var(--color-canvas-overlay, #161b22)
+  );
+  border: solid 1px
+    var(
+      --borderColor-muted,
+      var(--color-border-subtle, rgba(240, 246, 252, 0.1))
+    );
   cursor: text;
 
   &__hovered {
