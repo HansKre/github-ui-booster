@@ -5,7 +5,9 @@ import { JiraService, Settings } from "../services";
 import { fetchJiraIssueSchema } from "./types";
 
 export async function addJiraStatus(settings: Settings) {
-  if (!settings.jira?.issueKeyRegex) {
+  if (!settings.jira) return;
+
+  if (settings.jira?.pat && !settings.jira?.issueKeyRegex) {
     alert(
       "Jira issue key regex is not set. Please configure it in the settings.",
     );
