@@ -53,8 +53,7 @@ Load `dist` directory
 ### Prepare extension
 
 - update version in `manifest.json`
-- run `npm run build`
-- zip `dist` directory by running `zip -r dist.zip dist`
+- run `npm run release`
 
 ### Upload to Chrome Web Store
 

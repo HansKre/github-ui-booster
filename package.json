@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
+    "prebuild": "npm run clean",
     "build": "webpack --config webpack/webpack.prod.js",
     "build:pack": "webpack --config webpack/webpack.prod.js && zip -r dist.zip ./dist",
     "clean": "rimraf dist",
@@ -12,7 +13,8 @@
     "prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "npm run build && zip -r dist.zip dist"
   },
   "lint-staged": {
     "*": "prettier --write",
