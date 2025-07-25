@@ -1,5 +1,5 @@
-import * as Yup from "yup";
 import { RestEndpointMethodTypes } from "@octokit/rest";
+import * as Yup from "yup";
 
 export type Files =
   RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"];
@@ -32,4 +32,8 @@ export type JiraResponse = Yup.InferType<typeof jiraResponseSchema>;
 
 export enum Messages {
   FETCH_JIRA_ISSUE = "FETCH_JIRA_ISSUE",
+}
+
+export enum TemplateDescriptionParameters {
+  JIRA_TICKET = "{{jiraTicket}}",
 }

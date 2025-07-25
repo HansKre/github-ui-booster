@@ -1,22 +1,29 @@
 import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
-import { FeatureItem } from "../components";
-import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
+import { FeatureItem, TemplateDescriptionField } from "../components";
+import { TemplateDescriptionParameters } from "../content/types";
+import {
+  Features,
+  getSettings,
+  INITIAL_VALUES,
+  Settings,
+} from "../services/getSettings";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
-  const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
+  const [settings, setSettings] = useState<Settings>(INITIAL_VALUES);
   const [error, errorSet] = useState<string | undefined>();
   const [success, successSet] = useState<string | undefined>();
+  const features = settings.features;
 
   const loadSettings = useCallback(
     () =>
       getSettings({
         onSuccess: (settings) => {
-          setFeatures(settings.features);
+          setSettings(settings);
         },
       }),
     [],
@@ -32,7 +39,10 @@ export const Options = () => {
         ...features,
         [key]: !features[key],
       };
-      setFeatures(updatedFeatures);
+      setSettings((prevSettings) => ({
+        ...prevSettings,
+        features: updatedFeatures,
+      }));
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
           showError(chrome.runtime.lastError.message);
@@ -152,6 +162,21 @@ export const Options = () => {
                 onClick={() => handleToggle("jira")}
                 ariaLabel="Toggle Jira integration"
               />
+
+              <FeatureItem
+                label="Template Description"
+                caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
+                Add ${TemplateDescriptionParameters.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
+                checked={features.templateDescription}
+                onClick={() => handleToggle("templateDescription")}
+                ariaLabel="Toggle template description"
+              />
+              {features.templateDescription && (
+                <TemplateDescriptionField
+                  onError={showError}
+                  initialValue={settings.templateDescription}
+                />
+              )}
             </Box>
 
             <Text as="h2" className={styles.sectionTitle}>
