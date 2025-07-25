@@ -4,7 +4,9 @@ import { extractJiraIssueKeyFromBranch } from "./utils/comparePageUtils";
 
 function resolveJiraLink(settings: Settings): string {
   const description = settings.templateDescription;
-  const hasJiraTicket = description.includes("{{jiraTicket}}");
+  const hasJiraTicket = description.includes(
+    TemplateDescriptionParameters.JIRA_TICKET,
+  );
   if (!hasJiraTicket) return description;
 
   const issueKey = extractJiraIssueKeyFromBranch(settings.jira?.issueKeyRegex);
