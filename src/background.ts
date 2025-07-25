@@ -1,6 +1,6 @@
 import axios from "axios";
-import { jiraResponseSchema, Messages } from "./content/types";
 import { hasOwnProperty, isEnumValue } from "ts-type-safe";
+import { jiraResponseSchema, Messages } from "./content/types";
 import { getSettings } from "./services";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -73,6 +73,7 @@ async function fetchJiraIssue(
         assignee: fields.assignee?.displayName ?? "Unassigned",
         priority: fields.priority.name,
         status: fields.status.name,
+        summary: fields.summary,
       };
       return result;
     } catch (err) {

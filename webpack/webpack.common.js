@@ -9,6 +9,7 @@ module.exports = {
     options: path.join(srcDir, "options.tsx"),
     content_pr_page: path.join(srcDir, "content_pr_page.tsx"),
     content_prs_page: path.join(srcDir, "content_prs_page.tsx"),
+    content_compare_page: path.join(srcDir, "content_compare_page.tsx"),
     background: path.join(srcDir, "background.ts"),
   },
   output: {

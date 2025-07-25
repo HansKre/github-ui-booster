@@ -25,6 +25,10 @@
     {
       "matches": ["https://*/*"],
       "js": ["js/vendor.js", "js/content_prs_page.js"]
+    },
+    {
+      "matches": ["https://*/*"],
+      "js": ["js/vendor.js", "js/content_compare_page.js"]
     }
   ],
 

@@ -4,11 +4,13 @@ export function urls({ ghBaseUrl, org, repo }: InstanceConfig) {
   const urlUiBase = `${getUrlUiBase(ghBaseUrl)}/${org}/${repo}`;
   const urlUiPrs = `${urlUiBase}/pulls`;
   const urlUiPr = `${urlUiBase}/pull/`;
+  const urlUiCompare = `${urlUiBase}/compare`;
 
   return {
     urlUiBase,
     urlUiPrs,
     urlUiPr,
+    urlUiCompare,
   };
 }
 
