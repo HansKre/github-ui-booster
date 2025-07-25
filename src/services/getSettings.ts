@@ -22,6 +22,7 @@ const featuresSchema = object({
   addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
   jira: boolean().default(false),
+  prTitleFromJira: boolean().default(false),
   templateDescription: boolean().default(false),
 });
 
@@ -58,6 +59,7 @@ export const INITIAL_VALUES: Settings = {
     addUpdateBranchButton: true,
     autoFilter: false,
     jira: false,
+    prTitleFromJira: false,
     templateDescription: false,
   },
   templateDescription: "",

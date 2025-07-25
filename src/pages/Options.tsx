@@ -164,6 +164,14 @@ export const Options = () => {
               />
 
               <FeatureItem
+                label="Add PR Title from Jira"
+                caption="Automatically set the pull request title based on the Jira issue key found in the branch name"
+                checked={features.prTitleFromJira}
+                onClick={() => handleToggle("prTitleFromJira")}
+                ariaLabel="Toggle add PR title from Jira"
+              />
+
+              <FeatureItem
                 label="Template Description"
                 caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
                 Add ${TemplateDescriptionParameters.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
