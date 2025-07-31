@@ -24,6 +24,7 @@ const featuresSchema = object({
   jira: boolean().default(false),
   prTitleFromJira: boolean().default(false),
   templateDescription: boolean().default(false),
+  randomReviewer: boolean().default(false),
 });
 
 const jiraSchema = object({
@@ -38,6 +39,7 @@ export const settingsSchema = object({
   features: featuresSchema,
   jira: jiraSchema.optional(),
   templateDescription: string().default(""),
+  randomReviewers: string().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -61,8 +63,10 @@ export const INITIAL_VALUES: Settings = {
     jira: false,
     prTitleFromJira: false,
     templateDescription: false,
+    randomReviewer: false,
   },
   templateDescription: "",
+  randomReviewers: "",
 };
 
 type Params = {

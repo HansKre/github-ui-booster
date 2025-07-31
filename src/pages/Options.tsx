@@ -1,8 +1,8 @@
 import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
-import { FeatureItem, TemplateDescriptionField } from "../components";
-import { TemplateDescriptionParameters } from "../content/types";
+import { FeatureInput, FeatureItem } from "../components";
+import { TemplateDescriptionParameters } from "../content";
 import {
   Features,
   getSettings,
@@ -180,9 +180,29 @@ export const Options = () => {
                 ariaLabel="Toggle template description"
               />
               {features.templateDescription && (
-                <TemplateDescriptionField
+                <FeatureInput
+                  storageKey="templateDescription"
+                  placeholder="Enter a template description"
+                  ariaLabel="Template Description"
                   onError={showError}
                   initialValue={settings.templateDescription}
+                />
+              )}
+
+              <FeatureItem
+                label="Assign random reviewer"
+                caption="Automatically assign a random reviewer to pull requests. Enter the reviewers exactly as they appear in GitHub as comma-separated values"
+                checked={features.randomReviewer}
+                onClick={() => handleToggle("randomReviewer")}
+                ariaLabel="Toggle assign random reviewer"
+              />
+              {features.randomReviewer && (
+                <FeatureInput
+                  storageKey="randomReviewers"
+                  placeholder="Enter the reviewers"
+                  ariaLabel="Random Reviewers"
+                  initialValue={settings.randomReviewers}
+                  onError={showError}
                 />
               )}
             </Box>
