@@ -164,6 +164,14 @@ export const Options = () => {
               />
 
               <FeatureItem
+                label="Assign random reviewer"
+                caption="Automatically assign a random reviewer to pull requests."
+                checked={features.randomReviewer}
+                onClick={() => handleToggle("randomReviewer")}
+                ariaLabel="Toggle assign random reviewer"
+              />
+
+              <FeatureItem
                 label="Add PR Title from Jira"
                 caption="Automatically set the pull request title based on the Jira issue key found in the branch name"
                 checked={features.prTitleFromJira}
@@ -186,23 +194,6 @@ export const Options = () => {
                   ariaLabel="Template Description"
                   onError={showError}
                   initialValue={settings.templateDescription}
-                />
-              )}
-
-              <FeatureItem
-                label="Assign random reviewer"
-                caption="Automatically assign a random reviewer to pull requests. Enter the reviewers exactly as they appear in GitHub as comma-separated values"
-                checked={features.randomReviewer}
-                onClick={() => handleToggle("randomReviewer")}
-                ariaLabel="Toggle assign random reviewer"
-              />
-              {features.randomReviewer && (
-                <FeatureInput
-                  storageKey="randomReviewers"
-                  placeholder="Enter the reviewers"
-                  ariaLabel="Random Reviewers"
-                  initialValue={settings.randomReviewers}
-                  onError={showError}
                 />
               )}
             </Box>

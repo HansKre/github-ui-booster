@@ -1,11 +1,9 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { SyncIcon } from "@primer/octicons-react";
-import { Spinner } from "@primer/react";
-import { Tooltip } from "@primer/react/next";
 import React, { useState } from "react";
-import { cns } from "ts-type-safe";
 import { InstanceConfig } from "../../services";
 import { OctokitWithCache } from "../../services/getOctoInstance";
+import { IconButton } from "../IconButton";
 import styles from "./UpdateBranchButton.module.scss";
 
 type Props = {
@@ -38,25 +36,25 @@ export const UpdateBranchButton: React.FC<Props> = ({
   };
 
   return (
-    <Tooltip text="Update the branch of this PR to include changes from the base branch">
-      {/* IconButton and Button from @primer are not working, hence the span */}
-      <span
-        className={cns(
-          "color-fg-muted",
-          styles.icon,
-          isLoading && styles.icon__loading,
-        )}
-        onClick={handleClick}
-      >
-        {isLoading ? <Spinner size="small" /> : <SyncIcon size="small" />}
-      </span>
-    </Tooltip>
+    <IconButton
+      Icon={SyncIcon}
+      onClick={handleClick}
+      isLoading={isLoading}
+      tooltipText="Update the branch of this PR to include changes from the base branch"
+      loadingClassName={styles.loading}
+    />
   );
 };
 
 async function updateBranchAndPoll(
   octokit: OctokitWithCache,
-  instanceConfig: { pat: string; org: string; repo: string; ghBaseUrl: string },
+  instanceConfig: {
+    pat: string;
+    org: string;
+    repo: string;
+    ghBaseUrl: string;
+    randomReviewers: string;
+  },
   pr: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number],
   lastDeviatingSha: string,
   onSuccess: () => void,

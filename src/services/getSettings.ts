@@ -12,6 +12,7 @@ const instanceConfigSchema = object({
   org: string().required(),
   repo: string().required(),
   ghBaseUrl: string().required().url(),
+  randomReviewers: string().default(""),
 });
 
 const featuresSchema = object({
@@ -39,7 +40,6 @@ export const settingsSchema = object({
   features: featuresSchema,
   jira: jiraSchema.optional(),
   templateDescription: string().default(""),
-  randomReviewers: string().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -49,7 +49,13 @@ export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES: Settings = {
   instances: [
-    { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
+    {
+      pat: "",
+      org: "",
+      repo: "",
+      ghBaseUrl: "https://api.github.com",
+      randomReviewers: "",
+    },
   ],
   jira: { pat: "", baseUrl: "", issueKeyRegex: "" },
   autoFilter: { filter: "" },
@@ -66,7 +72,6 @@ export const INITIAL_VALUES: Settings = {
     randomReviewer: false,
   },
   templateDescription: "",
-  randomReviewers: "",
 };
 
 type Params = {

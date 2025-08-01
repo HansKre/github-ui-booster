@@ -1,11 +1,11 @@
+import { Octokit } from "@octokit/rest";
+import { BLACKLIST } from "../config";
 import { InstanceConfig } from "../services";
 import { getPrFromLocation } from "./getPrFromLocation";
-import { isOnPrPage } from "./utils/isOnPrPage";
 import { processPrFiles } from "./processPrFiles";
-import { BLACKLIST } from "../config";
-import { Octokit } from "@octokit/rest";
+import { isOnPrPage } from "./utils/isOnPrPage";
 
-export async function handlePrPage(
+export async function handleTotalLines(
   octokit: Octokit,
   instanceConfig: InstanceConfig,
 ) {
