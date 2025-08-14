@@ -1,16 +1,21 @@
 import { Textarea } from "@primer/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getSettingValue } from "../../services";
 
 type Props = {
-  initialValue: string;
   onError: (message: string) => void;
 };
 
-export const TemplateDescriptionField: React.FC<Props> = ({
-  initialValue,
-  onError,
-}) => {
-  const [description, setDescription] = useState<string>(initialValue);
+export const TemplateDescriptionField: React.FC<Props> = ({ onError }) => {
+  const [description, setDescription] = useState<string>();
+
+  useEffect(() => {
+    const getDescription = async () => {
+      const value = await getSettingValue("templateDescription");
+      setDescription(value);
+    };
+    void getDescription();
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {

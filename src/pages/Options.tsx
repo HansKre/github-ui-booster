@@ -180,10 +180,7 @@ export const Options = () => {
                 ariaLabel="Toggle template description"
               />
               {features.templateDescription && (
-                <TemplateDescriptionField
-                  onError={showError}
-                  initialValue={settings.templateDescription}
-                />
+                <TemplateDescriptionField onError={showError} />
               )}
             </Box>
 

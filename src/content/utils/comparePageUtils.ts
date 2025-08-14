@@ -1,16 +1,16 @@
-import { InstanceConfig } from "../../services";
+import { InstanceConfig, Settings } from "../../services";
 import { urls } from "./urls";
 
 export function isOnComparePage(instanceConfig: InstanceConfig): boolean {
   return window.location.href.includes(urls(instanceConfig).urlUiCompare);
 }
 
-export const extractJiraIssueKeyFromBranch = (
-  issueKeyRegex: string | undefined,
-) => {
-  if (!issueKeyRegex) {
+export const extractJiraIssueKeyFromBranch = (settings: Settings) => {
+  const isJiraEnabled = settings.features?.jira;
+  const issueKeyRegex = settings.jira?.issueKeyRegex;
+  if (!isJiraEnabled || !issueKeyRegex) {
     alert(
-      "Jira issue key regex is not set. Please configure it in the settings.",
+      "Jira integration or Jira issue key regex is not set. Please configure it in the settings.",
     );
     return null;
   }

@@ -1,4 +1,4 @@
-import { DeepKeysOf } from "ts-type-safe";
+import { DeepKeysOf, hasOwnProperty } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
 
 const autoFilterSchema = object({
@@ -37,7 +37,7 @@ export const settingsSchema = object({
   autoFilter: autoFilterSchema,
   features: featuresSchema,
   jira: jiraSchema.optional(),
-  templateDescription: string().default(""),
+  templateDescription: string().optional().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -49,7 +49,11 @@ export const INITIAL_VALUES: Settings = {
   instances: [
     { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
   ],
-  jira: { pat: "", baseUrl: "", issueKeyRegex: "" },
+  jira: {
+    pat: "Enter your Jira personal access token (at least 30 characters)",
+    baseUrl: "https://your-jira-instance.atlassian.net",
+    issueKeyRegex: "TEST-\\d+",
+  },
   autoFilter: { filter: "" },
   features: {
     baseBranchLabels: true,
@@ -91,4 +95,22 @@ export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
       }
     })
     .catch(onError);
+}
+
+const isValidSetting = (
+  setting: Record<string, unknown>,
+): setting is Settings => {
+  return Object.keys(setting).some((key) =>
+    hasOwnProperty(settingsSchema.fields, key),
+  );
+};
+
+export async function getSettingValue<K extends keyof Settings>(
+  name: K,
+): Promise<Settings[K]> {
+  const setting = await chrome.storage.local.get(name);
+  if (!isValidSetting(setting)) {
+    throw new Error(`Invalid setting: ${name}`);
+  }
+  return setting[name];
 }
