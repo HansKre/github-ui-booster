@@ -96,3 +96,5 @@ Highlights:
 - nested display of dependent PRs on the PRs page, showing clear hierarchy
 - integrates with your Jira to display status, prio and assignee on the prs-page
 - all of the above features are toggleable individually
+- automatically inserts Jira-Link to issue based on your PR-template
+- automatically inserts Jira-Description from Jira-Issue
