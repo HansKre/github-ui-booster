@@ -22,6 +22,8 @@ const featuresSchema = object({
   addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
   jira: boolean().default(false),
+  prTitleFromJira: boolean().default(false),
+  templateDescription: boolean().default(false),
 });
 
 const jiraSchema = object({
@@ -35,6 +37,7 @@ export const settingsSchema = object({
   autoFilter: autoFilterSchema,
   features: featuresSchema,
   jira: jiraSchema.optional(),
+  templateDescription: string().optional().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -46,7 +49,11 @@ export const INITIAL_VALUES: Settings = {
   instances: [
     { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
   ],
-  jira: { pat: "", baseUrl: "", issueKeyRegex: "" },
+  jira: {
+    pat: "Enter your Jira personal access token (at least 30 characters)",
+    baseUrl: "https://your-jira-instance.atlassian.net",
+    issueKeyRegex: "TEST-\\d+",
+  },
   autoFilter: { filter: "" },
   features: {
     baseBranchLabels: true,
@@ -56,7 +63,10 @@ export const INITIAL_VALUES: Settings = {
     addUpdateBranchButton: true,
     autoFilter: false,
     jira: false,
+    prTitleFromJira: false,
+    templateDescription: false,
   },
+  templateDescription: "",
 };
 
 type Params = {
@@ -85,4 +95,17 @@ export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
       }
     })
     .catch(onError);
+}
+
+export async function getSettingValue<K extends keyof Settings>(name: K) {
+  return new Promise<Settings[K]>((resolve) => {
+    getSettings({
+      onSuccess: (settings) => {
+        resolve(settings[name]);
+      },
+      onError: (e) => {
+        console.error(e);
+      },
+    });
+  });
 }

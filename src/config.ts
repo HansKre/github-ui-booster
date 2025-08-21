@@ -1,1 +1,1 @@
-export const BLACKLIST = ["package-lock.json"];
+export const BLACKLIST = ["package-lock.json", "pnpm-lock.yaml"];
