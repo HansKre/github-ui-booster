@@ -1,4 +1,4 @@
-import { handlePrPage } from "./content";
+import { handleRandomReviewer, handleTotalLines } from "./content";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
@@ -64,7 +64,11 @@ async function executeScripts(
     const octokit = getOctoInstance(instanceConfig);
 
     if (features.totalLines) {
-      await handlePrPage(octokit, instanceConfig);
+      await handleTotalLines(octokit, instanceConfig);
+    }
+
+    if (features.randomReviewer) {
+      handleRandomReviewer(octokit, instanceConfig);
     }
   } catch (err) {
     alert(

@@ -12,6 +12,7 @@ const instanceConfigSchema = object({
   org: string().required(),
   repo: string().required(),
   ghBaseUrl: string().required().url(),
+  randomReviewers: string().default(""),
 });
 
 const featuresSchema = object({
@@ -24,6 +25,7 @@ const featuresSchema = object({
   jira: boolean().default(false),
   prTitleFromJira: boolean().default(false),
   templateDescription: boolean().default(false),
+  randomReviewer: boolean().default(false),
 });
 
 const jiraSchema = object({
@@ -47,7 +49,13 @@ export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES: Settings = {
   instances: [
-    { pat: "", org: "", repo: "", ghBaseUrl: "https://api.github.com" },
+    {
+      pat: "",
+      org: "",
+      repo: "",
+      ghBaseUrl: "https://api.github.com",
+      randomReviewers: "",
+    },
   ],
   jira: {
     pat: "Enter your Jira personal access token (at least 30 characters)",
@@ -65,6 +73,7 @@ export const INITIAL_VALUES: Settings = {
     jira: false,
     prTitleFromJira: false,
     templateDescription: false,
+    randomReviewer: false,
   },
   templateDescription: "",
 };

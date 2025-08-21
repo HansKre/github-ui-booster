@@ -1,8 +1,8 @@
 import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
-import { FeatureItem, TemplateDescriptionField } from "../components";
-import { TemplateDescriptionParameters } from "../content/types";
+import { FeatureInput, FeatureItem } from "../components";
+import { TemplateDescriptionParameters } from "../content";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
@@ -155,6 +155,14 @@ export const Options = () => {
               />
 
               <FeatureItem
+                label="Assign random reviewer"
+                caption="Automatically assign a random reviewer to pull requests."
+                checked={features.randomReviewer}
+                onClick={() => handleToggle("randomReviewer")}
+                ariaLabel="Toggle assign random reviewer"
+              />
+
+              <FeatureItem
                 label="Add PR Title from Jira"
                 caption="Automatically set the pull request title based on the Jira issue key found in the branch name"
                 checked={features.prTitleFromJira}
@@ -171,7 +179,12 @@ export const Options = () => {
                 ariaLabel="Toggle template description"
               />
               {features.templateDescription && (
-                <TemplateDescriptionField onError={showError} />
+                <FeatureInput
+                  storageKey="templateDescription"
+                  placeholder="Enter a template description"
+                  ariaLabel="Template Description"
+                  onError={showError}
+                />
               )}
             </Box>
 
