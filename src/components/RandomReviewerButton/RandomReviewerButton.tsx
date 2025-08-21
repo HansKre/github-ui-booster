@@ -58,6 +58,9 @@ const assignRandomReviewer = (
       pull_number: prNumber,
       reviewers: [randomReviewer],
     })
-    .catch((error) => console.error("Error assigning reviewer:", error))
+    .catch((error) => {
+      console.error("Error assigning reviewer:", error);
+      alert("Error assigning reviewer. Check console for details.");
+    })
     .finally(() => isLoadingSet(false));
 };

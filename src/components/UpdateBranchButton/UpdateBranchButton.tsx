@@ -1,7 +1,7 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { SyncIcon } from "@primer/octicons-react";
 import React, { useState } from "react";
-import { InstanceConfig } from "../../services";
+import { InstanceConfig, Settings } from "../../services";
 import { OctokitWithCache } from "../../services/getOctoInstance";
 import { IconButton } from "../IconButton";
 import styles from "./UpdateBranchButton.module.scss";
@@ -48,13 +48,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
 
 async function updateBranchAndPoll(
   octokit: OctokitWithCache,
-  instanceConfig: {
-    pat: string;
-    org: string;
-    repo: string;
-    ghBaseUrl: string;
-    randomReviewers: string;
-  },
+  instanceConfig: Settings["instances"][number],
   pr: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number],
   lastDeviatingSha: string,
   onSuccess: () => void,
