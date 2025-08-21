@@ -27,6 +27,10 @@ const createRandomReviewerButton = (
 ) => {
   if (parent.querySelector(`.${RANDOM_REVIEWER_BUTTON_CLASS}`)) return;
 
+  // make parent a flex container to align all children in it
+  if (parent instanceof HTMLElement)
+    parent.style.setProperty("display", "flex", "important");
+
   const spanContainer = document.createElement("span");
   spanContainer.classList.add(RANDOM_REVIEWER_BUTTON_CLASS);
   parent.insertBefore(spanContainer, parent.firstChild);
