@@ -39,7 +39,7 @@ export const settingsSchema = object({
   autoFilter: autoFilterSchema,
   features: featuresSchema,
   jira: jiraSchema.optional(),
-  templateDescription: string().default(""),
+  templateDescription: string().optional().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -57,7 +57,11 @@ export const INITIAL_VALUES: Settings = {
       randomReviewers: "",
     },
   ],
-  jira: { pat: "", baseUrl: "", issueKeyRegex: "" },
+  jira: {
+    pat: "Enter your Jira personal access token (at least 30 characters)",
+    baseUrl: "https://your-jira-instance.atlassian.net",
+    issueKeyRegex: "TEST-\\d+",
+  },
   autoFilter: { filter: "" },
   features: {
     baseBranchLabels: true,
@@ -100,4 +104,17 @@ export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
       }
     })
     .catch(onError);
+}
+
+export async function getSettingValue<K extends keyof Settings>(name: K) {
+  return new Promise<Settings[K]>((resolve) => {
+    getSettings({
+      onSuccess: (settings) => {
+        resolve(settings[name]);
+      },
+      onError: (e) => {
+        console.error(e);
+      },
+    });
+  });
 }

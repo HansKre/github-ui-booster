@@ -9,7 +9,7 @@ function resolveJiraLink(settings: Settings): string {
   );
   if (!hasJiraTicket) return description;
 
-  const issueKey = extractJiraIssueKeyFromBranch(settings.jira?.issueKeyRegex);
+  const issueKey = extractJiraIssueKeyFromBranch(settings);
   if (!issueKey) return description;
 
   return description.replace(
@@ -25,5 +25,4 @@ export function addTemplateDescription(settings: Settings) {
   if (!textArea) return;
 
   textArea.value = resolveJiraLink(settings);
-  textArea.dispatchEvent(new Event("input", { bubbles: true }));
 }

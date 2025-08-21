@@ -8,7 +8,7 @@ export async function addPrTitleFromJira(settings: Settings) {
   );
   if (!prTitleInput) return;
 
-  const issueKey = extractJiraIssueKeyFromBranch(settings.jira?.issueKeyRegex);
+  const issueKey = extractJiraIssueKeyFromBranch(settings);
   if (!issueKey) return;
 
   const result = await JiraService.fetchJiraIssue(issueKey);

@@ -1,26 +1,33 @@
 import { Textarea } from "@primer/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getSettingValue, Settings } from "../../services";
 
 type Props = {
-  storageKey: string;
+  storageKey: keyof Settings;
   placeholder: string;
-  initialValue: string;
   ariaLabel?: string;
   onError: (message: string) => void;
 };
 
 export const FeatureInput: React.FC<Props> = ({
   storageKey,
-  initialValue,
   onError,
   ariaLabel,
   placeholder,
 }) => {
-  const [description, setDescription] = useState<string>(initialValue);
+  const [value, setValue] = useState<string>();
+
+  useEffect(() => {
+    const getValue = async () => {
+      const value = await getSettingValue(storageKey);
+      if (typeof value === "string") setValue(value);
+    };
+    void getValue();
+  }, [storageKey]);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     try {
-      setDescription(event.target.value);
+      setValue(event.target.value);
       chrome.storage.local.set({ [storageKey]: event.target.value }, () => {
         if (chrome.runtime.lastError?.message) {
           onError(chrome.runtime.lastError.message);
@@ -38,7 +45,7 @@ export const FeatureInput: React.FC<Props> = ({
   return (
     <Textarea
       placeholder={placeholder}
-      value={description}
+      value={value}
       onChange={handleChange}
       aria-label={ariaLabel}
     />
