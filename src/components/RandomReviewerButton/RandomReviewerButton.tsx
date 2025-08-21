@@ -15,7 +15,7 @@ export const RandomReviewerButton = ({ octokit, instanceConfig }: Props) => {
   const [isLoading, isLoadingSet] = useState(false);
 
   const handleClick = () => {
-    assignRandomReviewer(octokit, instanceConfig, isLoadingSet);
+    void assignRandomReviewer(octokit, instanceConfig, isLoadingSet);
   };
 
   return (
@@ -29,7 +29,81 @@ export const RandomReviewerButton = ({ octokit, instanceConfig }: Props) => {
   );
 };
 
-const assignRandomReviewer = (
+const getRandomReviewer = (instanceConfig: InstanceConfig) => {
+  const reviewers = instanceConfig.randomReviewers
+    .split(",")
+    .map((r) => r.trim())
+    .filter(Boolean);
+  return reviewers[Math.floor(Math.random() * reviewers.length)];
+};
+
+const getCurrentReviewers = async (
+  octokit: OctokitWithCache,
+  instanceConfig: InstanceConfig,
+  prNumber: number,
+) => {
+  const { data } = await octokit.pulls.listRequestedReviewers({
+    owner: instanceConfig.org,
+    repo: instanceConfig.repo,
+    pull_number: prNumber,
+  });
+
+  // Clear the cache to be able to re-fetch the reviewers in case the list changes
+  octokit.clearCache();
+  return data.users.map((user) => user.login);
+};
+
+const removeCurrentReviewers = async (
+  octokit: OctokitWithCache,
+  instanceConfig: InstanceConfig,
+  prNumber: number,
+  reviewers: string[],
+) => {
+  if (reviewers.length === 0) return;
+  await octokit.pulls.removeRequestedReviewers({
+    owner: instanceConfig.org,
+    repo: instanceConfig.repo,
+    pull_number: prNumber,
+    reviewers: reviewers,
+  });
+};
+
+const requestReview = async (
+  octokit: OctokitWithCache,
+  instanceConfig: InstanceConfig,
+  prNumber: number,
+  currentReviewers: string[],
+) => {
+  let randomReviewer = getRandomReviewer(instanceConfig);
+  // Get a new random reviewer as long as they're in the current reviewers list
+  while (
+    instanceConfig.randomReviewers.length > 1 &&
+    currentReviewers.includes(randomReviewer)
+  ) {
+    randomReviewer = getRandomReviewer(instanceConfig);
+  }
+
+  try {
+    await octokit.pulls.requestReviewers({
+      owner: instanceConfig.org,
+      repo: instanceConfig.repo,
+      pull_number: prNumber,
+      reviewers: [randomReviewer],
+    });
+  } catch (error) {
+    console.error("Error requesting review:", error);
+    if (
+      error instanceof Error &&
+      error.message.includes(
+        "Review cannot be requested from pull request author.",
+      )
+    ) {
+      await requestReview(octokit, instanceConfig, prNumber, currentReviewers);
+    }
+  }
+};
+
+const assignRandomReviewer = async (
   octokit: OctokitWithCache,
   instanceConfig: InstanceConfig,
   isLoadingSet: React.Dispatch<React.SetStateAction<boolean>>,
@@ -45,22 +119,24 @@ const assignRandomReviewer = (
 
   isLoadingSet(true);
 
-  const reviewers = instanceConfig.randomReviewers
-    .split(",")
-    .map((r) => r.trim());
-  const randomReviewer =
-    reviewers[Math.floor(Math.random() * reviewers.length)];
+  try {
+    const currentReviewers = await getCurrentReviewers(
+      octokit,
+      instanceConfig,
+      prNumber,
+    );
+    await removeCurrentReviewers(
+      octokit,
+      instanceConfig,
+      prNumber,
+      currentReviewers,
+    );
 
-  octokit.pulls
-    .requestReviewers({
-      owner: instanceConfig.org,
-      repo: instanceConfig.repo,
-      pull_number: prNumber,
-      reviewers: [randomReviewer],
-    })
-    .catch((error) => {
-      console.error("Error assigning reviewer:", error);
-      alert("Error assigning reviewer. Check console for details.");
-    })
-    .finally(() => isLoadingSet(false));
+    await requestReview(octokit, instanceConfig, prNumber, currentReviewers);
+  } catch (error) {
+    console.error("Error assigning reviewer:", error);
+    alert("Error assigning reviewer. Check console for details.");
+  } finally {
+    isLoadingSet(false);
+  }
 };
