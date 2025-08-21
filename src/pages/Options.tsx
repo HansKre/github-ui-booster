@@ -3,27 +3,21 @@ import { Banner } from "@primer/react/drafts";
 import React, { useCallback, useEffect, useState } from "react";
 import { FeatureItem, TemplateDescriptionField } from "../components";
 import { TemplateDescriptionParameters } from "../content/types";
-import {
-  Features,
-  getSettings,
-  INITIAL_VALUES,
-  Settings,
-} from "../services/getSettings";
+import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { ExportButton } from "./ExportButton";
 import { ImportButton } from "./ImportButton";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
-  const [settings, setSettings] = useState<Settings>(INITIAL_VALUES);
+  const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, errorSet] = useState<string | undefined>();
   const [success, successSet] = useState<string | undefined>();
-  const features = settings.features;
 
   const loadSettings = useCallback(
     () =>
       getSettings({
         onSuccess: (settings) => {
-          setSettings(settings);
+          setFeatures(settings.features);
         },
       }),
     [],
@@ -39,10 +33,7 @@ export const Options = () => {
         ...features,
         [key]: !features[key],
       };
-      setSettings((prevSettings) => ({
-        ...prevSettings,
-        features: updatedFeatures,
-      }));
+      setFeatures(updatedFeatures);
       chrome.storage.local.set({ features: updatedFeatures }, () => {
         if (chrome.runtime.lastError) {
           showError(chrome.runtime.lastError.message);

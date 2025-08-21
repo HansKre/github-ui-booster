@@ -1,4 +1,4 @@
-import { DeepKeysOf, hasOwnProperty } from "ts-type-safe";
+import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
 
 const autoFilterSchema = object({
@@ -97,20 +97,15 @@ export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
     .catch(onError);
 }
 
-const isValidSetting = (
-  setting: Record<string, unknown>,
-): setting is Settings => {
-  return Object.keys(setting).some((key) =>
-    hasOwnProperty(settingsSchema.fields, key),
-  );
-};
-
-export async function getSettingValue<K extends keyof Settings>(
-  name: K,
-): Promise<Settings[K]> {
-  const setting = await chrome.storage.local.get(name);
-  if (!isValidSetting(setting)) {
-    throw new Error(`Invalid setting: ${name}`);
-  }
-  return setting[name];
+export async function getSettingValue<K extends keyof Settings>(name: K) {
+  return new Promise<Settings[K]>((resolve) => {
+    getSettings({
+      onSuccess: (settings) => {
+        resolve(settings[name]);
+      },
+      onError: (e) => {
+        console.error(e);
+      },
+    });
+  });
 }
