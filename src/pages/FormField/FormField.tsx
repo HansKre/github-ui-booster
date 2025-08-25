@@ -1,7 +1,7 @@
 import { ErrorMessage, Field } from "formik";
 import React from "react";
+import { Paragraph } from "../../components";
 import { SettingName } from "../../services";
-import { Paragraph } from "../Typography";
 import styles from "./FormField.module.scss";
 
 type Props = {

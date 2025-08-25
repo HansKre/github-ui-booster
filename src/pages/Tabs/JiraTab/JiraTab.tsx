@@ -1,4 +1,5 @@
 import React from "react";
+import { Subtitle } from "../../../components";
 import { FormField } from "../../FormField";
 
 type Props = {
@@ -8,6 +9,9 @@ type Props = {
 export const JiraTab: React.FC<Props> = ({ disabled }) => {
   return (
     <>
+      <Subtitle>
+        Configure Jira integration for automatic issue linking and PR titles.
+      </Subtitle>
       <FormField
         label="Jira Base URL"
         name="jira.baseUrl"

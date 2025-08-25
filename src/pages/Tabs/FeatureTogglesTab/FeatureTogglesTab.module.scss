@@ -1,0 +1,6 @@
+@import "../../../shared-component-styles.scss";
+
+.featuresList {
+  @extend .flexColumn;
+  gap: 24px;
+}

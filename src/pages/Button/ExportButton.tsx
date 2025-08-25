@@ -1,7 +1,7 @@
 import { DownloadIcon } from "@primer/octicons-react";
 import React from "react";
-import { Button } from "../popup/Button";
-import { getSettings } from "../services/getSettings";
+import { Button } from "./Button";
+import { getSettings } from "../../services/getSettings";
 
 type Props = {
   onSuccess?: () => void;
