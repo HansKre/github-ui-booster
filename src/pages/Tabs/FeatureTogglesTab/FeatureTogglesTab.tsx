@@ -8,7 +8,7 @@ import {
 } from "../../../components";
 import { TemplateDescriptionParameters } from "../../../content";
 import { Features } from "../../../services/getSettings";
-import styles from "./Options.module.scss";
+import styles from "./FeatureTogglesTab.module.scss";
 import { ExportButton, ImportButton } from "../../Button";
 
 type Props = {
