@@ -1,7 +1,7 @@
-import { Box, Text } from "@primer/react";
+import { Box } from "@primer/react";
 import { Form, Formik, FormikHelpers } from "formik";
 import React, { useEffect, useState } from "react";
-import { TabNavigation, Tab } from "../components";
+import { TabNavigation, Tab, Subtitle } from "../components";
 import { Features } from "../services/getSettings";
 import {
   INITIAL_VALUES,
@@ -13,7 +13,6 @@ import {
 import { SubmitButton } from "../popup/Button";
 import { GhInstancesTab, JiraTab } from "../popup/Tabs";
 import { AutoFilterTab } from "../popup/Tabs/AutoFilterTab";
-import styles from "./Options.module.scss";
 
 const tabs: Array<Tab> = ["GH Instances", "Auto filter", "Jira"];
 
@@ -72,13 +71,9 @@ export const SettingsTab: React.FC<Props> = ({
 
   return (
     <Box>
-      <Text as="h2" className={styles.sectionTitle}>
-        Settings
-      </Text>
-
-      <Text as="p" className={styles.subtitle}>
+      <Subtitle>
         Configure GitHub instances, auto-filtering, and Jira integration.
-      </Text>
+      </Subtitle>
 
       <Box sx={{ marginTop: 4 }}>
         <TabNavigation

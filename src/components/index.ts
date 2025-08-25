@@ -5,6 +5,8 @@ export * from "./IconButton";
 export * from "./Paragraph";
 export * from "./RandomReviewerButton";
 export * from "./SearchInput";
+export * from "./SectionTitle";
+export * from "./Subtitle";
 export * from "./TabNavigation";
 export * from "./TotalLines";
 export * from "./UpdateBranchButton";

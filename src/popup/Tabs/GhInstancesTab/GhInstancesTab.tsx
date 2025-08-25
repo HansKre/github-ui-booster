@@ -1,7 +1,8 @@
-import { Pagehead, Text } from "@primer/react";
+import { Pagehead } from "@primer/react";
 import { FieldArray } from "formik";
 import React from "react";
 import { isNonEmptyArray } from "ts-type-safe";
+import { SectionTitle } from "../../../components";
 import { Settings } from "../../../services";
 import { AddButton, RemoveButton } from "../../Button";
 import { FormField } from "../../FormField";
@@ -22,9 +23,7 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
             values.instances.map((_, index) => (
               <React.Fragment key={index}>
                 <Pagehead className={styles.container}>
-                  <Text as="h2" className={styles.heading}>
-                    {`GH Instance ${index + 1}`}
-                  </Text>
+                  <SectionTitle>{`GH Instance ${index + 1}`}</SectionTitle>
                   <RemoveButton
                     disabled={values.instances.length === 1}
                     onClick={() => remove(index)}
