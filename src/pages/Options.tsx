@@ -7,9 +7,9 @@ import { TABS, Tab } from "../constants";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
 import { SubmitButton } from "./Button";
-import { GhInstancesTab, JiraTab } from "./Tabs";
+import { GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
 import { AutoFilterTab } from "./Tabs/AutoFilterTab";
-import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab/FeatureTogglesTab";
+import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
@@ -96,6 +96,12 @@ export const Options = () => {
           <FeatureTogglesTab
             features={features}
             onToggle={handleToggle}
+            onError={showError}
+          />
+        );
+      case "Import/Export":
+        return (
+          <ImportExportTab
             onError={showError}
             onSuccess={showSuccess}
             onReset={resetBanners}

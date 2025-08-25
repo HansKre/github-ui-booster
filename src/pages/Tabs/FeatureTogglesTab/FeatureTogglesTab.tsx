@@ -9,24 +9,17 @@ import {
 import { TemplateDescriptionParameters } from "../../../content";
 import { Features } from "../../../services/getSettings";
 import styles from "./FeatureTogglesTab.module.scss";
-import { ExportButton, ImportButton } from "../../Button";
 
 type Props = {
   features: Features;
   onToggle: (key: keyof Features) => void;
   onError: (message?: string) => void;
-  onSuccess: (message: string) => void;
-  onReset: () => void;
-  onLoadSettings: () => void;
 };
 
 export const FeatureTogglesTab: React.FC<Props> = ({
   features,
   onToggle,
   onError,
-  onSuccess,
-  onReset,
-  onLoadSettings,
 }) => {
   return (
     <>
@@ -132,30 +125,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
             onError={onError}
           />
         )}
-      </Box>
-
-      <SectionTitle>Export & Import Settings</SectionTitle>
-
-      <Subtitle>
-        You can export your current settings as a JSON file. Your settings
-        contain access tokens. Be careful and make sure to remove your tokens
-        before sharing.
-      </Subtitle>
-
-      <Box display="grid" gridTemplateColumns="1fr 1fr" sx={{ gap: 4 }}>
-        <ExportButton
-          onError={onError}
-          onSuccess={() => onSuccess("Exported settings successfully")}
-          onClick={onReset}
-        />
-        <ImportButton
-          onError={onError}
-          onSuccess={() => {
-            onLoadSettings();
-            onSuccess("Imported settings successfully");
-          }}
-          onClick={onReset}
-        />
       </Box>
     </>
   );

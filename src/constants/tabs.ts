@@ -3,6 +3,7 @@ export const TABS = [
   "GH Instances",
   "Auto filter",
   "Jira",
+  "Import/Export",
 ] as const;
 
 export type Tab = (typeof TABS)[number];
