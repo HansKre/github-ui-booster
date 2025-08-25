@@ -3,6 +3,7 @@ import { Banner } from "@primer/react/drafts";
 import { Form, Formik, FormikHelpers } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { TabNavigation, Subtitle } from "../components";
+import { TABS, Tab } from "../constants";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
 import { SubmitButton } from "./Button";
@@ -11,21 +12,8 @@ import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
-export type OptionsTab =
-  | "Feature Toggles"
-  | "GH Instances"
-  | "Auto filter"
-  | "Jira";
-
-const tabs: Array<OptionsTab> = [
-  "Feature Toggles",
-  "GH Instances",
-  "Auto filter",
-  "Jira",
-];
-
 export const Options = () => {
-  const [activeTab, setActiveTab] = useState<OptionsTab>("Feature Toggles");
+  const [activeTab, setActiveTab] = useState<Tab>("Feature Toggles");
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, errorSet] = useState<string | undefined>();
   const [success, successSet] = useState<string | undefined>();
@@ -178,7 +166,7 @@ export const Options = () => {
             </Box>
 
             <TabNavigation
-              tabs={tabs}
+              tabs={TABS}
               activeTab={activeTab}
               onTabClick={setActiveTab}
             />

@@ -1,20 +1,15 @@
 import { UnderlineNav } from "@primer/react";
 import { UnderlineNavItem } from "@primer/react/lib-esm/UnderlineNav/UnderlineNavItem";
 import React from "react";
+import { Tab } from "../../constants";
 
-export type Tab = "GH Instances" | "Auto filter" | "Jira";
-
-type Props<T = Tab> = {
-  tabs: T[];
-  activeTab: T;
-  onTabClick: (tab: T) => void;
+type Props = {
+  tabs: readonly Tab[];
+  activeTab: Tab;
+  onTabClick: (tab: Tab) => void;
 };
 
-export const TabNavigation = <T extends string = Tab>({
-  tabs,
-  activeTab,
-  onTabClick,
-}: Props<T>) => {
+export const TabNavigation = ({ tabs, activeTab, onTabClick }: Props) => {
   return (
     <UnderlineNav aria-label="Tabs">
       {tabs.map((tab) => (
