@@ -31,7 +31,12 @@ export const FeatureTogglesTab: React.FC<Props> = ({
   return (
     <>
       <Box className={styles.featuresList}>
-        <Subtitle>Enable and disable Extension-features.</Subtitle>
+        <Subtitle>
+          Enable and disable Extension-features. Features are organized by
+          GitHub-page.
+        </Subtitle>
+
+        <SectionTitle>Pull Requests List</SectionTitle>
 
         <FeatureItem
           label="Base Branch Labels"
@@ -83,13 +88,7 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           ariaLabel="Toggle auto filter"
         />
 
-        <FeatureItem
-          label="Jira Integration"
-          caption="Enable Jira integration to enhance pull request management with Jira issue keys"
-          checked={features.jira}
-          onClick={() => onToggle("jira")}
-          ariaLabel="Toggle Jira integration"
-        />
+        <SectionTitle>Individual Pull Request</SectionTitle>
 
         <FeatureItem
           label="Assign random reviewer"
@@ -97,6 +96,16 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           checked={features.randomReviewer}
           onClick={() => onToggle("randomReviewer")}
           ariaLabel="Toggle assign random reviewer"
+        />
+
+        <SectionTitle>Create Pull Request</SectionTitle>
+
+        <FeatureItem
+          label="Jira Integration"
+          caption="Enable Jira integration to enhance pull request management with Jira issue keys"
+          checked={features.jira}
+          onClick={() => onToggle("jira")}
+          ariaLabel="Toggle Jira integration"
         />
 
         <FeatureItem
