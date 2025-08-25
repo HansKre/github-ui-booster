@@ -5,10 +5,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { TabNavigation, Subtitle } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
-import { SubmitButton } from "../popup/Button";
-import { GhInstancesTab, JiraTab } from "../popup/Tabs";
-import { AutoFilterTab } from "../popup/Tabs/AutoFilterTab";
-import { FeatureTogglesTab } from "./FeatureTogglesTab";
+import { SubmitButton } from "./Button";
+import { GhInstancesTab, JiraTab } from "./Tabs";
+import { AutoFilterTab } from "./Tabs/AutoFilterTab";
+import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
 export type OptionsTab =

@@ -1,8 +1,7 @@
 import { UploadIcon } from "@primer/octicons-react";
 import React, { useRef, useState } from "react";
-import { Button } from "../popup/Button";
-import { persistSettings } from "../services";
-import { settingsSchema } from "../services/getSettings";
+import { Button } from "./Button";
+import { persistSettings, settingsSchema } from "../../services";
 
 type Props = {
   onSuccess?: () => void;

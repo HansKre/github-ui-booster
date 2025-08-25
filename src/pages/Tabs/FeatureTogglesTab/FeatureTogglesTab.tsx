@@ -5,12 +5,11 @@ import {
   FeatureItem,
   SectionTitle,
   Subtitle,
-} from "../components";
-import { TemplateDescriptionParameters } from "../content";
-import { Features } from "../services/getSettings";
-import { ExportButton } from "./ExportButton";
-import { ImportButton } from "./ImportButton";
+} from "../../../components";
+import { TemplateDescriptionParameters } from "../../../content";
+import { Features } from "../../../services/getSettings";
 import styles from "./Options.module.scss";
+import { ExportButton, ImportButton } from "../../Button";
 
 type Props = {
   features: Features;
