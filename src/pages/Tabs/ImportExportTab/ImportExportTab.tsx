@@ -1,6 +1,6 @@
 import { Box } from "@primer/react";
 import React from "react";
-import { SectionTitle, Subtitle } from "../../../components";
+import { Subtitle } from "../../../components";
 import { ExportButton, ImportButton } from "../../Button";
 
 type Props = {
@@ -18,8 +18,6 @@ export const ImportExportTab: React.FC<Props> = ({
 }) => {
   return (
     <>
-      <SectionTitle>Export & Import Settings</SectionTitle>
-
       <Subtitle>
         You can export your current settings as a JSON file. Your settings
         contain access tokens. Be careful and make sure to remove your tokens
