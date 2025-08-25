@@ -21,7 +21,7 @@ type Props = {
   onLoadSettings: () => void;
 };
 
-export const FeatureToggles: React.FC<Props> = ({
+export const FeatureTogglesTab: React.FC<Props> = ({
   features,
   onToggle,
   onError,

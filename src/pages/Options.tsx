@@ -1,27 +1,43 @@
 import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
+import { Form, Formik, FormikHelpers } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { TabNavigation, Subtitle } from "../components";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
-import { FeatureToggles } from "./FeatureToggles";
-import { SettingsTab } from "./SettingsTab";
+import { Settings, persistSettings, settingsSchema } from "../services";
+import { SubmitButton } from "../popup/Button";
+import { GhInstancesTab, JiraTab } from "../popup/Tabs";
+import { AutoFilterTab } from "../popup/Tabs/AutoFilterTab";
+import { FeatureTogglesTab } from "./FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
-export type OptionsTab = "Settings" | "Feature Toggles";
+export type OptionsTab =
+  | "Feature Toggles"
+  | "GH Instances"
+  | "Auto filter"
+  | "Jira";
 
-const tabs: Array<OptionsTab> = ["Settings", "Feature Toggles"];
+const tabs: Array<OptionsTab> = [
+  "Feature Toggles",
+  "GH Instances",
+  "Auto filter",
+  "Jira",
+];
 
 export const Options = () => {
-  const [activeTab, setActiveTab] = useState<OptionsTab>("Settings");
+  const [activeTab, setActiveTab] = useState<OptionsTab>("Feature Toggles");
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, errorSet] = useState<string | undefined>();
   const [success, successSet] = useState<string | undefined>();
+  const [initialValues, initialValuesSet] = useState<Settings>(INITIAL_VALUES);
+  const [result, resultSet] = useState("");
 
   const loadSettings = useCallback(
     () =>
       getSettings({
         onSuccess: (settings) => {
           setFeatures(settings.features);
+          initialValuesSet(settings);
         },
       }),
     [],
@@ -67,20 +83,29 @@ export const Options = () => {
     successSet(message);
   };
 
+  const handleSubmit = (
+    values: Settings,
+    { setSubmitting, resetForm }: FormikHelpers<Settings>,
+  ) =>
+    persistSettings({
+      values,
+      onSuccess: () => {
+        resetForm({ values });
+        resultSet("Saved successfully");
+        showSuccess("Settings saved successfully");
+      },
+      onError: () => {
+        resultSet("Couldn't save");
+        showError("Couldn't save settings");
+      },
+      onSettled: () => setSubmitting(false),
+    });
+
   const renderTabContent = () => {
     switch (activeTab) {
-      case "Settings":
-        return (
-          <SettingsTab
-            features={features}
-            onError={showError}
-            onSuccess={showSuccess}
-            onReset={resetBanners}
-          />
-        );
       case "Feature Toggles":
         return (
-          <FeatureToggles
+          <FeatureTogglesTab
             features={features}
             onToggle={handleToggle}
             onError={showError}
@@ -88,6 +113,38 @@ export const Options = () => {
             onReset={resetBanners}
             onLoadSettings={loadSettings}
           />
+        );
+      case "GH Instances":
+      case "Auto filter":
+      case "Jira":
+        return (
+          <Formik
+            enableReinitialize
+            validateOnMount
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={settingsSchema}
+          >
+            {({ isValid, dirty, isSubmitting, values }) => (
+              <Form>
+                {activeTab === "GH Instances" && (
+                  <GhInstancesTab values={values} isValid={isValid} />
+                )}
+                {activeTab === "Auto filter" && (
+                  <AutoFilterTab disabled={!features.autoFilter} />
+                )}
+                {activeTab === "Jira" && <JiraTab disabled={!features.jira} />}
+                <Box sx={{ marginTop: 4 }}>
+                  <SubmitButton
+                    isValid={isValid}
+                    dirty={dirty}
+                    isSubmitting={isSubmitting}
+                    result={result}
+                  />
+                </Box>
+              </Form>
+            )}
+          </Formik>
         );
     }
   };
