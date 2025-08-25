@@ -2,6 +2,7 @@ export * from "./ClosePopupButton";
 export * from "./FeatureInput";
 export * from "./FeatureItem";
 export * from "./IconButton";
+export * from "./Paragraph";
 export * from "./RandomReviewerButton";
 export * from "./SearchInput";
 export * from "./TabNavigation";

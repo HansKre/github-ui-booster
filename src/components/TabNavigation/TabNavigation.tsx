@@ -4,17 +4,17 @@ import React from "react";
 
 export type Tab = "GH Instances" | "Auto filter" | "Jira";
 
-type Props = {
-  tabs: Tab[];
-  activeTab: Tab;
-  onTabClick: (tab: Tab) => void;
+type Props<T = Tab> = {
+  tabs: T[];
+  activeTab: T;
+  onTabClick: (tab: T) => void;
 };
 
-export const TabNavigation: React.FC<Props> = ({
+export const TabNavigation = <T extends string = Tab>({
   tabs,
   activeTab,
   onTabClick,
-}) => {
+}: Props<T>) => {
   return (
     <UnderlineNav aria-label="Tabs">
       {tabs.map((tab) => (
