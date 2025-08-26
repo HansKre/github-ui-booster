@@ -98,15 +98,16 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           ariaLabel="Toggle assign random reviewer"
         />
 
-        <SectionTitle>Create Pull Request</SectionTitle>
-
+        {/* Same as for the prs list page, as of now */}
         <FeatureItem
-          label="Jira Integration"
-          caption="Enable Jira integration to enhance pull request management with Jira issue keys"
-          checked={features.jira}
-          onClick={() => onToggle("jira")}
-          ariaLabel="Toggle Jira integration"
+          label="Total Lines Counter"
+          caption="Show total lines added and removed in pull requests"
+          checked={features.totalLines}
+          onClick={() => onToggle("totalLines")}
+          ariaLabel="Toggle total lines counter"
         />
+
+        <SectionTitle>Create Pull Request</SectionTitle>
 
         <FeatureItem
           label="Add PR Title from Jira"

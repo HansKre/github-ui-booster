@@ -6,14 +6,8 @@ export function isOnComparePage(instanceConfig: InstanceConfig): boolean {
 }
 
 export const extractJiraIssueKeyFromBranch = (settings: Settings) => {
-  const isJiraEnabled = settings.features?.jira;
   const issueKeyRegex = settings.jira?.issueKeyRegex;
-  if (!isJiraEnabled || !issueKeyRegex) {
-    alert(
-      "Jira integration or Jira issue key regex is not set. Please configure it in the settings.",
-    );
-    return null;
-  }
+  if (!issueKeyRegex) return null;
 
   const details = document.getElementById("head-ref-selector");
   const span = details?.querySelector("span.css-truncate-target");
