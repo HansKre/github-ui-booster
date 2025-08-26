@@ -6,7 +6,7 @@ import {
   SectionTitle,
   Subtitle,
 } from "../../../components";
-import { TemplateDescriptionParameters } from "../../../content";
+import { DescriptionTemplatePlaceholders } from "../../../content";
 import { Features } from "../../../services/getSettings";
 import styles from "./FeatureTogglesTab.module.scss";
 
@@ -24,13 +24,13 @@ export const FeatureTogglesTab: React.FC<Props> = ({
   const featureInputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    if (features.templateDescription && featureInputRef.current) {
+    if (features.descriptionTemplate && featureInputRef.current) {
       featureInputRef.current.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
     }
-  }, [features.templateDescription]);
+  }, [features.descriptionTemplate]);
   return (
     <>
       <Box className={styles.featuresList}>
@@ -90,6 +90,14 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           onClick={() => onToggle("autoFilter")}
           ariaLabel="Toggle auto filter"
         />
+        {features.autoFilter && (
+          <FeatureInput
+            storageKey="autoFilter"
+            placeholder="Enter a filter for pull requests"
+            ariaLabel="Auto Filter"
+            onError={onError}
+          />
+        )}
 
         <SectionTitle>Individual Pull Request</SectionTitle>
 
@@ -122,15 +130,15 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         <FeatureItem
           label="Template Description"
           caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
-          Add ${TemplateDescriptionParameters.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
-          checked={features.templateDescription}
-          onClick={() => onToggle("templateDescription")}
+          Add ${DescriptionTemplatePlaceholders.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
+          checked={features.descriptionTemplate}
+          onClick={() => onToggle("descriptionTemplate")}
           ariaLabel="Toggle template description"
         />
-        {features.templateDescription && (
+        {features.descriptionTemplate && (
           <FeatureInput
             ref={featureInputRef}
-            storageKey="templateDescription"
+            storageKey="descriptionTemplate"
             placeholder="Enter a template description"
             ariaLabel="Template Description"
             onError={onError}

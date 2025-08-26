@@ -8,7 +8,7 @@ let theInstanceConfig: InstanceConfig | undefined;
  */
 export function handlePrFilter(
   instanceConfig: InstanceConfig,
-  { filter }: AutoFilter,
+  autoFilter: AutoFilter,
   filterIntercepted?: string,
 ) {
   theInstanceConfig = instanceConfig;
@@ -20,7 +20,7 @@ export function handlePrFilter(
   }
 
   document.addEventListener("click", onQuickFilterClick);
-  replaceFilter(filter, filterIntercepted);
+  replaceFilter(autoFilter, filterIntercepted);
 }
 
 function replaceFilter(filter: string | undefined, filterIntercepted?: string) {
@@ -66,11 +66,7 @@ function onQuickFilterClick(event: MouseEvent) {
     if (targetUrl.href.includes("/issues")) {
       event.preventDefault();
       const decodedFilter = decodeQueryString(params.toString());
-      handlePrFilter(
-        theInstanceConfig,
-        { filter: decodedFilter },
-        decodedFilter,
-      );
+      handlePrFilter(theInstanceConfig, decodedFilter, decodedFilter);
       intercepted = true;
     }
   }

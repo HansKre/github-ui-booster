@@ -8,7 +8,6 @@ import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
 import { SubmitButton } from "./Button";
 import { GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
-import { AutoFilterTab } from "./Tabs/AutoFilterTab";
 import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
@@ -109,7 +108,6 @@ export const Options = () => {
           />
         );
       case "GH Instances":
-      case "Auto filter":
       case "Jira":
         return (
           <Formik
@@ -123,9 +121,6 @@ export const Options = () => {
               <Form>
                 {activeTab === "GH Instances" && (
                   <GhInstancesTab values={values} isValid={isValid} />
-                )}
-                {activeTab === "Auto filter" && (
-                  <AutoFilterTab disabled={!features.autoFilter} />
                 )}
                 {activeTab === "Jira" && <JiraTab disabled={!features.jira} />}
                 <Box sx={{ marginTop: 4 }}>

@@ -1,11 +1,11 @@
 import { Settings } from "../services";
-import { TemplateDescriptionParameters } from "./types";
+import { DescriptionTemplatePlaceholders } from "./types";
 import { extractJiraIssueKeyFromBranch } from "./utils/comparePageUtils";
 
 function resolveJiraLink(settings: Settings): string {
-  const description = settings.templateDescription;
+  const description = settings.descriptionTemplate;
   const hasJiraTicket = description.includes(
-    TemplateDescriptionParameters.JIRA_TICKET,
+    DescriptionTemplatePlaceholders.JIRA_TICKET,
   );
   if (!hasJiraTicket) return description;
 
@@ -13,13 +13,13 @@ function resolveJiraLink(settings: Settings): string {
   if (!issueKey) return description;
 
   return description.replace(
-    new RegExp(TemplateDescriptionParameters.JIRA_TICKET, "g"),
+    new RegExp(DescriptionTemplatePlaceholders.JIRA_TICKET, "g"),
     `${settings.jira?.baseUrl}/browse/${issueKey}`,
   );
 }
 
-export function addTemplateDescription(settings: Settings) {
-  if (!settings.templateDescription) return;
+export function addDescriptionTemplate(settings: Settings) {
+  if (!settings.descriptionTemplate) return;
   const textArea =
     document.querySelector<HTMLTextAreaElement>("#pull_request_body");
   if (!textArea) return;

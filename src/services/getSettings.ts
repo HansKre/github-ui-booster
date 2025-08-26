@@ -1,9 +1,7 @@
 import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
 
-const autoFilterSchema = object({
-  filter: string().optional(),
-});
+export const autoFilterSchema = string().optional();
 
 export type AutoFilter = InferType<typeof autoFilterSchema>;
 
@@ -24,7 +22,7 @@ const featuresSchema = object({
   autoFilter: boolean().default(false),
   jira: boolean().default(false),
   prTitleFromJira: boolean().default(false),
-  templateDescription: boolean().default(false),
+  descriptionTemplate: boolean().default(false),
   randomReviewer: boolean().default(false),
 });
 
@@ -36,10 +34,10 @@ const jiraSchema = object({
 
 export const settingsSchema = object({
   instances: array(instanceConfigSchema).required(),
-  autoFilter: autoFilterSchema,
+  autoFilter: string().optional(),
   features: featuresSchema,
   jira: jiraSchema.optional(),
-  templateDescription: string().optional().default(""),
+  descriptionTemplate: string().optional().default(""),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -62,7 +60,6 @@ export const INITIAL_VALUES: Settings = {
     baseUrl: "https://your-jira-instance.atlassian.net",
     issueKeyRegex: "TEST-\\d+",
   },
-  autoFilter: { filter: "" },
   features: {
     baseBranchLabels: true,
     changedFiles: true,
@@ -72,10 +69,10 @@ export const INITIAL_VALUES: Settings = {
     autoFilter: false,
     jira: false,
     prTitleFromJira: false,
-    templateDescription: false,
+    descriptionTemplate: false,
     randomReviewer: false,
   },
-  templateDescription: "",
+  descriptionTemplate: "",
 };
 
 type Params = {

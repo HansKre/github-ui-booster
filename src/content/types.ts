@@ -36,6 +36,6 @@ export enum Messages {
   FETCH_JIRA_ISSUE = "FETCH_JIRA_ISSUE",
 }
 
-export enum TemplateDescriptionParameters {
+export enum DescriptionTemplatePlaceholders {
   JIRA_TICKET = "{{jiraTicket}}",
 }
