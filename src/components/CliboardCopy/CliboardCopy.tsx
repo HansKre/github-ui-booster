@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
+
+const STYLE_ID = "gh-ui-booster-global-styles";
 
 type Props = {
   value: string;
@@ -8,6 +10,11 @@ type Props = {
  * Uses GitHub's "clipboard-copy"-Component and icons
  */
 export const CliboardCopy: React.FC<Props> = ({ value }) => {
+  useEffect(() => {
+    injectGlobalStyles();
+    return () => document.getElementById(STYLE_ID)?.remove();
+  }, []);
+
   return (
     <clipboard-copy
       aria-label="Copy"
@@ -17,7 +24,6 @@ export const CliboardCopy: React.FC<Props> = ({ value }) => {
       className="Link--onHover js-copy-branch color-fg-muted d-inline-block ml-1"
       tabIndex={0}
       role="button"
-      style={{ cursor: "pointer" }}
     >
       <svg
         aria-hidden="true"
@@ -47,3 +53,21 @@ export const CliboardCopy: React.FC<Props> = ({ value }) => {
     </clipboard-copy>
   );
 };
+
+function injectGlobalStyles() {
+  // Check if we already injected it
+  if (document.getElementById(STYLE_ID)) return;
+
+  const style = document.createElement("style");
+  style.id = STYLE_ID;
+  style.textContent = `
+    clipboard-copy:hover {
+      color: var(--fgColor-accent) !important;
+      cursor: pointer;
+      -webkit-text-decoration: underline;
+      text-decoration: underline;
+    }
+  `;
+
+  document.head.appendChild(style);
+}
