@@ -1,4 +1,5 @@
 import { handleRandomReviewer, handleTotalLines } from "./content";
+import { addCopyBaseBranchToPr } from "./content/addCopyBaseBranchToPr";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
@@ -70,6 +71,8 @@ async function executeScripts(
     if (settings.features.randomReviewer) {
       handleRandomReviewer(octokit, instanceConfig);
     }
+
+    addCopyBaseBranchToPr(instanceConfig);
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists.",
