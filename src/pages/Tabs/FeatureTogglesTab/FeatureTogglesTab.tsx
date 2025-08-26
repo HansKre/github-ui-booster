@@ -117,17 +117,17 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         />
 
         <FeatureItem
-          label="Template Description"
+          label="Description Template"
           caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
           Add ${DescriptionTemplatePlaceholders.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
           checked={features.descriptionTemplate}
           onClick={() => onToggle("descriptionTemplate")}
-          ariaLabel="Toggle template description"
+          ariaLabel="Toggle description template"
         />
         <FeatureInput
           storageKey="descriptionTemplate"
-          placeholder="Enter a template description"
-          ariaLabel="Template Description"
+          placeholder="Enter a description template"
+          ariaLabel="Description Template"
           onError={onError}
           disabled={!features.descriptionTemplate}
         />
