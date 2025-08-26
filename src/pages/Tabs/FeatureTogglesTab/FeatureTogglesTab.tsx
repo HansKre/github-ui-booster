@@ -1,5 +1,5 @@
 import { Box } from "@primer/react";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   FeatureInput,
   FeatureItem,
@@ -21,16 +21,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
   onToggle,
   onError,
 }) => {
-  const featureInputRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (features.descriptionTemplate && featureInputRef.current) {
-      featureInputRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }
-  }, [features.descriptionTemplate]);
   return (
     <>
       <Box className={styles.featuresList}>
@@ -90,14 +80,13 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           onClick={() => onToggle("autoFilter")}
           ariaLabel="Toggle auto filter"
         />
-        {features.autoFilter && (
-          <FeatureInput
-            storageKey="autoFilter"
-            placeholder="Enter a filter for pull requests"
-            ariaLabel="Auto Filter"
-            onError={onError}
-          />
-        )}
+        <FeatureInput
+          storageKey="autoFilter"
+          placeholder="Enter a filter for pull requests"
+          ariaLabel="Auto Filter"
+          onError={onError}
+          disabled={!features.autoFilter}
+        />
 
         <SectionTitle>Individual Pull Request</SectionTitle>
 
@@ -135,15 +124,13 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           onClick={() => onToggle("descriptionTemplate")}
           ariaLabel="Toggle template description"
         />
-        {features.descriptionTemplate && (
-          <FeatureInput
-            ref={featureInputRef}
-            storageKey="descriptionTemplate"
-            placeholder="Enter a template description"
-            ariaLabel="Template Description"
-            onError={onError}
-          />
-        )}
+        <FeatureInput
+          storageKey="descriptionTemplate"
+          placeholder="Enter a template description"
+          ariaLabel="Template Description"
+          onError={onError}
+          disabled={!features.descriptionTemplate}
+        />
       </Box>
     </>
   );
