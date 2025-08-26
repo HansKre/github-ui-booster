@@ -81,7 +81,7 @@ async function executeScripts(settings: Settings) {
       promises.push(addChangedFiles(octokit, instanceConfig));
     }
 
-    if (features.totalLines) {
+    if (features.totalLinesPrs) {
       promises.push(addTotalLines(octokit, instanceConfig));
     }
 

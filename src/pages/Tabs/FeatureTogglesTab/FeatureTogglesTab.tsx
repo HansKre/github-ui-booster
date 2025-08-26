@@ -50,8 +50,8 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         <FeatureItem
           label="Total Lines Counter"
           caption="Show total lines added and removed in pull requests"
-          checked={features.totalLines}
-          onClick={() => onToggle("totalLines")}
+          checked={features.totalLinesPrs}
+          onClick={() => onToggle("totalLinesPrs")}
           ariaLabel="Toggle total lines counter"
         />
 
@@ -101,9 +101,9 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         {/* Same as for the prs list page, as of now */}
         <FeatureItem
           label="Total Lines Counter"
-          caption="Show total lines added and removed in pull requests"
-          checked={features.totalLines}
-          onClick={() => onToggle("totalLines")}
+          caption="Show total lines added and removed in individuaö pull request"
+          checked={features.totalLinesPr}
+          onClick={() => onToggle("totalLinesPr")}
           ariaLabel="Toggle total lines counter"
         />
 

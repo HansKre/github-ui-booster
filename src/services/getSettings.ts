@@ -16,7 +16,8 @@ const instanceConfigSchema = object({
 const featuresSchema = object({
   baseBranchLabels: boolean().default(true),
   changedFiles: boolean().default(true),
-  totalLines: boolean().default(true),
+  totalLinesPrs: boolean().default(true),
+  totalLinesPr: boolean().default(true),
   reOrderPrs: boolean().default(true),
   addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
@@ -62,7 +63,8 @@ export const INITIAL_VALUES: Settings = {
   features: {
     baseBranchLabels: true,
     changedFiles: true,
-    totalLines: true,
+    totalLinesPrs: true,
+    totalLinesPr: true,
     reOrderPrs: true,
     addUpdateBranchButton: true,
     autoFilter: false,
