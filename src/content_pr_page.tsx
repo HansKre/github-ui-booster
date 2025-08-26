@@ -2,7 +2,7 @@ import { handleRandomReviewer, handleTotalLines } from "./content";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { Features, InstanceConfig, Settings, getSettings } from "./services";
+import { InstanceConfig, Settings, getSettings } from "./services";
 import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
@@ -36,12 +36,12 @@ async function handleContentChange(settings: Settings) {
   const instanceConfig = getInstanceConfig(settings);
   if (!instanceConfig) return;
 
-  await executeScripts(instanceConfig, settings.features);
+  await executeScripts(instanceConfig, settings);
 
   observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === "childList" || mutation.type === "attributes") {
-        void executeScripts(instanceConfig, settings.features);
+        void executeScripts(instanceConfig, settings);
       }
     });
   });
@@ -51,7 +51,7 @@ async function handleContentChange(settings: Settings) {
 
 async function executeScripts(
   instanceConfig: InstanceConfig,
-  features: Features,
+  settings: Settings,
 ) {
   if (!isOnPrPage(instanceConfig)) return;
 
@@ -63,11 +63,11 @@ async function executeScripts(
 
     const octokit = getOctoInstance(instanceConfig);
 
-    if (features.totalLinesPr) {
-      await handleTotalLines(octokit, instanceConfig);
+    if (settings.features.totalLinesPr) {
+      await handleTotalLines(octokit, instanceConfig, settings);
     }
 
-    if (features.randomReviewer) {
+    if (settings.features.randomReviewer) {
       handleRandomReviewer(octokit, instanceConfig);
     }
   } catch (err) {

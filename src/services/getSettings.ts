@@ -39,6 +39,7 @@ export const settingsSchema = object({
   features: featuresSchema,
   jira: jiraSchema.optional(),
   descriptionTemplate: string().optional().default(""),
+  fileBlacklist: string().optional(),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -75,6 +76,7 @@ export const INITIAL_VALUES: Settings = {
     persistToUserProfile: false,
   },
   descriptionTemplate: "",
+  fileBlacklist: "package-lock.json,pnpm-lock.yaml,yarn.lock",
 };
 
 type Params = {
