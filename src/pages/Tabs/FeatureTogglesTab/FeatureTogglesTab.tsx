@@ -1,5 +1,5 @@
 import { Box } from "@primer/react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   FeatureInput,
   FeatureItem,
@@ -21,6 +21,16 @@ export const FeatureTogglesTab: React.FC<Props> = ({
   onToggle,
   onError,
 }) => {
+  const featureInputRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (features.templateDescription && featureInputRef.current) {
+      featureInputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [features.templateDescription]);
   return (
     <>
       <Box className={styles.featuresList}>
@@ -119,6 +129,7 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         />
         {features.templateDescription && (
           <FeatureInput
+            ref={featureInputRef}
             storageKey="templateDescription"
             placeholder="Enter a template description"
             ariaLabel="Template Description"
