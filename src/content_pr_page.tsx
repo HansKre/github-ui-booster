@@ -68,7 +68,7 @@ async function executeScripts(
       await handleTotalLines(octokit, instanceConfig, settings);
     }
 
-    if (settings.features.randomReviewer) {
+    if (instanceConfig.randomReviewers) {
       handleRandomReviewer(octokit, instanceConfig);
     }
 
