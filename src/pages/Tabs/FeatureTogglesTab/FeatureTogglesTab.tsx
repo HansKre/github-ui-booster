@@ -29,6 +29,16 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           GitHub-page.
         </Subtitle>
 
+        <SectionTitle>General Settings</SectionTitle>
+
+        <FeatureItem
+          label="Persist to User Profile"
+          caption="Store settings in your Chrome user profile to sync across devices. Settings will be backed up locally and cleared from sync storage when disabled."
+          checked={features.persistToUserProfile}
+          onClick={() => onToggle("persistToUserProfile")}
+          ariaLabel="Toggle persist to user profile"
+        />
+
         <SectionTitle>Pull Requests List</SectionTitle>
 
         <FeatureItem

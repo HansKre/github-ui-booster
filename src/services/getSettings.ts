@@ -24,6 +24,7 @@ const featuresSchema = object({
   prTitleFromJira: boolean().default(false),
   descriptionTemplate: boolean().default(false),
   randomReviewer: boolean().default(false),
+  persistToUserProfile: boolean().default(false),
 });
 
 const jiraSchema = object({
@@ -71,6 +72,7 @@ export const INITIAL_VALUES: Settings = {
     prTitleFromJira: false,
     descriptionTemplate: false,
     randomReviewer: false,
+    persistToUserProfile: false,
   },
   descriptionTemplate: "",
 };
@@ -86,6 +88,7 @@ const defaultOnError = (e?: unknown) => {
 };
 
 export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
+  // First try to get from local storage to check if persistToUserProfile is enabled
   chrome.storage.local
     .get(Object.keys(settingsSchema.fields))
     .then((entries) => {
@@ -94,7 +97,38 @@ export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
       } else {
         settingsSchema
           .validate(entries, { strict: true })
-          .then((settings) => onSuccess(settings))
+          .then((settings) => {
+            // If persistToUserProfile is enabled, use sync storage
+            if (settings.features.persistToUserProfile) {
+              void chrome.storage.sync
+                .get(Object.keys(settingsSchema.fields))
+                .then((syncEntries) => {
+                  if (Object.keys(syncEntries).length === 0) {
+                    // No sync data, use local settings
+                    void onSuccess(settings);
+                  } else {
+                    void settingsSchema
+                      .validate(syncEntries, { strict: true })
+                      .then((syncSettings) => onSuccess(syncSettings))
+                      .catch((e) => {
+                        // Fallback to local if sync validation fails
+                        console.warn(
+                          "Sync storage validation failed, using local:",
+                          e,
+                        );
+                        void onSuccess(settings);
+                      });
+                  }
+                })
+                .catch((e) => {
+                  // Fallback to local if sync fails
+                  console.warn("Sync storage access failed, using local:", e);
+                  void onSuccess(settings);
+                });
+            } else {
+              void onSuccess(settings);
+            }
+          })
           .catch((e) => {
             onError(e);
           });
