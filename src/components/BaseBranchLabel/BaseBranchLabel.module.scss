@@ -1,14 +1,20 @@
 @import "../../shared-component-styles.scss";
 
 .baseBranchContainer {
-  color: initial;
   margin-right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.baseBranchLink,
-.baseBranchText,
-.featureBranchText {
-  // No specific styles needed - inherits from parent
+.branchGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.branchText {
+  color: initial;
 }
 
 .baseBranchLink {
