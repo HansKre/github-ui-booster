@@ -7,8 +7,8 @@ export type AutoFilter = InferType<typeof autoFilterSchema>;
 
 const instanceConfigSchema = object({
   pat: string().required().matches(/^ghp_/, "Should start with ghp_").min(30),
-  org: string().required(),
-  repo: string().required(),
+  org: string().required().min(1),
+  repo: string().required().min(1),
   ghBaseUrl: string().required().url(),
   randomReviewers: string().default(""),
 });
@@ -50,8 +50,8 @@ export const INITIAL_VALUES: Settings = {
   instances: [
     {
       pat: "",
-      org: "",
-      repo: "",
+      org: "*",
+      repo: "*",
       ghBaseUrl: "https://api.github.com",
       randomReviewers: "",
     },
