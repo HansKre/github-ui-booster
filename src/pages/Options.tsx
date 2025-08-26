@@ -7,7 +7,7 @@ import { TABS, Tab } from "../constants";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
 import { SubmitButton } from "./Button";
-import { GhInstancesTab, ImportExportTab } from "./Tabs";
+import { GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
 import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
@@ -122,7 +122,7 @@ export const Options = () => {
                 {activeTab === "GH Instances" && (
                   <GhInstancesTab values={values} isValid={isValid} />
                 )}
-                {activeTab === "Jira"}
+                {activeTab === "Jira" && <JiraTab disabled={isSubmitting} />}
                 <Box sx={{ marginTop: 4 }}>
                   <SubmitButton
                     isValid={isValid}
