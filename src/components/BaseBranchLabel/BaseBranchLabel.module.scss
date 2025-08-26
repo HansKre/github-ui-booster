@@ -1,0 +1,20 @@
+@import "../../shared-component-styles.scss";
+
+.baseBranchContainer {
+  color: initial;
+  margin-right: 1rem;
+}
+
+.baseBranchLink,
+.baseBranchText,
+.featureBranchText {
+  // No specific styles needed - inherits from parent
+}
+
+.baseBranchLink {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
