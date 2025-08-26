@@ -17,6 +17,10 @@ npm run lint               # Run ESLint
 npm run lint:fix           # Fix linting issues automatically
 npm run prettier           # Format code with Prettier
 
+# Utility
+npm run clean              # Clean dist directory
+npm run prepare            # Setup husky hooks
+
 # Chrome Extension Development
 # Load the 'dist' directory in Chrome's extension developer mode after building
 ```
@@ -47,12 +51,45 @@ This is a Chrome extension (Manifest v3) that enhances GitHub and GitHub Enterpr
 
 ### Settings Architecture
 
-Settings are organized into:
+Settings are validated using Yup schemas and organized into:
 
-- `instances[]` - GitHub instance configurations (PAT, org, repo, base URL)
-- `features{}` - Boolean toggles for all extension features
-- `jira{}` - JIRA integration settings
-- `autoFilter{}` - Custom PR filtering configuration
+- **`instances[]`** - GitHub instance configurations
+  - `pat` - Personal Access Token (must start with `ghp_`, minimum 30 characters)
+  - `org` - GitHub organization name
+  - `repo` - Repository name
+  - `ghBaseUrl` - GitHub API base URL (defaults to `https://api.github.com`)
+  - `randomReviewers` - Comma-separated list of reviewer usernames
+
+- **`features{}`** - Boolean toggles for extension features:
+  - `baseBranchLabels` - Show base branch labels on PRs
+  - `changedFiles` - Display changed files count
+  - `totalLinesPrs` - Show total lines changed on PR list page
+  - `totalLinesPr` - Show total lines changed on individual PR page
+  - `reOrderPrs` - Reorder PRs by custom logic
+  - `addUpdateBranchButton` - Add update branch button
+  - `autoFilter` - Enable automatic PR filtering
+  - `prTitleFromJira` - Auto-populate PR title from JIRA ticket
+  - `descriptionTemplate` - Use custom PR description template
+  - `randomReviewer` - Enable random reviewer assignment
+
+- **`jira{}`** - JIRA integration settings (optional)
+  - `pat` - JIRA Personal Access Token (minimum 30 characters)
+  - `baseUrl` - JIRA instance base URL
+  - `issueKeyRegex` - Regex pattern for JIRA issue keys (e.g., "TEST-\\d+")
+
+- **`autoFilter`** - Custom PR filtering query string (optional)
+- **`descriptionTemplate`** - Custom PR description template text (optional)
+
+### Options Page Structure
+
+The Options page uses a tabbed interface with the following tabs:
+
+- **Feature Toggles** - Individual toggles for all extension features
+- **GH Instances** - GitHub instance configuration (PAT, org, repo, base URL)
+- **Jira** - JIRA integration settings
+- **Import/Export** - Settings backup and restore functionality
+
+Each tab is implemented as a separate component in `src/pages/Tabs/` with dedicated styling and logic.
 
 ### Build System
 
@@ -72,7 +109,10 @@ Settings are organized into:
 1. Run `npm run watch` for development
 2. Load `dist` directory in Chrome extension developer mode
 3. Changes auto-reload with webpack watch mode
-4. Use VS Code task runner (Ctrl+Shift+B) for integrated development
+4. Use `npm run clean` to clear dist before production builds
+5. Run `npm test` to execute Jest unit tests
+6. Use `npm run lint:fix` to automatically fix linting issues
+7. Format code with `npm run prettier` before committing
 
 ## Coding Guidelines
 
@@ -90,3 +130,6 @@ Settings are organized into:
 - JIRA API calls must go through background script due to CORS
 - Features are conditionally loaded based on current page URL and user settings
 - CSS modules prevent style conflicts with GitHub's native styles
+- Pre-commit hooks with husky and lint-staged ensure code quality
+- All settings are persisted to Chrome's local storage API
+- The extension supports hot reloading during development via webpack watch mode
