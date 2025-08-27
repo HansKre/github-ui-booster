@@ -23,7 +23,6 @@ const featuresSchema = object({
   autoFilter: boolean().default(false),
   prTitleFromJira: boolean().default(false),
   descriptionTemplate: boolean().default(false),
-  randomReviewer: boolean().default(false),
   persistToUserProfile: boolean().default(false),
 });
 
@@ -39,6 +38,7 @@ export const settingsSchema = object({
   features: featuresSchema,
   jira: jiraSchema.optional(),
   descriptionTemplate: string().optional().default(""),
+  fileBlacklist: string().optional(),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -71,10 +71,10 @@ export const INITIAL_VALUES: Settings = {
     autoFilter: false,
     prTitleFromJira: false,
     descriptionTemplate: false,
-    randomReviewer: false,
     persistToUserProfile: false,
   },
   descriptionTemplate: "",
+  fileBlacklist: "package-lock.json,pnpm-lock.yaml,yarn.lock",
 };
 
 type Params = {
