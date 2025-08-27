@@ -52,13 +52,11 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                     description="Use https://api.github.com for the public GitHub-instance, or ask your IT if running your own GitHub Enterprise Server."
                     name={`instances[${index}].ghBaseUrl`}
                   />
-                  {values.features.randomReviewer && (
-                    <FormField
-                      label="Random Reviewers"
-                      description="You can input multiple values. Use commas to separate them (e.g. user1,user2,user3)."
-                      name={`instances[${index}].randomReviewers`}
-                    />
-                  )}
+                  <FormField
+                    label="Random Reviewers"
+                    description="You can input multiple values. Use commas to separate them (e.g. user1,user2,user3)."
+                    name={`instances[${index}].randomReviewers`}
+                  />
                 </React.Fragment>
               ))}
             <AddButton
