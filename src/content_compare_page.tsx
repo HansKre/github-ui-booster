@@ -1,5 +1,5 @@
 import { addPrTitleFromJira } from "./content/addPrTitleFromJira";
-import { addTemplateDescription } from "./content/addTemplateDescription";
+import { addDescriptionTemplate } from "./content/addDescriptionTemplate";
 import { isOnComparePage } from "./content/utils/comparePageUtils";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { getSettings, InstanceConfig, Settings } from "./services";
@@ -22,8 +22,8 @@ async function executeScripts(
   if (!isOnComparePage(instanceConfig)) return;
 
   try {
-    if (settings.features.templateDescription) {
-      addTemplateDescription(settings);
+    if (settings.features.descriptionTemplate) {
+      addDescriptionTemplate(settings);
     }
     if (settings.features.prTitleFromJira) {
       await addPrTitleFromJira(settings);

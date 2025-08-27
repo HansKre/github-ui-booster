@@ -1,23 +1,30 @@
 import { Box, PageLayout, Text } from "@primer/react";
 import { Banner } from "@primer/react/drafts";
+import { Form, Formik, FormikHelpers } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
-import { FeatureInput, FeatureItem } from "../components";
-import { TemplateDescriptionParameters } from "../content";
+import { TabNavigation, Subtitle } from "../components";
+import { TABS, Tab } from "../constants";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
-import { ExportButton } from "./ExportButton";
-import { ImportButton } from "./ImportButton";
+import { Settings, persistSettings, settingsSchema } from "../services";
+import { SubmitButton } from "./Button";
+import { GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
+import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
 export const Options = () => {
+  const [activeTab, setActiveTab] = useState<Tab>("Feature Toggles");
   const [features, setFeatures] = useState<Features>(INITIAL_VALUES.features);
   const [error, errorSet] = useState<string | undefined>();
   const [success, successSet] = useState<string | undefined>();
+  const [initialValues, initialValuesSet] = useState<Settings>(INITIAL_VALUES);
+  const [result, resultSet] = useState("");
 
   const loadSettings = useCallback(
     () =>
       getSettings({
         onSuccess: (settings) => {
           setFeatures(settings.features);
+          initialValuesSet(settings);
         },
       }),
     [],
@@ -63,6 +70,74 @@ export const Options = () => {
     successSet(message);
   };
 
+  const handleSubmit = (
+    values: Settings,
+    { setSubmitting, resetForm }: FormikHelpers<Settings>,
+  ) =>
+    persistSettings({
+      values,
+      onSuccess: () => {
+        resetForm({ values });
+        resultSet("Saved successfully");
+        showSuccess("Settings saved successfully");
+      },
+      onError: () => {
+        resultSet("Couldn't save");
+        showError("Couldn't save settings");
+      },
+      onSettled: () => setSubmitting(false),
+    });
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "Feature Toggles":
+        return (
+          <FeatureTogglesTab
+            features={features}
+            onToggle={handleToggle}
+            onError={showError}
+          />
+        );
+      case "Import/Export":
+        return (
+          <ImportExportTab
+            onError={showError}
+            onSuccess={showSuccess}
+            onReset={resetBanners}
+            onLoadSettings={loadSettings}
+          />
+        );
+      case "GH Instances":
+      case "Jira":
+        return (
+          <Formik
+            enableReinitialize
+            validateOnMount
+            initialValues={initialValues}
+            onSubmit={handleSubmit}
+            validationSchema={settingsSchema}
+          >
+            {({ isValid, dirty, isSubmitting, values }) => (
+              <Form>
+                {activeTab === "GH Instances" && (
+                  <GhInstancesTab values={values} isValid={isValid} />
+                )}
+                {activeTab === "Jira" && <JiraTab disabled={isSubmitting} />}
+                <Box sx={{ marginTop: 4 }}>
+                  <SubmitButton
+                    isValid={isValid}
+                    dirty={dirty}
+                    isSubmitting={isSubmitting}
+                    result={result}
+                  />
+                </Box>
+              </Form>
+            )}
+          </Formik>
+        );
+    }
+  };
+
   return (
     <Box
       className={styles.container}
@@ -84,135 +159,20 @@ export const Options = () => {
                 <Text as="h1" className={styles.title}>
                   GitHub UI Booster Options
                 </Text>
-                <Text as="p" className={styles.subtitle}>
+                <Subtitle>
                   Making your GitHub experience smoother than a freshly polished
                   commit 🚀
-                </Text>
+                </Subtitle>
               </Box>
             </Box>
 
-            <Text as="h2" className={styles.sectionTitle}>
-              Features
-            </Text>
+            <TabNavigation
+              tabs={TABS}
+              activeTab={activeTab}
+              onTabClick={setActiveTab}
+            />
 
-            <Box className={styles.featuresList}>
-              <FeatureItem
-                label="Base Branch Labels"
-                caption="Show base branch information for each pull request"
-                checked={features.baseBranchLabels}
-                onClick={() => handleToggle("baseBranchLabels")}
-                ariaLabel="Toggle base branch labels"
-              />
-
-              <FeatureItem
-                label="Changed Files"
-                caption="Display changed files information and enable file search functionality"
-                checked={features.changedFiles}
-                onClick={() => handleToggle("changedFiles")}
-                ariaLabel="Toggle changed files"
-              />
-
-              <FeatureItem
-                label="Total Lines Counter"
-                caption="Show total lines added and removed in pull requests"
-                checked={features.totalLines}
-                onClick={() => handleToggle("totalLines")}
-                ariaLabel="Toggle total lines counter"
-              />
-
-              <FeatureItem
-                label="Reorder Pull Requests"
-                caption="Automatically organize pull requests by base branch,
-                    visually nesting child pull requests under their parent for
-                    clearer hierarchy"
-                checked={features.reOrderPrs}
-                onClick={() => handleToggle("reOrderPrs")}
-                ariaLabel="Toggle reorder pull requests"
-              />
-
-              <FeatureItem
-                label="Add Update Branch Button"
-                caption="If a pull request is behind the base branch, this feature adds a button to update the branch of a pull request to include changes from the base branch"
-                checked={features.addUpdateBranchButton}
-                onClick={() => handleToggle("addUpdateBranchButton")}
-                ariaLabel="Toggle add update branch button"
-              />
-
-              <FeatureItem
-                label="Auto Filter"
-                caption="Automatically apply filters to pull requests list"
-                checked={features.autoFilter}
-                onClick={() => handleToggle("autoFilter")}
-                ariaLabel="Toggle auto filter"
-              />
-
-              <FeatureItem
-                label="Jira Integration"
-                caption="Enable Jira integration to enhance pull request management with Jira issue keys"
-                checked={features.jira}
-                onClick={() => handleToggle("jira")}
-                ariaLabel="Toggle Jira integration"
-              />
-
-              <FeatureItem
-                label="Assign random reviewer"
-                caption="Automatically assign a random reviewer to pull requests."
-                checked={features.randomReviewer}
-                onClick={() => handleToggle("randomReviewer")}
-                ariaLabel="Toggle assign random reviewer"
-              />
-
-              <FeatureItem
-                label="Add PR Title from Jira"
-                caption="Automatically set the pull request title based on the Jira issue key found in the branch name"
-                checked={features.prTitleFromJira}
-                onClick={() => handleToggle("prTitleFromJira")}
-                ariaLabel="Toggle add PR title from Jira"
-              />
-
-              <FeatureItem
-                label="Template Description"
-                caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
-                Add ${TemplateDescriptionParameters.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
-                checked={features.templateDescription}
-                onClick={() => handleToggle("templateDescription")}
-                ariaLabel="Toggle template description"
-              />
-              {features.templateDescription && (
-                <FeatureInput
-                  storageKey="templateDescription"
-                  placeholder="Enter a template description"
-                  ariaLabel="Template Description"
-                  onError={showError}
-                />
-              )}
-            </Box>
-
-            <Text as="h2" className={styles.sectionTitle}>
-              Export & Import Settings
-            </Text>
-
-            <Text as="p" className={styles.subtitle}>
-              You can export your current settings as a JSON file. Your settings
-              contain access tokens. Be careful and make sure to remove your
-              tokens before sharing.
-            </Text>
-
-            <Box display="grid" gridTemplateColumns="1fr 1fr" sx={{ gap: 4 }}>
-              <ExportButton
-                onError={showError}
-                onSuccess={() => showSuccess("Exported settings successfully")}
-                onClick={resetBanners}
-              />
-              <ImportButton
-                onError={showError}
-                onSuccess={() => {
-                  loadSettings();
-                  showSuccess("Imported settings successfully");
-                }}
-                onClick={resetBanners}
-              />
-            </Box>
+            {renderTabContent()}
           </Box>
         </PageLayout.Content>
       </PageLayout>

@@ -1,11 +1,12 @@
 import { Text } from "@primer/react";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, ReactNode } from "react";
 
 type Props = {
+  children: ReactNode;
   sx?: CSSProperties;
-  children: React.ReactNode;
 };
-export const Paragraph: React.FC<Props> = ({ sx, children }) => {
+
+export const Paragraph: React.FC<Props> = ({ children, sx }) => {
   return (
     <Text
       as="p"

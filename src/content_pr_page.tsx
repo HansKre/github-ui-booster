@@ -63,7 +63,7 @@ async function executeScripts(
 
     const octokit = getOctoInstance(instanceConfig);
 
-    if (features.totalLines) {
+    if (features.totalLinesPr) {
       await handleTotalLines(octokit, instanceConfig);
     }
 

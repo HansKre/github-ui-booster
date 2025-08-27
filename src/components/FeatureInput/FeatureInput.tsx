@@ -5,15 +5,17 @@ import { getSettingValue, Settings } from "../../services";
 type Props = {
   storageKey: keyof Settings;
   placeholder: string;
-  ariaLabel?: string;
   onError: (message: string) => void;
+  disabled?: boolean;
+  ariaLabel?: string;
 };
 
 export const FeatureInput: React.FC<Props> = ({
   storageKey,
-  onError,
-  ariaLabel,
   placeholder,
+  onError,
+  disabled = false,
+  ariaLabel,
 }) => {
   const [value, setValue] = useState<string>();
 
@@ -48,6 +50,7 @@ export const FeatureInput: React.FC<Props> = ({
       value={value}
       onChange={handleChange}
       aria-label={ariaLabel}
+      disabled={disabled}
     />
   );
 };
