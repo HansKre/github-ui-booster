@@ -114,14 +114,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
 
         <SectionTitle>Individual Pull Request</SectionTitle>
 
-        <FeatureItem
-          label="Assign random reviewer"
-          caption="Automatically assign a random reviewer to pull requests."
-          checked={features.randomReviewer}
-          onClick={() => onToggle("randomReviewer")}
-          ariaLabel="Toggle assign random reviewer"
-        />
-
         {/* Same as for the prs list page, as of now */}
         <FeatureItem
           label="Total Lines Counter"
