@@ -1,6 +1,6 @@
 # GitHub UI Booster
 
-A Chrome extension that enhances GitHub and GitHub Enterprise UI with powerful productivity features. Built with TypeScript, React, and Manifest v3.
+A Chrome extension that enhances GitHub and GitHub Enterprise UI with powerful productivity features. Built with TypeScript, React, and Manifest v3. Add it to your Chrome by through the [Chrome web store](https://chromewebstore.google.com/detail/github-ui-booster/hipcgedmoamiahdjbdccjohllbikimoc)
 
 ## Features
 
