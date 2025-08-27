@@ -39,12 +39,12 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                   />
                   <FormField
                     label="Username or Organization"
-                    description="Your GitHub username or organization (only GitHub Enterprise). You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
+                    description="Your GitHub username or organization (only GitHub Enterprise). You can input multiple values using commas (e.g. value1,value2,value3) or use '*' as a wildcard to match any organization."
                     name={`instances[${index}].org`}
                   />
                   <FormField
                     label="Repository"
-                    description="You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
+                    description="Repository name(s). You can input multiple values using commas (e.g. value1,value2,value3) or use '*' as a wildcard to match any repository."
                     name={`instances[${index}].repo`}
                   />
                   <FormField
