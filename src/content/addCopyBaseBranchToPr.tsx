@@ -7,36 +7,45 @@ import { isOnPrPage } from "./utils/isOnPrPage";
 export function addCopyBaseBranchToPr(instanceConfig: InstanceConfig) {
   if (!isOnPrPage(instanceConfig)) return;
 
-  const baseBranchNameSelector =
-    "#partial-discussion-header .non-sticky-header-container span.base-ref";
-  const baseBranchNameElement = document.querySelector(baseBranchNameSelector);
-  const targetElement = baseBranchNameElement?.nextElementSibling;
+  const baseBranchNameSelectors = [
+    "#partial-discussion-header span.commit-ref.base-ref",
+    // in sticky-header, which is displayed after scrolling
+    // does not have .base-ref-class
+    ".gh-header-sticky .sticky-content span.commit-ref:not(head-ref)",
+  ];
 
-  if (!targetElement) return;
+  for (const baseBranchNameSelector of baseBranchNameSelectors) {
+    const baseBranchNameElement = document.querySelector(
+      baseBranchNameSelector,
+    );
+    const targetElement = baseBranchNameElement?.nextElementSibling;
 
-  const existingCopy = targetElement.querySelector(
-    ".gh-ui-booster-clipboard-copy",
-  );
-  if (existingCopy) return;
+    if (!targetElement) return;
 
-  const headRef = baseBranchNameElement.textContent?.trim();
-  if (!headRef) return;
+    const existingCopy = targetElement.querySelector(
+      ".gh-ui-booster-clipboard-copy",
+    );
+    if (existingCopy) return;
 
-  const clipboardContainer = document.createElement("span");
-  clipboardContainer.setAttribute("data-view-component", "true");
-  clipboardContainer.className = "gh-ui-booster-clipboard-copy";
+    const headRef = baseBranchNameElement.textContent?.trim();
+    if (!headRef) return;
 
-  const margin = "0.5rem";
-  clipboardContainer.style.marginLeft = margin;
-  clipboardContainer.style.marginRight = margin;
+    const clipboardContainer = document.createElement("span");
+    clipboardContainer.setAttribute("data-view-component", "true");
+    clipboardContainer.className = "gh-ui-booster-clipboard-copy";
 
-  targetElement.appendChild(clipboardContainer);
+    const margin = "0.5rem";
+    clipboardContainer.style.marginLeft = margin;
+    clipboardContainer.style.marginRight = margin;
 
-  const root = createRoot(clipboardContainer);
+    targetElement.appendChild(clipboardContainer);
 
-  root.render(
-    <React.StrictMode>
-      <CliboardCopy value={headRef} />
-    </React.StrictMode>,
-  );
+    const root = createRoot(clipboardContainer);
+
+    root.render(
+      <React.StrictMode>
+        <CliboardCopy value={headRef} />
+      </React.StrictMode>,
+    );
+  }
 }
