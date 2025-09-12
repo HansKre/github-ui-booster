@@ -7,8 +7,8 @@ export type AutoFilter = InferType<typeof autoFilterSchema>;
 
 const instanceConfigSchema = object({
   pat: string().required().matches(/^ghp_/, "Should start with ghp_").min(30),
-  org: string().required(),
-  repo: string().required(),
+  org: string().required().min(1),
+  repo: string().required().min(1),
   ghBaseUrl: string().required().url(),
   randomReviewers: string().default(""),
 });
@@ -23,7 +23,6 @@ const featuresSchema = object({
   autoFilter: boolean().default(false),
   prTitleFromJira: boolean().default(false),
   descriptionTemplate: boolean().default(false),
-  randomReviewer: boolean().default(false),
   persistToUserProfile: boolean().default(false),
 });
 
@@ -39,6 +38,7 @@ export const settingsSchema = object({
   features: featuresSchema,
   jira: jiraSchema.optional(),
   descriptionTemplate: string().optional().default(""),
+  fileBlacklist: string().optional(),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -50,8 +50,8 @@ export const INITIAL_VALUES: Settings = {
   instances: [
     {
       pat: "",
-      org: "",
-      repo: "",
+      org: "*",
+      repo: "*",
       ghBaseUrl: "https://api.github.com",
       randomReviewers: "",
     },
@@ -71,10 +71,10 @@ export const INITIAL_VALUES: Settings = {
     autoFilter: false,
     prTitleFromJira: false,
     descriptionTemplate: false,
-    randomReviewer: false,
     persistToUserProfile: false,
   },
   descriptionTemplate: "",
+  fileBlacklist: "package-lock.json,pnpm-lock.yaml,yarn.lock",
 };
 
 type Params = {

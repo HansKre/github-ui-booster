@@ -2,13 +2,14 @@ import { Octokit } from "@octokit/rest";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { TotalLines } from "../components";
-import { BLACKLIST } from "../config";
-import { InstanceConfig } from "../services";
+import { getFileBlacklist } from "../getFileBlacklist";
+import { InstanceConfig, Settings } from "../services";
 import { processPrFiles } from "./processPrFiles";
 
 export async function addTotalLines(
   octokit: Octokit,
   instanceConfig: InstanceConfig,
+  settings: Settings,
 ) {
   const prRows = document.querySelectorAll("div[id^=issue_]");
   for (const prRow of prRows) {
@@ -17,6 +18,7 @@ export async function addTotalLines(
 
     let totalLinesAdded = 0;
     let totalLinesRemoved = 0;
+    const blacklist = getFileBlacklist(settings);
 
     await processPrFiles(
       octokit,
@@ -24,7 +26,7 @@ export async function addTotalLines(
       parseInt(prNumber),
       (files) => {
         files.forEach((file) => {
-          if (BLACKLIST.some((name) => file.filename.includes(name))) return;
+          if (blacklist.some((name) => file.filename.includes(name))) return;
           totalLinesAdded += file.additions;
           totalLinesRemoved += file.deletions;
         });

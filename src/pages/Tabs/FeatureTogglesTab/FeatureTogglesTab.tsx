@@ -39,6 +39,20 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           ariaLabel="Toggle persist to user profile"
         />
 
+        <FeatureItem
+          label="File Blacklist"
+          caption="Comma-separated list of filenames to exclude from line count
+          calculations. Files with these names will be ignored when
+          calculating total lines added/removed in pull requests."
+        />
+
+        <FeatureInput
+          storageKey="fileBlacklist"
+          placeholder="e.g. package-lock.json,pnpm-lock.yaml,yarn.lock"
+          ariaLabel="File Blacklist"
+          onError={onError}
+        />
+
         <SectionTitle>Pull Requests List</SectionTitle>
 
         <FeatureItem
@@ -99,14 +113,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         />
 
         <SectionTitle>Individual Pull Request</SectionTitle>
-
-        <FeatureItem
-          label="Assign random reviewer"
-          caption="Automatically assign a random reviewer to pull requests."
-          checked={features.randomReviewer}
-          onClick={() => onToggle("randomReviewer")}
-          ariaLabel="Toggle assign random reviewer"
-        />
 
         {/* Same as for the prs list page, as of now */}
         <FeatureItem
