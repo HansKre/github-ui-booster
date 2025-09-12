@@ -14,7 +14,7 @@
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "prepare": "husky",
-    "release": "npm run build && zip -r dist.zip dist"
+    "release": "npm run build && zip -r dist.zip dist && VERSION=$(jq -er .version public/manifest.json) && git tag v$VERSION"
   },
   "lint-staged": {
     "*": "prettier --write",

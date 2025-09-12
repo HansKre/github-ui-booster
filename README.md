@@ -1,6 +1,6 @@
 # GitHub UI Booster
 
-A Chrome extension that enhances GitHub and GitHub Enterprise UI with powerful productivity features. Built with TypeScript, React, and Manifest v3.
+A Chrome extension that enhances GitHub and GitHub Enterprise UI with powerful productivity features. Built with TypeScript, React, and Manifest v3. Add it to your Chrome by through the [Chrome web store](https://chromewebstore.google.com/detail/github-ui-booster/hipcgedmoamiahdjbdccjohllbikimoc)
 
 ## Features
 
@@ -80,19 +80,18 @@ This Chrome extension uses:
 
 ### Project Structure
 
-```
+```txt
 src/
-├── components/          # Reusable React components
-├── content/            # Content script functionality
-├── pages/              # Extension pages (popup, options)
-│   └── Tabs/          # Options page tabs
-├── services/          # Core services and utilities
-├── content_pr_page.tsx      # Individual PR page content script
-├── content_prs_page.tsx     # PRs listing page content script
-├── content_compare_page.tsx # Compare/diff page content script
-├── background.ts            # Service worker
-├── popup.tsx               # Extension popup
-└── options.tsx             # Options/settings page
+├── components/                 # Reusable React components
+├── content/                    # Content script functionality
+├── pages/                      # Extension pages (popup, options)
+├── services/                   # Core services and utilities
+├── content_pr_page.tsx         # Individual PR page content script
+├── content_prs_page.tsx        # PRs listing page content script
+├── content_compare_page.tsx    # Compare/diff page content script
+├── background.ts               # Service worker
+├── popup.tsx                   # Extension popup
+└── options.tsx                 # Options/settings page
 ```
 
 ## Configuration
@@ -110,8 +109,9 @@ The extension requires configuration through the Options page:
 1. Update version in `public/manifest.json`
 2. Run `npm run release` to build and create distribution package
 3. The release package will be created as `dist.zip`
+4. Commit work and push everything including tags by running `git push --tags`
 
-### Chrome Web Store
+### Publish on the Chrome Web Store
 
 1. Login to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
 2. Select the GitHub UI Booster extension
@@ -129,7 +129,7 @@ The extension requires configuration through the Options page:
 6. CMD+V
 7. SHIFT+S for the Resize Tool
 8. CMD+two-fingers to zoom out
-9. resize the pasted image as needed
+9. resize the pasted image as needed (CMD+click-and-hold+drag-with-one-finger to resize evenly)
 10. SHIFT+CMD+E to export
 
 ## Contributing
