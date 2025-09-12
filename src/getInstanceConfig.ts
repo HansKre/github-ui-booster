@@ -9,12 +9,19 @@ export function getInstanceConfig(
   );
   if (!instance) return undefined;
 
-  const org = getCurrent(instance.org);
+  // Extract org and repo from current URL
+  const urlSegments = window.location.pathname.split("/").filter(Boolean);
+  if (urlSegments.length < 2) return undefined;
 
+  const currentOrg = urlSegments[0];
+  const currentRepo = urlSegments[1];
+
+  // Check if org matches (including wildcard)
+  const org = getCurrentValue(instance.org, currentOrg);
   if (!org) return undefined;
 
-  const repo = getCurrent(instance.repo);
-
+  // Check if repo matches (including wildcard)
+  const repo = getCurrentValue(instance.repo, currentRepo);
   if (!repo) return undefined;
 
   const instanceConfig = {
@@ -26,10 +33,19 @@ export function getInstanceConfig(
   return instanceConfig;
 }
 
-function getCurrent(value: string) {
-  return split(value).find((value) =>
-    window.location.href.includes(`/${value}`),
-  );
+function getCurrentValue(
+  configValue: string,
+  urlValue: string,
+): string | undefined {
+  const configValues = split(configValue);
+
+  // If wildcard is present, return the current value from URL
+  if (configValues.includes("*")) {
+    return urlValue;
+  }
+
+  // Check if current value matches any configured values
+  return configValues.includes(urlValue) ? urlValue : undefined;
 }
 
 function split(value: string): string[] {

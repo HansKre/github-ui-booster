@@ -5,10 +5,14 @@ import styles from "./FeatureItem.module.scss";
 type Props = {
   label: string;
   caption: string;
-  checked: boolean;
-  onClick: () => void;
-  ariaLabel: string;
-};
+} & (
+  | {
+      checked: boolean;
+      onClick: () => void;
+      ariaLabel?: string;
+    }
+  | { checked?: never; onClick?: never; ariaLabel?: never }
+);
 
 export const FeatureItem = ({
   label,
@@ -25,12 +29,14 @@ export const FeatureItem = ({
         </FormControl.Label>
         <FormControl.Caption>{caption}</FormControl.Caption>
       </Box>
-      <ToggleSwitch
-        size="small"
-        checked={checked}
-        onClick={onClick}
-        aria-label={ariaLabel}
-      />
+      {onClick && (
+        <ToggleSwitch
+          size="small"
+          checked={checked}
+          onClick={onClick}
+          aria-label={ariaLabel}
+        />
+      )}
     </Box>
   );
 };
