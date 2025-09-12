@@ -4,7 +4,7 @@ import { InstanceConfig, Settings } from "./services";
 export function getInstanceConfig(
   settings: Settings,
 ): InstanceConfig | undefined {
-  const instance = settings.instances.find(({ ghBaseUrl }) =>
+  const instance = settings.instances?.find(({ ghBaseUrl }) =>
     window.location.href.includes(getUrlUiBase(ghBaseUrl)),
   );
   if (!instance) return undefined;

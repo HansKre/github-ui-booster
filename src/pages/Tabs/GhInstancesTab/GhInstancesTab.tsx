@@ -28,7 +28,7 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                   <Pagehead className={styles.container}>
                     <SectionTitle>{`GH Instance ${index + 1}`}</SectionTitle>
                     <RemoveButton
-                      disabled={values.instances.length === 1}
+                      disabled={values.instances?.length === 0}
                       onClick={() => arrayHelpers.remove(index)}
                     />
                   </Pagehead>
