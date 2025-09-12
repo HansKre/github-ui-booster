@@ -1,29 +1,41 @@
 import { DeepKeysOf } from "ts-type-safe";
 import { array, boolean, InferType, object, string } from "yup";
 
+/**
+ * yup-playground with demonstration of difference between
+ * .cast() and .validate()
+ *
+ * https://codesandbox.io/p/devbox/yup-playground-forked-r9yp64?workspaceId=ws_Q3Kknv9N2cCqm5xq41CasL
+ */
+
 export const autoFilterSchema = string().optional();
 
 export type AutoFilter = InferType<typeof autoFilterSchema>;
 
 const instanceConfigSchema = object({
-  pat: string().required().matches(/^ghp_/, "Should start with ghp_").min(30),
-  org: string().required(),
-  repo: string().required(),
-  ghBaseUrl: string().required().url(),
-  randomReviewers: string().default(""),
+  pat: string()
+    .required()
+    .matches(/^ghp_/, (d) => `${d.path} should start with ghp_`)
+    .min(30)
+    .trim(),
+  org: string().required().min(1).trim(),
+  repo: string().required().min(1).trim(),
+  ghBaseUrl: string().required().url().trim(),
+  randomReviewers: string().default("").trim(),
 });
 
 const featuresSchema = object({
-  baseBranchLabels: boolean().default(true),
-  changedFiles: boolean().default(true),
-  totalLinesPrs: boolean().default(true),
-  totalLinesPr: boolean().default(true),
-  reOrderPrs: boolean().default(true),
   addUpdateBranchButton: boolean().default(true),
   autoFilter: boolean().default(false),
-  prTitleFromJira: boolean().default(false),
+  baseBranchLabels: boolean().default(true),
+  changedFiles: boolean().default(true),
   descriptionTemplate: boolean().default(false),
+  persistToUserProfile: boolean().default(false),
+  prTitleFromJira: boolean().default(false),
   randomReviewer: boolean().default(false),
+  reOrderPrs: boolean().default(true),
+  totalLinesPr: boolean().default(true),
+  totalLinesPrs: boolean().default(true),
 });
 
 const jiraSchema = object({
@@ -32,12 +44,31 @@ const jiraSchema = object({
   issueKeyRegex: string().required(),
 });
 
+const FEATURES = {
+  addUpdateBranchButton: true,
+  autoFilter: false,
+  baseBranchLabels: true,
+  changedFiles: true,
+  descriptionTemplate: false,
+  persistToUserProfile: false,
+  prTitleFromJira: false,
+  randomReviewer: false,
+  reOrderPrs: true,
+  totalLinesPr: true,
+  totalLinesPrs: true,
+};
+
+const FILE_BLACKLIST = "package-lock.json,pnpm-lock.yaml,yarn.lock";
+
 export const settingsSchema = object({
-  instances: array(instanceConfigSchema).required(),
+  instances: array(instanceConfigSchema).optional(),
   autoFilter: string().optional(),
-  features: featuresSchema,
-  jira: jiraSchema.optional(),
-  descriptionTemplate: string().optional().default(""),
+  // will use the default if value is undefined when parsing
+  features: featuresSchema.default(FEATURES),
+  // .default(undefined) is required for validation to actually work
+  jira: jiraSchema.optional().default(undefined),
+  descriptionTemplate: string().optional(),
+  fileBlacklist: string().optional().default(FILE_BLACKLIST),
 });
 
 export type InstanceConfig = InferType<typeof instanceConfigSchema>;
@@ -46,33 +77,8 @@ export type Settings = InferType<typeof settingsSchema>;
 export type SettingName = DeepKeysOf<Settings>;
 
 export const INITIAL_VALUES: Settings = {
-  instances: [
-    {
-      pat: "",
-      org: "",
-      repo: "",
-      ghBaseUrl: "https://api.github.com",
-      randomReviewers: "",
-    },
-  ],
-  jira: {
-    pat: "Enter your Jira personal access token (at least 30 characters)",
-    baseUrl: "https://your-jira-instance.atlassian.net",
-    issueKeyRegex: "TEST-\\d+",
-  },
-  features: {
-    baseBranchLabels: true,
-    changedFiles: true,
-    totalLinesPrs: true,
-    totalLinesPr: true,
-    reOrderPrs: true,
-    addUpdateBranchButton: true,
-    autoFilter: false,
-    prTitleFromJira: false,
-    descriptionTemplate: false,
-    randomReviewer: false,
-  },
-  descriptionTemplate: "",
+  features: FEATURES,
+  fileBlacklist: FILE_BLACKLIST,
 };
 
 type Params = {
@@ -85,19 +91,53 @@ const defaultOnError = (e?: unknown) => {
   alert("Couldn't load or validate your Settings from chrome storage.");
 };
 
+// Gracefully cast settings
+function castSettings(data: unknown) {
+  return settingsSchema.cast(data, {
+    // remove unspecified keys from objects
+    stripUnknown: true,
+    // do not throw TypeError if casting doesn't produce a valid type
+    // will likely fallback to null if casting fails
+    assert: false,
+  });
+}
+
 export function getSettings({ onSuccess, onError = defaultOnError }: Params) {
+  // First try to get from local storage to check if persistToUserProfile is enabled
   chrome.storage.local
     .get(Object.keys(settingsSchema.fields))
-    .then((entries) => {
-      if (Object.keys(entries).length === 0) {
+    .then((localEntries) => {
+      if (Object.keys(localEntries).length === 0) {
+        // settings sync can't be activated if no no local entries are present
         void onSuccess(INITIAL_VALUES);
       } else {
-        settingsSchema
-          .validate(entries, { strict: true })
-          .then((settings) => onSuccess(settings))
-          .catch((e) => {
-            onError(e);
-          });
+        const localSettings = castSettings(localEntries);
+
+        // If persistToUserProfile is enabled, use sync storage
+        if (localSettings?.features.persistToUserProfile) {
+          void chrome.storage.sync
+            .get(Object.keys(settingsSchema.fields))
+            .then((syncEntries) => {
+              if (Object.keys(syncEntries).length === 0) {
+                // No sync data, use local settings
+                void onSuccess(localSettings);
+              } else {
+                const syncSettings = castSettings(syncEntries);
+
+                void onSuccess(syncSettings);
+              }
+            })
+            .catch((e) => {
+              console.warn(
+                "Sync storage access failed, using local. Error:",
+                e,
+              );
+              // Fallback to local if sync fails
+              void onSuccess(localSettings);
+            });
+        } else {
+          void onSuccess(localSettings);
+        }
       }
     })
     .catch(onError);

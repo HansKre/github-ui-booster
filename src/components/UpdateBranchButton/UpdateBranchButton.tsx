@@ -48,7 +48,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
 
 async function updateBranchAndPoll(
   octokit: OctokitWithCache,
-  instanceConfig: Settings["instances"][number],
+  instanceConfig: NonNullable<Settings["instances"]>[number],
   pr: RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number],
   lastDeviatingSha: string,
   onSuccess: () => void,

@@ -28,7 +28,7 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                   <Pagehead className={styles.container}>
                     <SectionTitle>{`GH Instance ${index + 1}`}</SectionTitle>
                     <RemoveButton
-                      disabled={values.instances.length === 1}
+                      disabled={values.instances?.length === 0}
                       onClick={() => arrayHelpers.remove(index)}
                     />
                   </Pagehead>
@@ -39,12 +39,12 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                   />
                   <FormField
                     label="Username or Organization"
-                    description="Your GitHub username or organization (only GitHub Enterprise). You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
+                    description="Your GitHub username or organization (only GitHub Enterprise). You can input multiple values using commas (e.g. value1,value2,value3) or use '*' as a wildcard to match any organization."
                     name={`instances[${index}].org`}
                   />
                   <FormField
                     label="Repository"
-                    description="You can input multiple values. Use commas to separate them (e.g. value1,value2,value3)."
+                    description="Repository name(s). You can input multiple values using commas (e.g. value1,value2,value3) or use '*' as a wildcard to match any repository."
                     name={`instances[${index}].repo`}
                   />
                   <FormField
@@ -52,13 +52,11 @@ export const GhInstancesTab = ({ values, isValid }: Props) => {
                     description="Use https://api.github.com for the public GitHub-instance, or ask your IT if running your own GitHub Enterprise Server."
                     name={`instances[${index}].ghBaseUrl`}
                   />
-                  {values.features.randomReviewer && (
-                    <FormField
-                      label="Random Reviewers"
-                      description="You can input multiple values. Use commas to separate them (e.g. user1,user2,user3)."
-                      name={`instances[${index}].randomReviewers`}
-                    />
-                  )}
+                  <FormField
+                    label="Random Reviewers"
+                    description="You can input multiple values. Use commas to separate them (e.g. user1,user2,user3)."
+                    name={`instances[${index}].randomReviewers`}
+                  />
                 </React.Fragment>
               ))}
             <AddButton

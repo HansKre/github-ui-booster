@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
-import { BLACKLIST } from "../config";
-import { InstanceConfig } from "../services";
+import { getFileBlacklist } from "../getFileBlacklist";
+import { InstanceConfig, Settings } from "../services";
 import { getPrFromLocation } from "./getPrFromLocation";
 import { processPrFiles } from "./processPrFiles";
 import { isOnPrPage } from "./utils/isOnPrPage";
@@ -8,6 +8,7 @@ import { isOnPrPage } from "./utils/isOnPrPage";
 export async function handleTotalLines(
   octokit: Octokit,
   instanceConfig: InstanceConfig,
+  settings: Settings,
 ) {
   const urlUiPr = isOnPrPage(instanceConfig);
   if (!urlUiPr) return;
@@ -17,10 +18,11 @@ export async function handleTotalLines(
 
   let totalLinesAdded = 0;
   let totalLinesRemoved = 0;
+  const blacklist = getFileBlacklist(settings);
 
   await processPrFiles(octokit, instanceConfig, prNumber, (files) => {
     files.forEach((file) => {
-      if (BLACKLIST.some((name) => file.filename.includes(name))) return;
+      if (blacklist.some((name) => file.filename.includes(name))) return;
       totalLinesAdded += file.additions;
       totalLinesRemoved += file.deletions;
     });

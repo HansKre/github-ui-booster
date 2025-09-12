@@ -82,7 +82,7 @@ async function executeScripts(settings: Settings) {
     }
 
     if (features.totalLinesPrs) {
-      promises.push(addTotalLines(octokit, instanceConfig));
+      promises.push(addTotalLines(octokit, instanceConfig, settings));
     }
 
     promises.push(addJiraStatus(settings));
