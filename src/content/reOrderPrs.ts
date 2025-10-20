@@ -18,6 +18,9 @@ export async function reOrderPrs(
       page: 1,
     });
 
+    // If there are no PRs, return early
+    if (prs.length === 0) return;
+
     // get the repo's default branch
     const { default_branch } = prs[0].head.repo;
 
