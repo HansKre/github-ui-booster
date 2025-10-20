@@ -1,5 +1,6 @@
 import { PlusIcon } from "@primer/octicons-react";
 import React from "react";
+import { DEFAULT_INSTANCE } from "../../services";
 import { Button } from "./Button";
 
 export type Props = {
@@ -14,7 +15,7 @@ export const AddButton: React.FC<Props> = ({ disabled, push }) => {
       variant="default"
       disabled={disabled}
       icon={PlusIcon}
-      onClick={() => push({})}
+      onClick={() => push(DEFAULT_INSTANCE)}
     >
       Add instance
     </Button>

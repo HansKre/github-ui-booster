@@ -76,6 +76,11 @@ export type Features = InferType<typeof featuresSchema>;
 export type Settings = InferType<typeof settingsSchema>;
 export type SettingName = DeepKeysOf<Settings>;
 
+export const DEFAULT_INSTANCE: Partial<InstanceConfig> = {
+  repo: "*",
+  ghBaseUrl: "https://api.github.com",
+};
+
 export const INITIAL_VALUES: Settings = {
   features: FEATURES,
   fileBlacklist: FILE_BLACKLIST,
