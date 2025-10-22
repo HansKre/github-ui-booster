@@ -14,7 +14,8 @@ type Props = {
 export const RandomReviewerButton = ({ octokit, instanceConfig }: Props) => {
   const [isLoading, isLoadingSet] = useState(false);
 
-  const handleClick = () => {
+  const handleClick: React.MouseEventHandler<HTMLSpanElement> = (e) => {
+    e.preventDefault();
     void assignRandomReviewer(octokit, instanceConfig, isLoadingSet);
   };
 
