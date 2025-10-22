@@ -5,7 +5,7 @@ module.exports = {
   },
   transformIgnorePatterns: ["node_modules/(?!(@octokit)/)"],
   testEnvironment: "jsdom",
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: "coverage",
   coverageReporters: ["text", "lcov", "html", "json-summary"],
   collectCoverageFrom: [
