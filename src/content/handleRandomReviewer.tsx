@@ -14,28 +14,36 @@ export const handleRandomReviewer = (
   const urlUiPr = isOnPrPage(instanceConfig);
   if (!urlUiPr) return;
 
-  const topRightSection = document.getElementsByClassName("tabnav-extra")[0];
-  if (!topRightSection) return;
-
-  createRandomReviewerButton(topRightSection, octokit, instanceConfig);
+  const detailsEl = document.getElementById("reviewers-select-menu");
+  createRandomReviewerButton(detailsEl, octokit, instanceConfig);
 };
 
 const createRandomReviewerButton = (
-  parent: Element,
+  detailsEl: Element | null,
   octokit: OctokitWithCache,
   instanceConfig: InstanceConfig,
 ) => {
-  if (parent.querySelector(`.${RANDOM_REVIEWER_BUTTON_CLASS}`)) return;
+  if (!detailsEl || !detailsEl.parentNode) return;
 
-  // make parent a flex container to align all children in it
-  if (parent instanceof HTMLElement)
-    parent.style.setProperty("display", "flex", "important");
+  if (detailsEl.parentNode?.querySelector(`.${RANDOM_REVIEWER_BUTTON_CLASS}`))
+    return;
 
-  const spanContainer = document.createElement("span");
-  spanContainer.classList.add(RANDOM_REVIEWER_BUTTON_CLASS);
-  parent.insertBefore(spanContainer, parent.firstChild);
+  const wrapperDiv = document.createElement("div");
+  wrapperDiv.style.cssText = `
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+  `;
 
-  const root = createRoot(spanContainer);
+  // move detailsEl inside the wrapperDiv
+  detailsEl.parentNode?.insertBefore(wrapperDiv, detailsEl);
+  wrapperDiv.appendChild(detailsEl);
+
+  const spanEl = document.createElement("span");
+  spanEl.classList.add(RANDOM_REVIEWER_BUTTON_CLASS);
+  wrapperDiv.appendChild(spanEl);
+
+  const root = createRoot(spanEl);
   root.render(
     <React.StrictMode>
       <RandomReviewerButton octokit={octokit} instanceConfig={instanceConfig} />

@@ -7,7 +7,7 @@ import styles from "./IconButton.module.scss";
 
 type Props = {
   Icon: Icon;
-  onClick: () => void;
+  onClick: React.MouseEventHandler<HTMLSpanElement>;
   isLoading: boolean;
   tooltipText?: string;
   className?: string;
