@@ -10,6 +10,7 @@ import reactHooksAddons from "eslint-plugin-react-hooks-addons";
 export default [
   {
     files: ["**/*.ts", "**/*.tsx", "**/*d.ts"],
+    ignores: ["**/__tests__/**"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -58,6 +59,68 @@ export default [
     },
   },
   {
-    ignores: ["**/node_modules/**", "**/build/**"],
+    files: ["**/__tests__/**/*.ts", "**/__tests__/**/*.tsx"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+        chrome: "readonly",
+        NodeJS: "readonly",
+      },
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parser: tsParser,
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+        project: "**/tsconfig.test.json",
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+    plugins: {
+      "@typescript-eslint": tsEslintPlugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      "react-hooks-addons": reactHooksAddons,
+    },
+    rules: {
+      ...eslintJs.configs.recommended.rules,
+      ...tsEslintPlugin.configs.recommended.rules,
+      ...tsEslintPlugin.configs["recommended-type-checked"].rules,
+      ...reactPlugin.configs.recommended.rules,
+      ...reactPlugin.configs["jsx-runtime"].rules,
+      ...reactHooksPlugin.configs.recommended.rules,
+      "react-hooks/exhaustive-deps": "error",
+      "react-hooks-addons/no-unused-deps": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "all",
+          argsIgnorePattern: "^[_]*$",
+        },
+      ],
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
+      "@typescript-eslint/unbound-method": "off",
+    },
+  },
+  {
+    ignores: [
+      "**/node_modules/**",
+      "**/build/**",
+      "**/dist/**",
+      "**/coverage/**",
+    ],
   },
 ];

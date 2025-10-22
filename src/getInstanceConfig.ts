@@ -3,14 +3,15 @@ import { InstanceConfig, Settings } from "./services";
 
 export function getInstanceConfig(
   settings: Settings,
+  location: Location = window.location,
 ): InstanceConfig | undefined {
   const instance = settings.instances?.find(({ ghBaseUrl }) =>
-    window.location.href.includes(getUrlUiBase(ghBaseUrl)),
+    location.href.includes(getUrlUiBase(ghBaseUrl)),
   );
   if (!instance) return undefined;
 
   // Extract org and repo from current URL
-  const urlSegments = window.location.pathname.split("/").filter(Boolean);
+  const urlSegments = location.pathname.split("/").filter(Boolean);
   if (urlSegments.length < 2) return undefined;
 
   const currentOrg = urlSegments[0];
