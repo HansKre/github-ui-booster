@@ -3,3 +3,6 @@ npx --no-install lint-staged
 
 echo Running tsc...
 npx tsc --noEmit
+
+echo Running tests...
+npm run test

@@ -25,7 +25,13 @@ export async function addJiraStatus(settings: Settings) {
 
     const issueKey = match[0];
 
-    const result = await JiraService.fetchJiraIssue(issueKey);
+    let result;
+    try {
+      result = await JiraService.fetchJiraIssue(issueKey);
+    } catch (error) {
+      console.error(`Failed to fetch JIRA issue ${issueKey}:`, error);
+      continue;
+    }
 
     if (!result) continue;
 

@@ -1,8 +1,11 @@
 import { InstanceConfig, Settings } from "../../services";
 import { urls } from "./urls";
 
-export function isOnComparePage(instanceConfig: InstanceConfig): boolean {
-  return window.location.href.includes(urls(instanceConfig).urlUiCompare);
+export function isOnComparePage(
+  instanceConfig: InstanceConfig,
+  location: Location = window.location,
+): boolean {
+  return location.href.includes(urls(instanceConfig).urlUiCompare);
 }
 
 export const extractJiraIssueKeyFromBranch = (settings: Settings) => {

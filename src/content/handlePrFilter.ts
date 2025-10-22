@@ -10,11 +10,12 @@ export function handlePrFilter(
   instanceConfig: InstanceConfig,
   autoFilter: AutoFilter,
   filterIntercepted?: string,
+  location: Location = window.location,
 ) {
   theInstanceConfig = instanceConfig;
   if (intercepted) return;
 
-  if (!isOnPrsPage(instanceConfig)) {
+  if (!isOnPrsPage(instanceConfig, location)) {
     document.removeEventListener("click", onQuickFilterClick);
     return;
   }
