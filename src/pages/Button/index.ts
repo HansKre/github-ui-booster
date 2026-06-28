@@ -4,3 +4,4 @@ export { ExportButton } from "./ExportButton";
 export { ImportButton } from "./ImportButton";
 export { RemoveButton } from "./RemoveButton";
 export { SubmitButton } from "./SubmitButton";
+export { TestAiButton } from "./TestAiButton";

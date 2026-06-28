@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { JiraStatus } from "../components/JiraStatus";
 import { JiraService, Settings } from "../services";
-import { fetchJiraIssueSchema } from "./types";
+import { fetchJiraIssueFullSchema } from "./types";
 
 export async function addJiraStatus(settings: Settings) {
   if (!settings.jira) return;
@@ -27,7 +27,7 @@ export async function addJiraStatus(settings: Settings) {
 
     let result;
     try {
-      result = await JiraService.fetchJiraIssue(issueKey);
+      result = await JiraService.fetchJiraIssueFull(issueKey);
     } catch (error) {
       console.error(`Failed to fetch JIRA issue ${issueKey}:`, error);
       continue;
@@ -49,7 +49,7 @@ export async function addJiraStatus(settings: Settings) {
     root.render(
       <React.StrictMode>
         <JiraStatus
-          result={fetchJiraIssueSchema.validateSync(result)}
+          result={fetchJiraIssueFullSchema.validateSync(result)}
           issueKey={issueKey}
         />
       </React.StrictMode>,

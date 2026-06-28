@@ -26,6 +26,7 @@ const instanceConfigSchema = object({
 
 const featuresSchema = object({
   addUpdateBranchButton: boolean().default(true),
+  aiSummary: boolean().default(false),
   autoFilter: boolean().default(false),
   baseBranchLabels: boolean().default(true),
   changedFiles: boolean().default(true),
@@ -44,8 +45,17 @@ const jiraSchema = object({
   issueKeyRegex: string().required(),
 });
 
+const aiSchema = object({
+  apiType: string().required().oneOf(["openai", "azure"]).default("openai"),
+  apiUrl: string().required().url(),
+  apiKey: string().required().min(10),
+  model: string().required().min(1),
+  apiVersion: string().optional().default("2024-10-21"),
+});
+
 const FEATURES = {
   addUpdateBranchButton: true,
+  aiSummary: false,
   autoFilter: false,
   baseBranchLabels: true,
   changedFiles: true,
@@ -67,6 +77,7 @@ export const settingsSchema = object({
   features: featuresSchema.default(FEATURES),
   // .default(undefined) is required for validation to actually work
   jira: jiraSchema.optional().default(undefined),
+  ai: aiSchema.optional().default(undefined),
   descriptionTemplate: string().optional(),
   fileBlacklist: string().optional().default(FILE_BLACKLIST),
 });

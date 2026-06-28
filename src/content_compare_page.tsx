@@ -1,8 +1,13 @@
+import { addAiSummary } from "./content/addAiSummary";
 import { addPrTitleFromJira } from "./content/addPrTitleFromJira";
 import { addDescriptionTemplate } from "./content/addDescriptionTemplate";
-import { isOnComparePage } from "./content/utils/comparePageUtils";
+import { FetchJiraIssueFull } from "./content/types";
+import {
+  extractJiraIssueKeyFromBranch,
+  isOnComparePage,
+} from "./content/utils/comparePageUtils";
 import { getInstanceConfig } from "./getInstanceConfig";
-import { getSettings, InstanceConfig, Settings } from "./services";
+import { getSettings, InstanceConfig, JiraService, Settings } from "./services";
 
 getSettings({
   onSuccess: handleContentChange,
@@ -25,8 +30,27 @@ async function executeScripts(
     if (settings.features.descriptionTemplate) {
       addDescriptionTemplate(settings);
     }
-    if (settings.features.prTitleFromJira) {
-      await addPrTitleFromJira(settings);
+
+    const issueKey = extractJiraIssueKeyFromBranch(settings);
+    let jiraData: FetchJiraIssueFull | null = null;
+
+    if (
+      issueKey &&
+      (settings.features.prTitleFromJira || settings.features.aiSummary)
+    ) {
+      try {
+        jiraData = await JiraService.fetchJiraIssueFull(issueKey);
+      } catch (error) {
+        console.error("[JIRA] Failed to fetch issue data:", error);
+      }
+    }
+
+    if (settings.features.prTitleFromJira && issueKey && jiraData) {
+      addPrTitleFromJira(issueKey, jiraData);
+    }
+
+    if (settings.features.aiSummary && issueKey && jiraData) {
+      await addAiSummary(issueKey, jiraData);
     }
   } catch (err) {
     alert(

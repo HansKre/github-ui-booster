@@ -7,7 +7,7 @@ import { TABS, Tab } from "../constants";
 import { Features, getSettings, INITIAL_VALUES } from "../services/getSettings";
 import { Settings, persistSettings, settingsSchema } from "../services";
 import { SubmitButton } from "./Button";
-import { GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
+import { AiTab, GhInstancesTab, ImportExportTab, JiraTab } from "./Tabs";
 import { FeatureTogglesTab } from "./Tabs/FeatureTogglesTab";
 import styles from "./Options.module.scss";
 
@@ -109,6 +109,7 @@ export const Options = () => {
         );
       case "GH Instances":
       case "Jira":
+      case "AI":
         return (
           <Formik
             enableReinitialize
@@ -123,6 +124,7 @@ export const Options = () => {
                   <GhInstancesTab values={values} isValid={isValid} />
                 )}
                 {activeTab === "Jira" && <JiraTab disabled={isSubmitting} />}
+                {activeTab === "AI" && <AiTab disabled={isSubmitting} />}
                 <Box sx={{ marginTop: 4 }}>
                   <SubmitButton
                     isValid={isValid}

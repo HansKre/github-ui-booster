@@ -12,17 +12,18 @@ describe("addJiraStatus", () => {
   const mockSettings: Settings = {
     instances: [],
     features: {
+      addUpdateBranchButton: false,
+      aiSummary: false,
+      autoFilter: false,
       baseBranchLabels: true,
       changedFiles: true,
-      totalLinesPrs: true,
-      totalLinesPr: true,
-      reOrderPrs: false,
-      addUpdateBranchButton: false,
-      autoFilter: false,
-      prTitleFromJira: true,
       descriptionTemplate: false,
-      randomReviewer: false,
       persistToUserProfile: false,
+      prTitleFromJira: true,
+      randomReviewer: false,
+      reOrderPrs: false,
+      totalLinesPr: true,
+      totalLinesPrs: true,
     },
     jira: {
       pat: "jira_token_12345678901234567890123456",
@@ -33,12 +34,12 @@ describe("addJiraStatus", () => {
   };
 
   const mockJiraResponse = {
-    fields: {
-      status: { name: "In Progress" },
-      priority: { name: "High" },
-      assignee: { displayName: "John Doe" },
-      summary: "Test issue summary",
-    },
+    summary: "Test issue summary",
+    description: "Some description",
+    status: "In Progress",
+    priority: "High",
+    assignee: "John Doe",
+    comments: [],
   };
 
   let mockRoot: {
@@ -62,17 +63,19 @@ describe("addJiraStatus", () => {
 
     // Mock JiraService
     jest
-      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssue")
+      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssueFull")
       .mockResolvedValue(mockJiraResponse);
 
     // Mock validateSync
     jest
-      .spyOn(typesModule.fetchJiraIssueSchema, "validateSync")
+      .spyOn(typesModule.fetchJiraIssueFullSchema, "validateSync")
       .mockReturnValue({
         status: "In Progress",
         priority: "High",
         assignee: "John Doe",
         summary: "Test issue summary",
+        description: "Some description",
+        comments: [],
       });
   });
 
@@ -88,7 +91,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(settingsWithoutJira);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
   test("alerts if jira pat is set but issueKeyRegex is missing", async () => {
@@ -106,7 +111,9 @@ describe("addJiraStatus", () => {
     expect(alert).toHaveBeenCalledWith(
       "Jira issue key regex is not set. Please configure it in the settings.",
     );
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
   test("fetches and displays JIRA status for PR with matching issue key", async () => {
@@ -124,9 +131,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).toHaveBeenCalledWith(
-      "TEST-1234",
-    );
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).toHaveBeenCalledWith("TEST-1234");
     expect(createRoot).toHaveBeenCalledTimes(1);
     expect(mockRoot.render).toHaveBeenCalledTimes(1);
   });
@@ -144,7 +151,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
   test("skips PR when issue link text does not match regex", async () => {
@@ -161,13 +170,15 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
-  test("skips PR when JIRA API returns null", async () => {
+  test("skips PR when JIRA API rejects", async () => {
     jest
-      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssue")
-      .mockResolvedValue(null);
+      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssueFull")
+      .mockRejectedValue(new Error("Not found"));
 
     document.body.innerHTML = `
       <div id="issue_123">
@@ -200,7 +211,7 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).toHaveBeenCalled();
+    expect(JiraServiceModule.JiraService.fetchJiraIssueFull).toHaveBeenCalled();
     expect(createRoot).not.toHaveBeenCalled();
   });
 
@@ -268,14 +279,14 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).toHaveBeenCalledTimes(
-      2,
-    );
     expect(
-      JiraServiceModule.JiraService.fetchJiraIssue,
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).toHaveBeenCalledTimes(2);
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
     ).toHaveBeenNthCalledWith(1, "TEST-1234");
     expect(
-      JiraServiceModule.JiraService.fetchJiraIssue,
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
     ).toHaveBeenNthCalledWith(2, "TEST-5678");
     expect(createRoot).toHaveBeenCalledTimes(2);
   });
@@ -295,9 +306,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).toHaveBeenCalledWith(
-      "TEST-9999",
-    );
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).toHaveBeenCalledWith("TEST-9999");
   });
 
   test("handles custom regex pattern", async () => {
@@ -324,9 +335,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(customSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).toHaveBeenCalledWith(
-      "ABC-456",
-    );
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).toHaveBeenCalledWith("ABC-456");
   });
 
   test("validates JIRA response with schema", async () => {
@@ -344,9 +355,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(typesModule.fetchJiraIssueSchema.validateSync).toHaveBeenCalledWith(
-      mockJiraResponse,
-    );
+    expect(
+      typesModule.fetchJiraIssueFullSchema.validateSync,
+    ).toHaveBeenCalledWith(mockJiraResponse);
   });
 
   test("renders JiraStatus component with validated result", async () => {
@@ -374,7 +385,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
   test("handles issue link with no text content", async () => {
@@ -391,7 +404,9 @@ describe("addJiraStatus", () => {
 
     await addJiraStatus(mockSettings);
 
-    expect(JiraServiceModule.JiraService.fetchJiraIssue).not.toHaveBeenCalled();
+    expect(
+      JiraServiceModule.JiraService.fetchJiraIssueFull,
+    ).not.toHaveBeenCalled();
   });
 
   test("creates span element for rendering", async () => {
@@ -441,7 +456,7 @@ describe("addJiraStatus", () => {
       .mockImplementation(() => {});
 
     jest
-      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssue")
+      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssueFull")
       .mockRejectedValue(new Error("JIRA API error"));
 
     document.body.innerHTML = `
@@ -483,7 +498,7 @@ describe("addJiraStatus", () => {
     const fetchOrder: string[] = [];
 
     jest
-      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssue")
+      .spyOn(JiraServiceModule.JiraService, "fetchJiraIssueFull")
       .mockImplementation(async (issueKey: string) => {
         fetchOrder.push(issueKey);
         return Promise.resolve(mockJiraResponse);

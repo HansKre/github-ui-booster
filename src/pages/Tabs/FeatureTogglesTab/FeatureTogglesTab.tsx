@@ -148,6 +148,14 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           onError={onError}
           disabled={!features.descriptionTemplate}
         />
+
+        <FeatureItem
+          label="AI JIRA Summary"
+          caption={`Automatically generate an AI summary from the JIRA ticket description and comments, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_SUMMARY} in your template to control placement. Configure the AI endpoint in the AI tab.`}
+          checked={features.aiSummary}
+          onClick={() => onToggle("aiSummary")}
+          ariaLabel="Toggle AI JIRA summary"
+        />
       </Box>
     </>
   );

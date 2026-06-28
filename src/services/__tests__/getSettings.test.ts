@@ -26,6 +26,7 @@ describe("getSettings", () => {
     const localSettings: Settings = {
       features: {
         addUpdateBranchButton: true,
+        aiSummary: false,
         autoFilter: false,
         baseBranchLabels: false,
         changedFiles: true,
@@ -55,6 +56,7 @@ describe("getSettings", () => {
     const localSettings: Settings = {
       features: {
         addUpdateBranchButton: true,
+        aiSummary: false,
         autoFilter: false,
         baseBranchLabels: false,
         changedFiles: true,
@@ -92,6 +94,7 @@ describe("getSettings", () => {
     const localSettings: Settings = {
       features: {
         addUpdateBranchButton: true,
+        aiSummary: false,
         autoFilter: false,
         baseBranchLabels: false,
         changedFiles: true,
@@ -122,6 +125,7 @@ describe("getSettings", () => {
     const localSettings: Settings = {
       features: {
         addUpdateBranchButton: true,
+        aiSummary: false,
         autoFilter: false,
         baseBranchLabels: false,
         changedFiles: true,
@@ -225,6 +229,7 @@ describe("getSettingValue", () => {
     const settings: Settings = {
       features: {
         addUpdateBranchButton: true,
+        aiSummary: false,
         autoFilter: false,
         baseBranchLabels: false,
         changedFiles: true,
