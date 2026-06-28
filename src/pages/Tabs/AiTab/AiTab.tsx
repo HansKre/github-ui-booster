@@ -71,6 +71,7 @@ export const AiTab: React.FC<Props> = ({ disabled, features, onToggle }) => {
             <option value="azure">Azure OpenAI</option>
           </Field>
         </div>
+        <p className={styles.error} />
       </div>
 
       <FormField
