@@ -35,23 +35,20 @@ export const Options = () => {
   }, [loadSettings]);
 
   const handleToggle = (key: keyof Features) => {
-    try {
-      const updatedFeatures = {
-        ...features,
-        [key]: !features[key],
-      };
-      setFeatures(updatedFeatures);
-      chrome.storage.local.set({ features: updatedFeatures }, () => {
-        if (chrome.runtime.lastError) {
-          showError(chrome.runtime.lastError.message);
-        }
-      });
-    } catch (err) {
+    const updatedFeatures = { ...features, [key]: !features[key] };
+    setFeatures(updatedFeatures);
+    initialValuesSet((prev) => ({ ...prev, features: updatedFeatures }));
+    const useSync = updatedFeatures.persistToUserProfile;
+    const storage = useSync ? chrome.storage.sync : chrome.storage.local;
+    storage.set({ features: updatedFeatures }).catch((err) => {
       showError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while saving your settings",
+        err instanceof Error ? err.message : "Failed to save feature toggle",
       );
+    });
+    if (useSync) {
+      chrome.storage.local
+        .set({ features: updatedFeatures })
+        .catch(() => undefined);
     }
   };
 
@@ -73,11 +70,12 @@ export const Options = () => {
   const handleSubmit = (
     values: Settings,
     { setSubmitting, resetForm }: FormikHelpers<Settings>,
-  ) =>
+  ) => {
+    const merged = { ...values, features };
     persistSettings({
-      values,
+      values: merged,
       onSuccess: () => {
-        resetForm({ values });
+        resetForm({ values: merged });
         resultSet("Saved successfully");
         showSuccess("Settings saved successfully");
       },
@@ -87,6 +85,7 @@ export const Options = () => {
       },
       onSettled: () => setSubmitting(false),
     });
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {

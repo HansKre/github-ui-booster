@@ -298,11 +298,13 @@ async function callAiEndpoint(
 
 function buildSummarizationMessages(payload: AiPayload): ChatMessage[] {
   const systemPrompt = `You are a technical writer helping developers create pull request descriptions. Given a JIRA ticket description and its comments, create a concise summary suitable for a PR description. Focus on:
-- What the ticket is about (the problem or feature)
+- Requirements and specification
+- Implementation hints and important details
+- Expected behavior
 - Key decisions made in comments
 - Acceptance criteria if mentioned
 
-Keep it concise (3-5 bullet points). Use markdown formatting. Do not include any preamble or meta-commentary, just output the summary directly.`;
+Exclude any test results, test execution logs, or QA pass/fail information. Keep it concise (3-5 bullet points). Use markdown formatting. Do not include any preamble or meta-commentary, just output the summary directly.`;
 
   const parts: string[] = [];
   parts.push(`## Ticket: ${payload.issueKey}`);
