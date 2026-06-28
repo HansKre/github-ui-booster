@@ -156,6 +156,14 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           onClick={() => onToggle("aiSummary")}
           ariaLabel="Toggle AI JIRA summary"
         />
+
+        <FeatureItem
+          label="AI Code Diff Summary"
+          caption={`Automatically generate an AI summary of the code changes (diff) between branches, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_CODE_SUMMARY} in your template to control placement. Configure the AI endpoint in the AI tab.`}
+          checked={features.aiCodeSummary}
+          onClick={() => onToggle("aiCodeSummary")}
+          ariaLabel="Toggle AI Code Diff summary"
+        />
       </Box>
     </>
   );

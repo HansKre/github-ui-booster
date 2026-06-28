@@ -34,6 +34,7 @@ global.chrome = {
 describe("FeatureTogglesTab", () => {
   const mockFeatures: Features = {
     addUpdateBranchButton: false,
+    aiCodeSummary: false,
     aiSummary: false,
     autoFilter: false,
     baseBranchLabels: true,
@@ -234,6 +235,7 @@ describe("FeatureTogglesTab", () => {
   test("renders with all features enabled", async () => {
     const allEnabled: Features = {
       addUpdateBranchButton: true,
+      aiCodeSummary: true,
       aiSummary: true,
       autoFilter: true,
       baseBranchLabels: true,
@@ -263,6 +265,7 @@ describe("FeatureTogglesTab", () => {
   test("renders with all features disabled", async () => {
     const allDisabled: Features = {
       addUpdateBranchButton: false,
+      aiCodeSummary: false,
       aiSummary: false,
       autoFilter: false,
       baseBranchLabels: false,

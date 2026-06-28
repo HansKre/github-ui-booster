@@ -8,6 +8,7 @@ describe("getInstanceConfig", () => {
   const createMockSettings = (overrides: Partial<Settings> = {}): Settings => ({
     features: {
       addUpdateBranchButton: true,
+      aiCodeSummary: false,
       aiSummary: false,
       autoFilter: false,
       baseBranchLabels: true,

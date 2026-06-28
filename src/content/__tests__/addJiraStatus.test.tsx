@@ -13,6 +13,7 @@ describe("addJiraStatus", () => {
     instances: [],
     features: {
       addUpdateBranchButton: false,
+      aiCodeSummary: false,
       aiSummary: false,
       autoFilter: false,
       baseBranchLabels: true,

@@ -65,6 +65,7 @@ describe("extractJiraIssueKeyFromBranch", () => {
   const createMockSettings = (issueKeyRegex?: string): Settings => ({
     features: {
       addUpdateBranchButton: true,
+      aiCodeSummary: false,
       aiSummary: false,
       autoFilter: false,
       baseBranchLabels: true,

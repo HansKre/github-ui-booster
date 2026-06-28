@@ -26,6 +26,7 @@ const instanceConfigSchema = object({
 
 const featuresSchema = object({
   addUpdateBranchButton: boolean().default(true),
+  aiCodeSummary: boolean().default(false),
   aiSummary: boolean().default(false),
   autoFilter: boolean().default(false),
   baseBranchLabels: boolean().default(true),
@@ -55,6 +56,7 @@ const aiSchema = object({
 
 const FEATURES = {
   addUpdateBranchButton: true,
+  aiCodeSummary: false,
   aiSummary: false,
   autoFilter: false,
   baseBranchLabels: true,
