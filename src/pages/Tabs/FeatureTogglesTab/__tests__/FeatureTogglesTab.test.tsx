@@ -138,7 +138,6 @@ describe("FeatureTogglesTab", () => {
       expect(screen.getByText("Reorder Pull Requests")).toBeInTheDocument();
       expect(screen.getByText("Add Update Branch Button")).toBeInTheDocument();
       expect(screen.getByText("Auto Filter")).toBeInTheDocument();
-      expect(screen.getByText("Add PR Title from Jira")).toBeInTheDocument();
       expect(screen.getByText("Description Template")).toBeInTheDocument();
     });
   });

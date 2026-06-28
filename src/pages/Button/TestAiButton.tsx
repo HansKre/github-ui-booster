@@ -7,9 +7,10 @@ import { Button } from "./Button";
 
 type Props = {
   disabled: boolean;
+  onTestResult?: (success: boolean) => void;
 };
 
-export const TestAiButton: React.FC<Props> = ({ disabled }) => {
+export const TestAiButton: React.FC<Props> = ({ disabled, onTestResult }) => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   const { values } = useFormikContext<Settings>();
@@ -18,6 +19,7 @@ export const TestAiButton: React.FC<Props> = ({ disabled }) => {
     const aiConfig = values.ai;
     if (!aiConfig?.apiUrl || !aiConfig?.apiKey || !aiConfig?.model) {
       setResult("Fill in API URL, API Key, and Model first.");
+      onTestResult?.(false);
       return;
     }
 
@@ -31,6 +33,7 @@ export const TestAiButton: React.FC<Props> = ({ disabled }) => {
 
         if (chrome.runtime.lastError) {
           setResult(`Error: ${chrome.runtime.lastError.message}`);
+          onTestResult?.(false);
           return;
         }
 
@@ -41,13 +44,16 @@ export const TestAiButton: React.FC<Props> = ({ disabled }) => {
           typeof response.data.reply === "string"
         ) {
           setResult(`Success: "${response.data.reply.slice(0, 100)}"`);
+          onTestResult?.(true);
         } else if (
           hasOwnProperties(response, ["error"]) &&
           typeof response.error === "string"
         ) {
           setResult(`Failed: ${response.error}`);
+          onTestResult?.(false);
         } else {
           setResult(`Failed: ${JSON.stringify(response)}`);
+          onTestResult?.(false);
         }
       },
     );

@@ -122,8 +122,20 @@ export const Options = () => {
                 {activeTab === "GH Instances" && (
                   <GhInstancesTab values={values} isValid={isValid} />
                 )}
-                {activeTab === "Jira" && <JiraTab disabled={isSubmitting} />}
-                {activeTab === "AI" && <AiTab disabled={isSubmitting} />}
+                {activeTab === "Jira" && (
+                  <JiraTab
+                    disabled={isSubmitting}
+                    features={features}
+                    onToggle={handleToggle}
+                  />
+                )}
+                {activeTab === "AI" && (
+                  <AiTab
+                    disabled={isSubmitting}
+                    features={features}
+                    onToggle={handleToggle}
+                  />
+                )}
                 <Box sx={{ marginTop: 4 }}>
                   <SubmitButton
                     isValid={isValid}

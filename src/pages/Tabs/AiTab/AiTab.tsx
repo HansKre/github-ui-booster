@@ -1,41 +1,76 @@
 import { Field, useFormikContext } from "formik";
-import React from "react";
-import { Paragraph, Subtitle } from "../../../components";
+import React, { useState } from "react";
+import {
+  FeatureItem,
+  Paragraph,
+  SectionTitle,
+  Subtitle,
+} from "../../../components";
+import { DescriptionTemplatePlaceholders } from "../../../content";
 import { Settings } from "../../../services";
+import { Features } from "../../../services/getSettings";
 import { FormField } from "../../FormField";
 import { TestAiButton } from "../../Button";
+import { AiDebugHints } from "./AiDebugHints";
 import styles from "../../FormField/FormField.module.scss";
 
 type Props = {
   disabled: boolean;
+  features: Features;
+  onToggle: (key: keyof Features) => void;
 };
 
-export const AiTab: React.FC<Props> = ({ disabled }) => {
+export const AiTab: React.FC<Props> = ({ disabled, features, onToggle }) => {
   const { values } = useFormikContext<Settings>();
   const isAzure = values.ai?.apiType === "azure";
+  const [debugOpen, setDebugOpen] = useState(false);
 
   return (
-    <div data-testid="AiTab">
+    <div
+      data-testid="AiTab"
+      style={{ display: "flex", flexDirection: "column", gap: "24px" }}
+    >
       <Subtitle>
-        Configure AI integration for automatic JIRA ticket summarization in PR
-        descriptions.
+        Configure AI integration for automatic summarization in PR descriptions.
       </Subtitle>
+
+      <SectionTitle>AI Features</SectionTitle>
+
+      <FeatureItem
+        label="AI JIRA Summary"
+        caption={`Automatically generate an AI summary from the JIRA ticket description and comments, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_SUMMARY} in your template to control placement.`}
+        checked={features.aiSummary}
+        onClick={() => onToggle("aiSummary")}
+        ariaLabel="Toggle AI JIRA summary"
+      />
+
+      <FeatureItem
+        label="AI Code Diff Summary"
+        caption={`Automatically generate an AI summary of the code changes (diff) between branches, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_CODE_SUMMARY} in your template to control placement.`}
+        checked={features.aiCodeSummary}
+        onClick={() => onToggle("aiCodeSummary")}
+        ariaLabel="Toggle AI Code Diff summary"
+      />
+
+      <SectionTitle>Configuration</SectionTitle>
 
       <div className={styles.fieldWrapper}>
         <label className={styles.label} htmlFor="ai.apiType">
           Provider Type
         </label>
         <Paragraph>Select the API format your AI endpoint uses.</Paragraph>
-        <Field
-          as="select"
-          id="ai.apiType"
-          name="ai.apiType"
-          className={styles.field}
-          disabled={disabled}
-        >
-          <option value="openai">OpenAI-compatible</option>
-          <option value="azure">Azure OpenAI</option>
-        </Field>
+        <div className={styles.selectWrap}>
+          <Field
+            as="select"
+            id="ai.apiType"
+            name="ai.apiType"
+            className={styles.selectField}
+            disabled={disabled}
+          >
+            <option value="openai">OpenAI-compatible</option>
+            <option value="azure">Azure OpenAI</option>
+          </Field>
+        </div>
       </div>
 
       <FormField
@@ -78,7 +113,14 @@ export const AiTab: React.FC<Props> = ({ disabled }) => {
         />
       )}
 
-      <TestAiButton disabled={disabled} />
+      <TestAiButton
+        disabled={disabled}
+        onTestResult={(success) => {
+          if (!success) setDebugOpen(true);
+        }}
+      />
+
+      <AiDebugHints open={debugOpen} />
     </div>
   );
 };

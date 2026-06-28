@@ -126,14 +126,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
         <SectionTitle>Create Pull Request</SectionTitle>
 
         <FeatureItem
-          label="Add PR Title from Jira"
-          caption="Automatically set the pull request title based on the Jira issue key found in the branch name"
-          checked={features.prTitleFromJira}
-          onClick={() => onToggle("prTitleFromJira")}
-          ariaLabel="Toggle add PR title from Jira"
-        />
-
-        <FeatureItem
           label="Description Template"
           caption={`Add a template description to pull requests. You can use Markdown syntax for formatting.
           Add ${DescriptionTemplatePlaceholders.JIRA_TICKET} to automatically insert the link to the Jira ticket based on the branch name.`}
@@ -147,22 +139,6 @@ export const FeatureTogglesTab: React.FC<Props> = ({
           ariaLabel="Description Template"
           onError={onError}
           disabled={!features.descriptionTemplate}
-        />
-
-        <FeatureItem
-          label="AI JIRA Summary"
-          caption={`Automatically generate an AI summary from the JIRA ticket description and comments, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_SUMMARY} in your template to control placement. Configure the AI endpoint in the AI tab.`}
-          checked={features.aiSummary}
-          onClick={() => onToggle("aiSummary")}
-          ariaLabel="Toggle AI JIRA summary"
-        />
-
-        <FeatureItem
-          label="AI Code Diff Summary"
-          caption={`Automatically generate an AI summary of the code changes (diff) between branches, and insert it into the PR description. Use ${DescriptionTemplatePlaceholders.AI_CODE_SUMMARY} in your template to control placement. Configure the AI endpoint in the AI tab.`}
-          checked={features.aiCodeSummary}
-          onClick={() => onToggle("aiCodeSummary")}
-          ariaLabel="Toggle AI Code Diff summary"
         />
       </Box>
     </>
