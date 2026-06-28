@@ -235,8 +235,10 @@ describe("addBaseBranchLabels", () => {
 
     await addBaseBranchLabels(mockOctokit, mockInstanceConfig);
 
-    expect(alert).toHaveBeenCalledWith("Error fetching PR data. Check console");
-    expect(console.error).toHaveBeenCalledWith(mockError);
+    expect(console.error).toHaveBeenCalledWith(
+      "Error fetching PR data:",
+      mockError,
+    );
   });
 
   test("adds class to PR row when injecting label", async () => {

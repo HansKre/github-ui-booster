@@ -79,7 +79,6 @@ export async function reOrderPrs(
       rowBasePr.append(rowCurrentPr);
     });
   } catch (err) {
-    alert("Error fetching PR data. Check console");
-    console.error(err);
+    console.error("Error fetching PR data:", err);
   }
 }

@@ -158,10 +158,7 @@ export async function removeAndReaddUpdateBranchButton(
     Spinner.showSpinner(SPINNER_PARENT);
     await addUpdateBranchButton(octokit, instanceConfig);
   } catch (err) {
-    alert(
-      "Error in content_prs_page-script. Check console and report if the issue persists.",
-    );
-    console.error(err);
+    console.error("Error in content_prs_page-script:", err);
   } finally {
     Spinner.hideSpinner();
   }

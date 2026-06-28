@@ -230,8 +230,8 @@ describe("addChangedFiles", () => {
     await addChangedFiles(mockOctokit, mockInstanceConfig);
 
     expect(processPrFilesMock).not.toHaveBeenCalled();
-    expect(injectPrFilesSearchMock).toHaveBeenCalledWith([], expect.any(Map));
-    expect(injectFilesMock).toHaveBeenCalledWith(expect.any(Map));
+    expect(injectPrFilesSearchMock).not.toHaveBeenCalled();
+    expect(injectFilesMock).not.toHaveBeenCalled();
   });
 
   test("handles API error when fetching PRs", async () => {

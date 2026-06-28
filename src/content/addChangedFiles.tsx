@@ -18,6 +18,8 @@ export async function addChangedFiles(
     page: 1,
   });
 
+  if (prs.length === 0) return;
+
   // Fetch PR files
   const prFilesMap = new Map<number, Files>();
   for (const pr of prs) {

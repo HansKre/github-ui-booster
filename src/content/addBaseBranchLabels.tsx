@@ -24,6 +24,8 @@ export async function addBaseBranchLabels(
       page: 1,
     });
 
+    if (prs.length === 0) return;
+
     const prRows = document.querySelectorAll("div[id^=issue_]");
     prRows.forEach((prRow) => {
       // Add labels indicating the base-ref to every PR row
@@ -34,8 +36,7 @@ export async function addBaseBranchLabels(
       }
     });
   } catch (err) {
-    alert("Error fetching PR data. Check console");
-    console.error(err);
+    console.error("Error fetching PR data:", err);
   }
 }
 
