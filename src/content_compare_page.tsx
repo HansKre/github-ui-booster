@@ -1,8 +1,10 @@
+import { handleRandomReviewer } from "./content";
 import { addPrTitleFromJira } from "./content/addPrTitleFromJira";
 import { addDescriptionTemplate } from "./content/addDescriptionTemplate";
 import { isOnComparePage } from "./content/utils/comparePageUtils";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { getSettings, InstanceConfig, Settings } from "./services";
+import { getOctoInstance } from "./services/getOctoInstance";
 
 getSettings({
   onSuccess: handleContentChange,
@@ -22,11 +24,16 @@ async function executeScripts(
   if (!isOnComparePage(instanceConfig)) return;
 
   try {
+    const octokit = getOctoInstance(instanceConfig);
+
     if (settings.features.descriptionTemplate) {
       addDescriptionTemplate(settings);
     }
     if (settings.features.prTitleFromJira) {
       await addPrTitleFromJira(settings);
+    }
+    if (instanceConfig.randomReviewers) {
+      handleRandomReviewer(octokit, instanceConfig);
     }
   } catch (err) {
     alert(
