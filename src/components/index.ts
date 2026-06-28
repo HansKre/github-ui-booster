@@ -1,4 +1,5 @@
 export * from "./BaseBranchLabel";
+export * from "./BatchUpdateButton";
 export * from "./ClosePopupButton";
 export * from "./FeatureInput";
 export * from "./FeatureItem";

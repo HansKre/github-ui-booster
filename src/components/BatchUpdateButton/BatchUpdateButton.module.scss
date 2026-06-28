@@ -1,0 +1,33 @@
+.batchButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fgColor-muted, #656d76);
+  border: 1px solid var(--borderColor-default, #d0d7de);
+  background: var(--bgColor-default, #ffffff);
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--fgColor-default, #1f2328);
+    border-color: var(--borderColor-emphasis, #636c76);
+  }
+
+  &__updating {
+    cursor: default;
+    opacity: 0.8;
+
+    &:hover {
+      color: var(--fgColor-muted, #656d76);
+      border-color: var(--borderColor-default, #d0d7de);
+    }
+  }
+}
+
+.label {
+  line-height: 1;
+}
