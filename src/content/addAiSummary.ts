@@ -34,8 +34,10 @@ function showSuccess(statusEl: HTMLElement) {
 export async function addAiSummary(
   issueKey: string,
   jiraData: FetchJiraIssueFull,
+  targetTextArea?: HTMLTextAreaElement,
 ) {
   const textArea =
+    targetTextArea ??
     document.querySelector<HTMLTextAreaElement>("#pull_request_body");
   if (!textArea) return;
 
@@ -73,5 +75,6 @@ export async function addAiSummary(
     textArea.value = `${textArea.value}${separator}## AI Jira Summary\n\n${summary}`;
   }
 
+  textArea.dispatchEvent(new Event("input", { bubbles: true }));
   showSuccess(statusEl);
 }

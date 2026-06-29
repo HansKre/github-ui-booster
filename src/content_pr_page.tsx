@@ -1,4 +1,5 @@
 import { handleRandomReviewer, handleTotalLines } from "./content";
+import { observeEditModeForAiSummary } from "./content/addAiSummaryToEditMode";
 import { addCopyBaseBranchToPr } from "./content/addCopyBaseBranchToPr";
 import { Spinner } from "./content/spinner";
 import { isOnPrPage } from "./content/utils/isOnPrPage";
@@ -73,6 +74,10 @@ async function executeScripts(
     }
 
     addCopyBaseBranchToPr(instanceConfig);
+
+    if (settings.features.aiSummary || settings.features.aiCodeSummary) {
+      observeEditModeForAiSummary(instanceConfig, settings);
+    }
   } catch (err) {
     alert(
       "Error in content_prs_page-script. Check console and report if the issue persists.",

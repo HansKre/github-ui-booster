@@ -39,16 +39,24 @@ function getBranchName(selectorId: string): string | null {
   return span?.textContent?.trim() || null;
 }
 
+type AiCodeSummaryOptions = {
+  textArea?: HTMLTextAreaElement;
+  baseBranch?: string;
+  headBranch?: string;
+};
+
 export async function addAiCodeSummary(
   instanceConfig: InstanceConfig,
   settings: Settings,
+  options?: AiCodeSummaryOptions,
 ) {
   const textArea =
+    options?.textArea ??
     document.querySelector<HTMLTextAreaElement>("#pull_request_body");
   if (!textArea) return;
 
-  const base = getBranchName("base-ref-selector");
-  const head = getBranchName("head-ref-selector");
+  const base = options?.baseBranch ?? getBranchName("base-ref-selector");
+  const head = options?.headBranch ?? getBranchName("head-ref-selector");
 
   if (!base || !head) {
     console.warn("[AI Code Diff] Could not extract base/head branch names");
@@ -111,5 +119,6 @@ export async function addAiCodeSummary(
     textArea.value = `${textArea.value}${separator}## AI Code Diff Summary\n\n${summary}`;
   }
 
+  textArea.dispatchEvent(new Event("input", { bubbles: true }));
   showSuccess(statusEl);
 }
