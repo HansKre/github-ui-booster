@@ -174,3 +174,14 @@ Built with TypeScript and React. Works with both GitHub.com and GitHub Enterpris
 ## License
 
 This project is licensed under the MIT License.
+
+## Backlog
+
+1. Auto-Label by File Path
+
+Problem: Teams want consistent labeling ("frontend", "backend", "infra", "docs") but rely on humans remembering to add them. Labels often get skipped.
+Solution: When creating a PR (compare page), the extension checks which files changed and suggests/applies labels based on configured path patterns (e.g., src/api/\*_→ "backend",_.md → "docs").
+Why it fits: Same compare-page injection pattern as PR Title from JIRA and Description Template — another "smart PR creation" helper.
+Page: Compare/create PR page
+Effort: Medium — path-to-label mapping in settings, glob matching, issues.addLabels() API
+Toggle: features.autoLabel
