@@ -83,6 +83,42 @@ chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
     return true;
   }
 
+  if (message.type === Messages.SUMMARIZE_CODE_DIFF) {
+    if (
+      !hasOwnProperty(message, "payload") ||
+      typeof message.payload !== "object" ||
+      !message.payload
+    )
+      return;
+    const { payload } = message;
+
+    getSettings({
+      onSuccess: (settings) => {
+        const aiConfig = settings.ai;
+        if (!aiConfig?.apiUrl || !aiConfig?.apiKey || !aiConfig?.model) {
+          console.warn(
+            "[AI Code Diff] AI settings are not configured. Skipping.",
+          );
+          sendResponse({ success: false, error: "AI settings not configured" });
+          return;
+        }
+
+        callAiEndpoint(
+          aiConfig,
+          buildCodeDiffMessages(payload as CodeDiffPayload),
+        )
+          .then((content) => {
+            sendResponse({ success: true, data: { summary: content } });
+          })
+          .catch((error: unknown) => {
+            sendResponse({ success: false, error: String(error) });
+          });
+      },
+    });
+
+    return true;
+  }
+
   if (message.type === Messages.TEST_AI_CONNECTION) {
     if (
       !hasOwnProperty(message, "aiConfig") ||
@@ -156,6 +192,16 @@ type AiPayload = {
   summary: string;
   description: string | null;
   comments: Array<{ body: string; author: string }>;
+};
+
+type CodeDiffPayload = {
+  files: Array<{
+    filename: string;
+    status: string;
+    additions: number;
+    deletions: number;
+    patch?: string;
+  }>;
 };
 
 type AiConfig = {
@@ -323,6 +369,49 @@ Exclude any test results, test execution logs, or QA pass/fail information. Keep
     parts.push(`### Comments\n${commentLines}`);
   } else {
     parts.push(`### Comments\n(no comments)`);
+  }
+
+  return [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: parts.join("\n\n") },
+  ];
+}
+
+const MAX_DIFF_CHARS = 12000;
+
+function buildCodeDiffMessages(payload: CodeDiffPayload): ChatMessage[] {
+  const systemPrompt = `You are a technical writer helping developers create pull request descriptions. Given a list of changed files with their diffs, create a concise summary of the code changes suitable for a PR description. Focus on:
+- What was changed and the purpose of the changes
+- Key architectural or design decisions visible in the diff
+- Notable additions, removals, or refactoring patterns
+
+Keep it concise (3-7 bullet points). Use markdown formatting. Do not include any preamble or meta-commentary, just output the summary directly.`;
+
+  const parts: string[] = [];
+  parts.push(
+    `## Changed Files (${payload.files.length} files)\n` +
+      payload.files
+        .map(
+          (f) =>
+            `- \`${f.filename}\` (${f.status}, +${f.additions}/-${f.deletions})`,
+        )
+        .join("\n"),
+  );
+
+  let totalChars = 0;
+  const diffs: string[] = [];
+  for (const file of payload.files) {
+    if (!file.patch) continue;
+    if (totalChars + file.patch.length > MAX_DIFF_CHARS) {
+      diffs.push(`### ${file.filename}\n(patch too large, omitted)`);
+      continue;
+    }
+    diffs.push(`### ${file.filename}\n\`\`\`diff\n${file.patch}\n\`\`\``);
+    totalChars += file.patch.length;
+  }
+
+  if (diffs.length > 0) {
+    parts.push(`## Diffs\n${diffs.join("\n\n")}`);
   }
 
   return [

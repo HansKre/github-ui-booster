@@ -1,3 +1,4 @@
+import { addAiCodeSummary } from "./content/addAiCodeSummary";
 import { addAiSummary } from "./content/addAiSummary";
 import { addPrTitleFromJira } from "./content/addPrTitleFromJira";
 import { addDescriptionTemplate } from "./content/addDescriptionTemplate";
@@ -65,6 +66,11 @@ async function executeScripts(
       }
     } else {
       console.log("[Compare Page] AI Summary feature disabled");
+    }
+
+    if (settings.features.aiCodeSummary) {
+      console.log("[Compare Page] AI Code Diff Summary enabled");
+      await addAiCodeSummary(instanceConfig, settings);
     }
   } catch (err) {
     alert(

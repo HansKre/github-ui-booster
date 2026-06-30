@@ -31,6 +31,7 @@ describe("ImportButton", () => {
       totalLinesPr: true,
       reOrderPrs: false,
       addUpdateBranchButton: false,
+      aiCodeSummary: false,
       aiSummary: false,
       autoFilter: false,
       prTitleFromJira: false,

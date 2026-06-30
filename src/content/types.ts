@@ -59,6 +59,7 @@ export type JiraCommentsResponse = Yup.InferType<
 
 export enum Messages {
   FETCH_JIRA_ISSUE_FULL = "FETCH_JIRA_ISSUE_FULL",
+  SUMMARIZE_CODE_DIFF = "SUMMARIZE_CODE_DIFF",
   SUMMARIZE_WITH_AI = "SUMMARIZE_WITH_AI",
   TEST_AI_CONNECTION = "TEST_AI_CONNECTION",
 }
@@ -66,4 +67,5 @@ export enum Messages {
 export enum DescriptionTemplatePlaceholders {
   JIRA_TICKET = "{{jiraTicket}}",
   AI_SUMMARY = "{{aiSummary}}",
+  AI_CODE_SUMMARY = "{{aiCodeSummary}}",
 }
