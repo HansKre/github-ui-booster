@@ -5,11 +5,12 @@ describe("tabs constants", () => {
     expect(TABS).toContain("Feature Toggles");
     expect(TABS).toContain("GH Instances");
     expect(TABS).toContain("Jira");
+    expect(TABS).toContain("AI");
     expect(TABS).toContain("Import/Export");
   });
 
   test("TABS has correct length", () => {
-    expect(TABS).toHaveLength(4);
+    expect(TABS).toHaveLength(5);
   });
 
   test("TABS is readonly", () => {

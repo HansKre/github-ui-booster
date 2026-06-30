@@ -33,17 +33,18 @@ global.chrome = {
 
 describe("FeatureTogglesTab", () => {
   const mockFeatures: Features = {
+    addUpdateBranchButton: false,
+    aiSummary: false,
+    autoFilter: false,
     baseBranchLabels: true,
     changedFiles: true,
-    totalLinesPrs: true,
-    totalLinesPr: true,
-    reOrderPrs: false,
-    addUpdateBranchButton: false,
-    autoFilter: false,
-    prTitleFromJira: false,
     descriptionTemplate: false,
-    randomReviewer: false,
     persistToUserProfile: false,
+    prTitleFromJira: false,
+    randomReviewer: false,
+    reOrderPrs: false,
+    totalLinesPr: true,
+    totalLinesPrs: true,
   };
 
   const mockOnToggle = jest.fn();
@@ -232,17 +233,18 @@ describe("FeatureTogglesTab", () => {
 
   test("renders with all features enabled", async () => {
     const allEnabled: Features = {
+      addUpdateBranchButton: true,
+      aiSummary: true,
+      autoFilter: true,
       baseBranchLabels: true,
       changedFiles: true,
-      totalLinesPrs: true,
-      totalLinesPr: true,
-      reOrderPrs: true,
-      addUpdateBranchButton: true,
-      autoFilter: true,
-      prTitleFromJira: true,
       descriptionTemplate: true,
-      randomReviewer: true,
       persistToUserProfile: true,
+      prTitleFromJira: true,
+      randomReviewer: true,
+      reOrderPrs: true,
+      totalLinesPr: true,
+      totalLinesPrs: true,
     };
 
     render(
@@ -260,17 +262,18 @@ describe("FeatureTogglesTab", () => {
 
   test("renders with all features disabled", async () => {
     const allDisabled: Features = {
+      addUpdateBranchButton: false,
+      aiSummary: false,
+      autoFilter: false,
       baseBranchLabels: false,
       changedFiles: false,
-      totalLinesPrs: false,
-      totalLinesPr: false,
-      reOrderPrs: false,
-      addUpdateBranchButton: false,
-      autoFilter: false,
-      prTitleFromJira: false,
       descriptionTemplate: false,
-      randomReviewer: false,
       persistToUserProfile: false,
+      prTitleFromJira: false,
+      randomReviewer: false,
+      reOrderPrs: false,
+      totalLinesPr: false,
+      totalLinesPrs: false,
     };
 
     render(

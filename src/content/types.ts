@@ -4,14 +4,23 @@ import * as Yup from "yup";
 export type Files =
   RestEndpointMethodTypes["pulls"]["listFiles"]["response"]["data"];
 
-export const fetchJiraIssueSchema = Yup.object({
+export const fetchJiraIssueFullSchema = Yup.object({
   status: Yup.string().required(),
   priority: Yup.string().required(),
   assignee: Yup.string().required(),
   summary: Yup.string().required(),
+  description: Yup.string().nullable().defined(),
+  comments: Yup.array(
+    Yup.object({
+      body: Yup.string().required(),
+      author: Yup.string().required(),
+    }),
+  )
+    .required()
+    .defined(),
 });
 
-export type FetchJiraIssue = Yup.InferType<typeof fetchJiraIssueSchema>;
+export type FetchJiraIssueFull = Yup.InferType<typeof fetchJiraIssueFullSchema>;
 
 export const jiraResponseSchema = Yup.object({
   fields: Yup.object({
@@ -27,15 +36,34 @@ export const jiraResponseSchema = Yup.object({
       name: Yup.string().required().min(2),
     }).required(),
     summary: Yup.string().required().min(3),
+    description: Yup.string().nullable().optional(),
   }).required(),
 });
 
 export type JiraResponse = Yup.InferType<typeof jiraResponseSchema>;
 
+export const jiraCommentsResponseSchema = Yup.object({
+  comments: Yup.array(
+    Yup.object({
+      body: Yup.string().required(),
+      author: Yup.object({
+        displayName: Yup.string().required(),
+      }).required(),
+    }),
+  ).required(),
+});
+
+export type JiraCommentsResponse = Yup.InferType<
+  typeof jiraCommentsResponseSchema
+>;
+
 export enum Messages {
-  FETCH_JIRA_ISSUE = "FETCH_JIRA_ISSUE",
+  FETCH_JIRA_ISSUE_FULL = "FETCH_JIRA_ISSUE_FULL",
+  SUMMARIZE_WITH_AI = "SUMMARIZE_WITH_AI",
+  TEST_AI_CONNECTION = "TEST_AI_CONNECTION",
 }
 
 export enum DescriptionTemplatePlaceholders {
   JIRA_TICKET = "{{jiraTicket}}",
+  AI_SUMMARY = "{{aiSummary}}",
 }

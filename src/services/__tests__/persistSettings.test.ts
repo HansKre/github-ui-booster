@@ -5,6 +5,7 @@ describe("persistSettings", () => {
   const mockSettings: Settings = {
     features: {
       addUpdateBranchButton: true,
+      aiSummary: false,
       autoFilter: false,
       baseBranchLabels: true,
       changedFiles: true,

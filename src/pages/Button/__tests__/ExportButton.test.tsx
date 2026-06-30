@@ -24,6 +24,7 @@ describe("ExportButton", () => {
       totalLinesPr: true,
       reOrderPrs: false,
       addUpdateBranchButton: false,
+      aiSummary: false,
       autoFilter: false,
       prTitleFromJira: false,
       descriptionTemplate: false,

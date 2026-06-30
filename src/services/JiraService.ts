@@ -1,13 +1,12 @@
 import { hasOwnProperties } from "ts-type-safe";
-import { Messages } from "../content/types";
+import { FetchJiraIssueFull, Messages } from "../content/types";
 
-// Uses the Chrome extension messaging API to fetch a JIRA issue by its key
 export const JiraService = {
-  async fetchJiraIssue(issueKey: string) {
+  async fetchJiraIssueFull(issueKey: string): Promise<FetchJiraIssueFull> {
     return new Promise((resolve, reject) => {
       chrome.runtime.sendMessage(
         {
-          type: Messages.FETCH_JIRA_ISSUE,
+          type: Messages.FETCH_JIRA_ISSUE_FULL,
           issueKey,
         },
         (response) => {
@@ -20,7 +19,7 @@ export const JiraService = {
             hasOwnProperties(response, ["success", "data"]) &&
             response.success
           ) {
-            resolve(response.data);
+            resolve(response.data as FetchJiraIssueFull);
           } else if (
             hasOwnProperties(response, ["error", "issueKey"]) &&
             typeof response.issueKey === "string"
@@ -33,7 +32,7 @@ export const JiraService = {
           } else {
             reject(
               new Error(
-                `Error fetching JIRA issue (fetchJiraIssue)m ${JSON.stringify(response)}`,
+                `Error fetching JIRA issue (fetchJiraIssueFull): ${JSON.stringify(response)}`,
               ),
             );
           }

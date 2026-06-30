@@ -8,11 +8,12 @@ describe("JiraService", () => {
 
   test("fetches JIRA issue successfully", async () => {
     const mockData = {
-      key: "TEST-123",
-      fields: {
-        summary: "Test issue",
-        description: "Test description",
-      },
+      summary: "Test issue",
+      description: "Test description",
+      status: "In Progress",
+      priority: "High",
+      assignee: "John",
+      comments: [],
     };
 
     (chrome.runtime.sendMessage as jest.Mock) = jest
@@ -21,11 +22,11 @@ describe("JiraService", () => {
         callback({ success: true, data: mockData });
       });
 
-    const result = await JiraService.fetchJiraIssue("TEST-123");
+    const result = await JiraService.fetchJiraIssueFull("TEST-123");
     expect(result).toEqual(mockData);
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
       {
-        type: Messages.FETCH_JIRA_ISSUE,
+        type: Messages.FETCH_JIRA_ISSUE_FULL,
         issueKey: "TEST-123",
       },
       expect.any(Function),
@@ -34,18 +35,20 @@ describe("JiraService", () => {
 
   test("rejects when chrome.runtime.lastError is set", async () => {
     const mockError = { message: "Runtime error" };
-    (chrome.runtime as any).lastError = mockError;
+    (chrome.runtime as unknown as { lastError: typeof mockError }).lastError =
+      mockError;
     (chrome.runtime.sendMessage as jest.Mock) = jest
       .fn()
       .mockImplementation((_, callback) => {
         callback({});
       });
 
-    await expect(JiraService.fetchJiraIssue("TEST-123")).rejects.toThrow(
+    await expect(JiraService.fetchJiraIssueFull("TEST-123")).rejects.toThrow(
       "Runtime error",
     );
 
-    delete (chrome.runtime as any).lastError;
+    delete (chrome.runtime as unknown as { lastError?: typeof mockError })
+      .lastError;
   });
 
   test("rejects when response indicates error with issueKey", async () => {
@@ -58,7 +61,7 @@ describe("JiraService", () => {
         });
       });
 
-    await expect(JiraService.fetchJiraIssue("TEST-404")).rejects.toThrow(
+    await expect(JiraService.fetchJiraIssueFull("TEST-404")).rejects.toThrow(
       "Error fetching JIRA issue: TEST-404",
     );
   });
@@ -70,8 +73,8 @@ describe("JiraService", () => {
         callback({ invalid: "response" });
       });
 
-    await expect(JiraService.fetchJiraIssue("TEST-123")).rejects.toThrow(
-      "Error fetching JIRA issue (fetchJiraIssue)",
+    await expect(JiraService.fetchJiraIssueFull("TEST-123")).rejects.toThrow(
+      "Error fetching JIRA issue (fetchJiraIssueFull)",
     );
   });
 
@@ -82,21 +85,30 @@ describe("JiraService", () => {
         callback({ success: false, data: null });
       });
 
-    await expect(JiraService.fetchJiraIssue("TEST-123")).rejects.toThrow();
+    await expect(JiraService.fetchJiraIssueFull("TEST-123")).rejects.toThrow();
   });
 
   test("sends correct message type and issueKey", async () => {
+    const mockData = {
+      summary: "Test",
+      description: null,
+      status: "Done",
+      priority: "Low",
+      assignee: "Jane",
+      comments: [],
+    };
+
     (chrome.runtime.sendMessage as jest.Mock) = jest
       .fn()
       .mockImplementation((_, callback) => {
-        callback({ success: true, data: {} });
+        callback({ success: true, data: mockData });
       });
 
-    await JiraService.fetchJiraIssue("PROJ-456");
+    await JiraService.fetchJiraIssueFull("PROJ-456");
 
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(
       {
-        type: Messages.FETCH_JIRA_ISSUE,
+        type: Messages.FETCH_JIRA_ISSUE_FULL,
         issueKey: "PROJ-456",
       },
       expect.any(Function),
@@ -112,14 +124,23 @@ describe("JiraService", () => {
     ];
 
     for (const issueKey of issueKeys) {
+      const mockData = {
+        summary: "Test",
+        description: null,
+        status: "Open",
+        priority: "Medium",
+        assignee: "Dev",
+        comments: [],
+      };
+
       (chrome.runtime.sendMessage as jest.Mock) = jest
         .fn()
         .mockImplementation((_, callback) => {
-          callback({ success: true, data: { key: issueKey } });
+          callback({ success: true, data: mockData });
         });
 
-      const result = await JiraService.fetchJiraIssue(issueKey);
-      expect(result).toEqual({ key: issueKey });
+      const result = await JiraService.fetchJiraIssueFull(issueKey);
+      expect(result).toEqual(mockData);
     }
   });
 });
