@@ -11,13 +11,14 @@ import {
   PrBranchAnalysis,
 } from "./utils/analyzePrBranchStatus";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
+import { getMetadataContainer, getPrRowByNumber } from "./utils/prListDom";
 
 const LOG_PREFIX = "[BatchUpdate]";
 
 const UPDATE_BRANCH_BUTTON_CLASS = "gh-ui-booster-update-branch-btn";
 const BATCH_UPDATE_BUTTON_CLASS = "gh-ui-booster-batch-update-btn";
 const SPINNER_PARENT =
-  "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+  "#repo-pulls-dashboard-filter, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
 const MAX_WAVES = 10;
 const POLL_INTERVAL_MS = 3000;
@@ -72,7 +73,7 @@ function renderPerPrButtons(
   instanceConfig: InstanceConfig,
 ) {
   for (const analysis of analyses) {
-    const prRow = document.querySelector(`div[id=issue_${analysis.pr.number}]`);
+    const prRow = getPrRowByNumber(analysis.pr.number);
     if (!prRow) continue;
 
     if (analysis.status === "dirty") {
@@ -376,19 +377,21 @@ function delay(ms: number) {
 }
 
 function createReactRoot(prRow: Element, className: string) {
-  const prDescriptionContainer = prRow.children[0];
-  if (!prDescriptionContainer) return null;
-
-  if (prDescriptionContainer.classList.contains(className)) return null;
-
-  prDescriptionContainer.classList.add(className);
+  if (prRow.classList.contains(className)) return null;
+  prRow.classList.add(className);
 
   const rootSpanEl = document.createElement("span");
   rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
-  prDescriptionContainer.insertBefore(
-    rootSpanEl,
-    prDescriptionContainer.children[2],
-  );
+
+  const container = getMetadataContainer(prRow);
+  if (container) {
+    container.appendChild(rootSpanEl);
+  } else {
+    // Old UI fallback: insert before children[2] of the first column
+    const col = prRow.children[0];
+    if (!col) return null;
+    col.insertBefore(rootSpanEl, col.children[2]);
+  }
 
   return { root: createRoot(rootSpanEl), rootSpanEl };
 }
@@ -403,9 +406,7 @@ export async function removeAndReaddUpdateBranchButton(
   root.unmount();
   rootSpanEl?.remove();
 
-  const prDescriptionContainer = prRow.children[0];
-  if (!prDescriptionContainer) return null;
-  prDescriptionContainer.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
+  prRow.classList.remove(UPDATE_BRANCH_BUTTON_CLASS);
 
   try {
     Spinner.showSpinner(SPINNER_PARENT);

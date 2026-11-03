@@ -4,6 +4,11 @@ import { createRoot } from "react-dom/client";
 import { BaseBranchLabel } from "../components";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
+import {
+  getMetadataContainer,
+  getPrNumber,
+  getPrRows,
+} from "./utils/prListDom";
 
 type PullRequest =
   RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number];
@@ -26,11 +31,10 @@ export async function addBaseBranchLabels(
 
     if (prs.length === 0) return;
 
-    const prRows = document.querySelectorAll("div[id^=issue_]");
+    const prRows = getPrRows();
     prRows.forEach((prRow) => {
-      // Add labels indicating the base-ref to every PR row
-      const [, prNumber] = prRow.id.split("_");
-      const prData = prs.find((pr) => pr.number === parseInt(prNumber));
+      const prNumber = getPrNumber(prRow);
+      const prData = prs.find((pr) => pr.number === parseInt(prNumber ?? ""));
       if (prData) {
         injectBaseBranchLabel(prs, prData, prRow);
       }
@@ -55,11 +59,7 @@ function injectBaseBranchLabel(
 
   const rootSpanEl = document.createElement("span");
 
-  const parent = prRow.children[0].children[2]?.querySelector(
-    "div.d-flex.mt-1.text-small.color-fg-muted",
-  );
-
-  // Insert as the very first element
+  const parent = getMetadataContainer(prRow);
   parent?.insertBefore(rootSpanEl, parent.firstChild);
 
   const root = createRoot(rootSpanEl);

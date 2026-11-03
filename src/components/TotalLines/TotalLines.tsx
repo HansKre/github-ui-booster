@@ -19,11 +19,11 @@ export const TotalLines: React.FC<Props> = ({
         size="small"
       />
       <span className={cns("color-fg-success", styles.label)}>
-        {` ${totalLinesAdded} `}
+        {` ${totalLinesAdded.toLocaleString()} `}
       </span>
       <DiffRemovedIcon className="color-fg-danger" size="small" />
       <span className={cns("color-fg-danger", styles.label)}>
-        {` ${totalLinesRemoved} `}
+        {` ${totalLinesRemoved.toLocaleString()} `}
       </span>
       <DiffStat
         totalLinesAdded={totalLinesAdded}

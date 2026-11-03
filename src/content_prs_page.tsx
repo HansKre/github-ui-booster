@@ -14,10 +14,11 @@ import { getOctoInstance } from "./services/getOctoInstance";
 let observer: MutationObserver | null = null;
 
 const observeContentChanges = (observer: MutationObserver) => {
-  const tabNavigation = document.querySelector(".UnderlineNav");
+  const tabNavigation =
+    document.querySelector('nav[aria-label="Repository"]') ??
+    document.querySelector(".UnderlineNav");
   if (!tabNavigation) return;
 
-  // tabNavigation-DOM changes when GH-page-content changes, hence the need to re-run our scripts
   observer.observe(tabNavigation, {
     childList: true,
     subtree: true,
@@ -30,7 +31,7 @@ getSettings({
 });
 
 const SPINNER_PARENT =
-  "#js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+  "#repo-pulls-dashboard-filter, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
 /**
  * This method is automatically executed on initial page load, refreshes, and full navigations.
@@ -68,7 +69,7 @@ async function executeScripts(settings: Settings) {
     const promises: Promise<void>[] = [];
 
     if (features.autoFilter) {
-      promises.push(handlePrFilter(instanceConfig, autoFilter));
+      handlePrFilter(instanceConfig, autoFilter);
     }
 
     const octokit = getOctoInstance(instanceConfig);

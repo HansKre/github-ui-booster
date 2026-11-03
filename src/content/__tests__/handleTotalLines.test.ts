@@ -268,14 +268,14 @@ describe("handleTotalLines", () => {
     );
     const originalAdded = addedElements[1] as HTMLElement;
     expect(originalAdded.style.fontSize).toBe("8px");
-    expect(originalAdded.style.verticalAlign).toBe("sub");
+    expect(originalAdded.style.alignSelf).toBe("end");
 
     const removedElements = document.querySelectorAll(
       "#diffstat > span.color-fg-danger",
     );
     const originalRemoved = removedElements[1] as HTMLElement;
     expect(originalRemoved.style.fontSize).toBe("8px");
-    expect(originalRemoved.style.verticalAlign).toBe("sub");
+    expect(originalRemoved.style.alignSelf).toBe("end");
   });
 
   test("returns early if diffStats element not found", async () => {

@@ -56,6 +56,7 @@ export default [
         },
       ],
       "react/prop-types": "off",
+      "no-undef": "off", // TypeScript handles undefined checks; no-undef false-positives on TS types
     },
   },
   {

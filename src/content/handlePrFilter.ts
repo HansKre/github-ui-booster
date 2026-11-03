@@ -25,18 +25,12 @@ export function handlePrFilter(
 }
 
 function replaceFilter(filter: string | undefined, filterIntercepted?: string) {
-  const searchInput = document.getElementById("js-issues-search");
-  const activeTab = document.querySelector(".UnderlineNav-item.selected");
+  const searchInput =
+    document.getElementById("repo-pulls-dashboard-filter-input") ??
+    document.getElementById("js-issues-search");
 
-  if (
-    !(searchInput instanceof HTMLInputElement) ||
-    !searchInput ||
-    !filter ||
-    activeTab?.id !== "pull-requests-tab"
-  )
-    return;
+  if (!(searchInput instanceof HTMLInputElement) || !filter) return;
 
-  // trim() is necessary, since GitHub adds a space after the actual filter text
   if (searchInput.value.trim() === filter.trim()) return;
 
   searchInput.value = filterIntercepted ?? filter;
