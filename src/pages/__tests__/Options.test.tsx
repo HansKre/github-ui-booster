@@ -15,7 +15,7 @@ global.IntersectionObserver = class IntersectionObserver {
   root = null;
   rootMargin = "";
   thresholds = [];
-} as any;
+};
 
 // Mock chrome.storage
 const mockChromeStorage = {

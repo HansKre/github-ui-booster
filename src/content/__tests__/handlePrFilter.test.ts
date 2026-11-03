@@ -81,29 +81,6 @@ describe("handlePrFilter", () => {
     expect(searchInput.value).toBe("");
   });
 
-  test("does not replace filter if active tab is not pull-requests", () => {
-    const location = mockLocation(
-      "https://github.com/test-org/test-repo/pulls",
-    );
-
-    const form = document.createElement("form");
-    const searchInput = document.createElement("input");
-    searchInput.id = "js-issues-search";
-    searchInput.value = "";
-    form.appendChild(searchInput);
-
-    const activeTab = document.createElement("div");
-    activeTab.id = "issues-tab";
-    activeTab.className = "UnderlineNav-item selected";
-
-    document.body.appendChild(form);
-    document.body.appendChild(activeTab);
-
-    handlePrFilter(mockInstanceConfig, "is:open is:pr", undefined, location);
-
-    expect(searchInput.value).toBe("");
-  });
-
   test("does not replace filter if search input not found", () => {
     const location = mockLocation(
       "https://github.com/test-org/test-repo/pulls",

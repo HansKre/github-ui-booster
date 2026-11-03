@@ -241,9 +241,7 @@ describe("addJiraStatus", () => {
         <div>
           <a id="issue_123_link">TEST-1234: Fix bug</a>
           <div></div>
-          <div>
-            <span>Existing content</span>
-          </div>
+          <div class="d-flex mt-1 text-small color-fg-muted"><span>Existing content</span></div>
         </div>
       </div>
     `;
@@ -251,7 +249,7 @@ describe("addJiraStatus", () => {
     await addJiraStatus(mockSettings);
 
     const parent = document.querySelector(
-      "#issue_123 > div > div:nth-child(3)",
+      "#issue_123 .d-flex.mt-1.text-small.color-fg-muted",
     );
     expect(parent?.firstChild?.nodeName).toBe("SPAN");
   });

@@ -28,7 +28,7 @@ describe("BaseBranchLabel", () => {
   const mockBasePr: PullRequest = {
     ...mockCurrentPr,
     html_url: "https://github.com/org/repo/pull/2",
-  } as PullRequest;
+  };
 
   test("renders base branch and feature branch names", () => {
     render(<BaseBranchLabel currentPr={mockCurrentPr} />);

@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import { TextEncoder, TextDecoder } from "util";
 
 // Polyfill for TextEncoder/TextDecoder
-global.TextEncoder = TextEncoder;
+(global as any).TextEncoder = TextEncoder;
 (global as any).TextDecoder = TextDecoder;
 
 // Mock Chrome API
@@ -85,4 +85,4 @@ global.ResizeObserver = class ResizeObserver {
   observe() {}
   unobserve() {}
   disconnect() {}
-} as any;
+};

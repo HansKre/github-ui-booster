@@ -156,9 +156,9 @@ describe("addChangedFiles", () => {
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, prNumber, callback) => {
         if (prNumber === 123) {
-          callback(mockFiles1 as any);
+          callback(mockFiles1);
         } else if (prNumber === 456) {
-          callback(mockFiles2 as any);
+          callback(mockFiles2);
         }
         return Promise.resolve();
       });
@@ -190,7 +190,7 @@ describe("addChangedFiles", () => {
     jest
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, ___, callback) => {
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 
@@ -260,7 +260,7 @@ describe("addChangedFiles", () => {
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, prNumber, callback) => {
         processingOrder.push(prNumber);
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 
@@ -305,7 +305,7 @@ describe("addChangedFiles", () => {
     jest
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, ___, callback) => {
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 
@@ -330,7 +330,7 @@ describe("addChangedFiles", () => {
     const processPrFilesMock = jest
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, ___, callback) => {
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 
@@ -363,7 +363,7 @@ describe("addChangedFiles", () => {
     const processPrFilesMock = jest
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, ___, callback) => {
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 
@@ -382,7 +382,7 @@ describe("addChangedFiles", () => {
     jest
       .spyOn(processPrFilesModule, "processPrFiles")
       .mockImplementation((_, __, ___, callback) => {
-        callback(mockFiles as any);
+        callback(mockFiles);
         return Promise.resolve();
       });
 

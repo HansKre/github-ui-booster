@@ -65,7 +65,7 @@ async function executeScripts(settings: Settings) {
   try {
     Spinner.showSpinner(SPINNER_PARENT);
 
-    const promises = [];
+    const promises: Promise<void>[] = [];
 
     if (features.autoFilter) {
       promises.push(handlePrFilter(instanceConfig, autoFilter));
