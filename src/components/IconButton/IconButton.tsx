@@ -12,6 +12,7 @@ type Props = {
   tooltipText?: string;
   className?: string;
   loadingClassName?: string;
+  size?: number;
 };
 
 export const IconButton: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const IconButton: React.FC<Props> = ({
   tooltipText,
   className,
   loadingClassName,
+  size,
 }) => {
   // IconButton and Button from @primer are not working, hence the span
   const button = (
@@ -34,7 +36,7 @@ export const IconButton: React.FC<Props> = ({
       )}
       onClick={onClick}
     >
-      {isLoading ? <Spinner size="small" /> : <Icon />}
+      {isLoading ? <Spinner size="small" /> : <Icon size={size} />}
     </span>
   );
 

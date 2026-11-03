@@ -44,8 +44,16 @@ export async function addJiraStatus(settings: Settings) {
 
     const rootSpanEl = document.createElement("span");
 
-    const parent = getMetadataContainer(prRow);
-    parent?.insertBefore(rootSpanEl, parent.firstChild);
+    const titleContainer = prRow.querySelector<HTMLElement>(
+      "[data-listview-item-title-container]",
+    );
+    if (titleContainer) {
+      rootSpanEl.style.marginRight = "8px";
+      titleContainer.insertBefore(rootSpanEl, titleContainer.firstChild);
+    } else {
+      const parent = getMetadataContainer(prRow);
+      parent?.insertBefore(rootSpanEl, parent.firstChild);
+    }
 
     const root = createRoot(rootSpanEl);
 

@@ -1,3 +1,27 @@
+export const HEADING_CONTROLS_CLASS = "gh-ui-booster-heading-controls";
+
+/**
+ * Returns (or creates) the shared inline-flex controls row immediately to the
+ * right of the "All pull requests" heading. Used as a common parent for the
+ * search bar, loading spinner, and batch-update button.
+ */
+export function getOrCreateHeadingControls(): HTMLElement | null {
+  const existing = document.querySelector<HTMLElement>(
+    `.${HEADING_CONTROLS_CLASS}`,
+  );
+  if (existing) return existing;
+  const heading = document.querySelector<HTMLElement>("h1.h3.hide-sm, h1.h3");
+  const headingContainer = heading?.parentElement;
+  if (!headingContainer) return null;
+  const controls = document.createElement("div");
+  controls.classList.add(HEADING_CONTROLS_CLASS);
+  controls.style.display = "inline-flex";
+  controls.style.alignItems = "center";
+  controls.style.gap = "8px";
+  headingContainer.appendChild(controls);
+  return controls;
+}
+
 /** Returns all PR row elements — works with both old and new GitHub UI */
 export function getPrRows(): NodeListOf<Element> {
   const newRows = document.querySelectorAll('li[id*="-list-view-node-"]');

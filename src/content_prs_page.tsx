@@ -6,6 +6,7 @@ import { addUpdateBranchButton } from "./content/addUpdateBranchButton";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
+import { getOrCreateHeadingControls } from "./content/utils/prListDom";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { getSettings, Settings } from "./services";
@@ -31,7 +32,7 @@ getSettings({
 });
 
 const SPINNER_PARENT =
-  "#repo-pulls-dashboard-filter, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+  ".gh-ui-booster-heading-controls, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
 /**
  * This method is automatically executed on initial page load, refreshes, and full navigations.
@@ -64,6 +65,7 @@ async function executeScripts(settings: Settings) {
 
   if (!isOnPrsPage(instanceConfig)) return;
   try {
+    getOrCreateHeadingControls();
     Spinner.showSpinner(SPINNER_PARENT);
 
     const promises: Promise<void>[] = [];

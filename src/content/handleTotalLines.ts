@@ -47,13 +47,13 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
     const addedClone = addedSpanNew.cloneNode(true) as HTMLElement;
     addedClone.textContent = `+ ${totalLinesAdded.toLocaleString()}`;
     addedClone.classList.add("gh-ui-booster-pr-lines");
-    addedClone.style.setProperty("font-size", "1rem", "important");
+    addedClone.style.setProperty("font-size", "12px", "important");
     addedSpanNew.parentNode?.insertBefore(addedClone, addedSpanNew);
 
     const removedClone = removedSpanNew.cloneNode(true) as HTMLElement;
     removedClone.textContent = `- ${totalLinesRemoved.toLocaleString()}`;
     removedClone.classList.add("gh-ui-booster-pr-lines");
-    removedClone.style.setProperty("font-size", "1rem", "important");
+    removedClone.style.setProperty("font-size", "12px", "important");
     removedSpanNew.parentNode?.insertBefore(removedClone, removedSpanNew);
 
     // Remove the diffstat squares (they reflect raw count, not filtered)

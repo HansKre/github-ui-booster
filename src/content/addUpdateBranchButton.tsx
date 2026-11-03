@@ -18,7 +18,7 @@ const LOG_PREFIX = "[BatchUpdate]";
 const UPDATE_BRANCH_BUTTON_CLASS = "gh-ui-booster-update-branch-btn";
 const BATCH_UPDATE_BUTTON_CLASS = "gh-ui-booster-batch-update-btn";
 const SPINNER_PARENT =
-  "#repo-pulls-dashboard-filter, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+  ".gh-ui-booster-heading-controls, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
 
 const MAX_WAVES = 10;
 const POLL_INTERVAL_MS = 3000;
@@ -381,11 +381,11 @@ function createReactRoot(prRow: Element, className: string) {
   prRow.classList.add(className);
 
   const rootSpanEl = document.createElement("span");
-  rootSpanEl.classList.add("flex-shrink-0", "pt-2", "pl-2");
+  rootSpanEl.classList.add("flex-shrink-0", "mr-1");
 
   const container = getMetadataContainer(prRow);
   if (container) {
-    container.appendChild(rootSpanEl);
+    container.insertBefore(rootSpanEl, container.firstChild);
   } else {
     // Old UI fallback: insert before children[2] of the first column
     const col = prRow.children[0];
