@@ -381,11 +381,16 @@ function createReactRoot(prRow: Element, className: string) {
   prRow.classList.add(className);
 
   const rootSpanEl = document.createElement("span");
-  rootSpanEl.classList.add("flex-shrink-0", "mr-1");
+  rootSpanEl.classList.add("flex-shrink-0");
+  rootSpanEl.style.order = "-1";
+  rootSpanEl.style.marginRight = "4px";
 
   const container = getMetadataContainer(prRow);
   if (container) {
-    container.insertBefore(rootSpanEl, container.firstChild);
+    (container as HTMLElement).style.display = "flex";
+    (container as HTMLElement).style.flexWrap = "wrap";
+    (container as HTMLElement).style.alignItems = "center";
+    container.appendChild(rootSpanEl);
   } else {
     // Old UI fallback: insert before children[2] of the first column
     const col = prRow.children[0];
