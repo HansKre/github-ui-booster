@@ -120,7 +120,8 @@ describe("addTotalLines", () => {
     );
 
     expect(createRoot).toHaveBeenCalledTimes(1);
-    expect(mockRoot.render).toHaveBeenCalledTimes(1);
+    // render called twice: once for loading placeholder, once with final counts
+    expect(mockRoot.render).toHaveBeenCalledTimes(2);
   });
 
   test("excludes blacklisted files from totals", async () => {

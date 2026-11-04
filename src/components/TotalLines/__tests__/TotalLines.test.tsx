@@ -98,8 +98,8 @@ describe("TotalLines", () => {
   test("handles large numbers", () => {
     render(<TotalLines totalLinesAdded={10000} totalLinesRemoved={5000} />);
 
-    expect(screen.getByText(/10000/)).toBeInTheDocument();
-    expect(screen.getByText(/5000/)).toBeInTheDocument();
+    expect(screen.getByText(/10,000/)).toBeInTheDocument();
+    expect(screen.getByText(/5,000/)).toBeInTheDocument();
   });
 
   test("renders icons for additions and removals", () => {

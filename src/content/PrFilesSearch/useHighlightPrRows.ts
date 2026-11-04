@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 
 import { Files } from "../types";
+import { getPrRowByNumber } from "../utils/prListDom";
 
 import styles from "./PrFilesSearch.module.scss";
 
@@ -22,7 +23,7 @@ export function useHighlightPrRows(
     const touchedRows: TouchedRow[] = [];
 
     prsWithSelectedFiles?.forEach(({ number, files }) => {
-      const row = document.getElementById(`issue_${number}`);
+      const row = getPrRowByNumber(number) as HTMLElement | null;
       if (!row) return;
 
       touchedRows.push({

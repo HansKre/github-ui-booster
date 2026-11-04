@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { JiraStatus } from "../components/JiraStatus";
 import { JiraService, Settings } from "../services";
 import { fetchJiraIssueFullSchema } from "./types";
+import { getMetadataContainer, getPrRows } from "./utils/prListDom";
 
 export async function addJiraStatus(settings: Settings) {
   if (!settings.jira) return;
@@ -13,12 +14,14 @@ export async function addJiraStatus(settings: Settings) {
     );
     return;
   }
-  const prRows = document.querySelectorAll("div[id^=issue_]");
+  const prRows = getPrRows();
   for (const prRow of prRows) {
-    const issueLink = prRow.querySelector("a[id^=issue_]");
-    if (!issueLink) continue;
+    const titleLink = prRow.querySelector(
+      'a[data-testid="listitem-title-link"], a[id^=issue_]',
+    );
+    if (!titleLink) continue;
 
-    const match = issueLink.textContent?.match(
+    const match = titleLink.textContent?.match(
       new RegExp(settings.jira.issueKeyRegex),
     );
     if (!match) continue;
@@ -41,8 +44,16 @@ export async function addJiraStatus(settings: Settings) {
 
     const rootSpanEl = document.createElement("span");
 
-    const parent = prRow.children[0].children[2];
-    parent.insertBefore(rootSpanEl, parent.firstChild);
+    const titleContainer = prRow.querySelector<HTMLElement>(
+      "[data-listview-item-title-container]",
+    );
+    if (titleContainer) {
+      rootSpanEl.style.marginRight = "8px";
+      titleContainer.insertBefore(rootSpanEl, titleContainer.firstChild);
+    } else {
+      const parent = getMetadataContainer(prRow);
+      parent?.insertBefore(rootSpanEl, parent.firstChild);
+    }
 
     const root = createRoot(rootSpanEl);
 

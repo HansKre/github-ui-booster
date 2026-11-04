@@ -32,11 +32,46 @@ export async function handleTotalLines(
 }
 
 function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
+  // New GitHub UI (2024+): stats live in the PR tab header
+  const addedSpanNew = document.querySelector<HTMLElement>(
+    'span.f6.fgColor-success.text-bold[aria-hidden="true"]',
+  );
+  const removedSpanNew = document.querySelector<HTMLElement>(
+    'span.f6.fgColor-danger.text-bold[aria-hidden="true"]',
+  );
+
+  if (addedSpanNew) {
+    // Guard against running twice
+    if (addedSpanNew.classList.contains("gh-ui-booster-pr-lines")) return;
+
+    const addedClone = addedSpanNew.cloneNode(true) as HTMLElement;
+    addedClone.textContent = `+ ${totalLinesAdded.toLocaleString()}`;
+    addedClone.classList.add("gh-ui-booster-pr-lines");
+    addedClone.style.setProperty("font-size", "12px", "important");
+    addedSpanNew.parentNode?.insertBefore(addedClone, addedSpanNew);
+
+    if (removedSpanNew) {
+      const removedClone = removedSpanNew.cloneNode(true) as HTMLElement;
+      removedClone.textContent = `- ${totalLinesRemoved.toLocaleString()}`;
+      removedClone.classList.add("gh-ui-booster-pr-lines");
+      removedClone.style.setProperty("font-size", "12px", "important");
+      removedSpanNew.parentNode?.insertBefore(removedClone, removedSpanNew);
+    }
+
+    // Remove the diffstat squares (they reflect raw count, not filtered)
+    addedSpanNew.parentElement
+      ?.querySelector<HTMLElement>("div.d-flex")
+      ?.remove();
+
+    reduceFont(addedSpanNew, removedSpanNew);
+    return;
+  }
+
+  // Old GitHub UI
   const diffStats = document.querySelector(
     "#diffstat > span > span[class^=diffstat-block]",
   )?.parentElement;
 
-  // if undefined, assume that this script already ran
   if (!diffStats) return;
 
   diffStats.remove();
@@ -46,7 +81,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   );
   const addedClone = linesAddedEl?.cloneNode(true);
   if (!addedClone) return;
-  addedClone.textContent = `+ ${totalLinesAdded}`;
+  addedClone.textContent = `+ ${totalLinesAdded.toLocaleString()}`;
   linesAddedEl?.parentNode?.insertBefore(addedClone, linesAddedEl);
 
   const linesRemovedEl = document.querySelector<HTMLElement>(
@@ -54,7 +89,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
   );
   const removedClone = linesRemovedEl?.cloneNode(true);
   if (!removedClone) return;
-  removedClone.textContent = `- ${totalLinesRemoved}`;
+  removedClone.textContent = `- ${totalLinesRemoved.toLocaleString()}`;
   linesRemovedEl?.parentNode?.insertBefore(removedClone, linesRemovedEl);
 
   reduceFont(linesAddedEl, linesRemovedEl);
@@ -63,7 +98,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
 function reduceFont(...els: Array<HTMLElement | null>) {
   els.forEach((el) => {
     if (!el) return;
-    el.style["fontSize"] = "8px";
-    el.style["verticalAlign"] = "sub";
+    el.style.setProperty("font-size", "8px", "important");
+    el.style.setProperty("align-self", "end", "important");
   });
 }

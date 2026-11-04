@@ -1,16 +1,29 @@
+function queryBranchText(
+  oldSelector: string,
+  newGhUiIndex: number,
+): string | null {
+  const oldEl = document.querySelector(oldSelector);
+  if (oldEl?.textContent?.trim()) return oldEl.textContent.trim();
+
+  // New GH UI: uses a[data-component="BranchName"]; index 0 = base, 1 = head
+  const links = document.querySelectorAll<HTMLAnchorElement>(
+    'a[data-component="BranchName"]',
+  );
+  return links[newGhUiIndex]?.textContent?.trim() ?? null;
+}
+
 export function extractPrPageBranches(): {
   base: string;
   head: string;
 } | null {
-  const baseEl = document.querySelector(
+  const base = queryBranchText(
     "#partial-discussion-header span.commit-ref.base-ref",
+    0,
   );
-  const headEl = document.querySelector(
+  const head = queryBranchText(
     "#partial-discussion-header span.commit-ref.head-ref",
+    1,
   );
-
-  const base = baseEl?.textContent?.trim();
-  const head = headEl?.textContent?.trim();
 
   if (!base || !head) return null;
   return { base, head };
@@ -19,10 +32,10 @@ export function extractPrPageBranches(): {
 export function extractJiraIssueKeyFromPrPage(
   issueKeyRegex: string,
 ): string | null {
-  const headEl = document.querySelector(
+  let text = queryBranchText(
     "#partial-discussion-header span.commit-ref.head-ref",
+    1,
   );
-  let text = headEl?.textContent?.trim();
   if (!text) return null;
 
   // Fork PRs show "org:branch" format — use the branch portion

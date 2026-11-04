@@ -42,6 +42,7 @@ export const UpdateBranchButton: React.FC<Props> = ({
       isLoading={isLoading}
       tooltipText="Update the branch of this PR to include changes from the base branch"
       loadingClassName={styles.loading}
+      size={12}
     />
   );
 };

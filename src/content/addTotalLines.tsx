@@ -1,20 +1,45 @@
 import { Octokit } from "@octokit/rest";
+import { Spinner } from "@primer/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { TotalLines } from "../components";
 import { getFileBlacklist } from "../getFileBlacklist";
 import { InstanceConfig, Settings } from "../services";
 import { processPrFiles } from "./processPrFiles";
+import {
+  getPrNumber,
+  getPrRows,
+  insertBeforeMetadata,
+} from "./utils/prListDom";
+
+const TotalLinesLoading: React.FC = () => (
+  <Spinner size="small" sx={{ verticalAlign: "middle" }} />
+);
 
 export async function addTotalLines(
   octokit: Octokit,
   instanceConfig: InstanceConfig,
   settings: Settings,
 ) {
-  const prRows = document.querySelectorAll("div[id^=issue_]");
+  const prRows = getPrRows();
+  const prTotalLinesClass = "gh-ui-booster-total-lines";
+
   for (const prRow of prRows) {
-    const [, prNumber] = prRow.id.split("_");
+    const prNumber = getPrNumber(prRow);
     if (!prNumber) continue;
+    if (prRow.classList.contains(prTotalLinesClass)) continue;
+    prRow.classList.add(prTotalLinesClass);
+
+    const rootSpanEl = document.createElement("span");
+    rootSpanEl.classList.add("diffstat");
+    insertBeforeMetadata(prRow, rootSpanEl);
+
+    const root = createRoot(rootSpanEl);
+    root.render(
+      <React.StrictMode>
+        <TotalLinesLoading />
+      </React.StrictMode>,
+    );
 
     let totalLinesAdded = 0;
     let totalLinesRemoved = 0;
@@ -32,27 +57,6 @@ export async function addTotalLines(
         });
       },
     );
-
-    const prTotalLinesClass = "gh-ui-booster-total-lines";
-    if (prRow.classList.contains(prTotalLinesClass)) continue;
-    prRow.classList.add(prTotalLinesClass);
-
-    const rootSpanEl = document.createElement("span");
-    rootSpanEl.classList.add("diffstat");
-
-    /* Insert before the div-element
-       this way, it will always be the last element in the line
-       since the div has a display: flex and hence displays as a block-element
-       in an own line
-    */
-    prRow.children[0].children[2]?.insertBefore(
-      rootSpanEl,
-      prRow.children[0].children[2].querySelector(
-        "div.d-flex.mt-1.text-small.color-fg-muted",
-      ),
-    );
-
-    const root = createRoot(rootSpanEl);
 
     root.render(
       <React.StrictMode>

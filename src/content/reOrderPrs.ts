@@ -1,6 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { InstanceConfig } from "../services";
 import { isOnPrsPage } from "./utils/isOnPrsPage";
+import { getPrNumber, getPrRows } from "./utils/prListDom";
 
 export async function reOrderPrs(
   octokit: Octokit,
@@ -24,59 +25,38 @@ export async function reOrderPrs(
     // get the repo's default branch
     const { default_branch } = prs[0].head.repo;
 
-    // get all PR rows
-    const prRowNodes = document.querySelectorAll("div[id^=issue_]");
+    const prRowNodes = [...getPrRows()];
 
-    // reorder PRs, if they are depending on each other
     prs.forEach((currentPr) => {
-      // filter out PRs that are already on the default branch
       if (currentPr.base.ref === default_branch) return;
 
-      const prRows = [...prRowNodes];
-
-      // find the UI-row for this PR
-      const rowCurrentPr = prRows.find((row) => {
-        const [, prNumber] = row.id.split("_");
-        return prNumber === currentPr.number.toString();
-      });
-
+      const rowCurrentPr = prRowNodes.find(
+        (row) => getPrNumber(row) === currentPr.number.toString(),
+      );
       if (!rowCurrentPr || !(rowCurrentPr instanceof HTMLElement)) return;
 
-      // find the PR that this PR depends on
       const basePr = prs.find((pr) => pr.head.ref === currentPr.base.ref);
       if (!basePr) return;
 
-      // find the UI-row of the PR that this PR depends on
-      const rowBasePr = prRows.find((row) => {
-        const [, prNumber] = row.id.split("_");
-        return prNumber === basePr.number.toString();
-      });
-
+      const rowBasePr = prRowNodes.find(
+        (row) => getPrNumber(row) === basePr.number.toString(),
+      );
       if (!rowBasePr) return;
 
-      // add left-spacing to indicate nesting
       rowCurrentPr.style.borderLeft =
         "1.5rem solid var(--bgColor-muted, var(--color-canvas-subtle))";
       rowCurrentPr.style.borderBottomLeftRadius = "0";
 
-      // free up space on the right
-      const lastColumn = rowCurrentPr.children[0].querySelector(
-        ":scope > div:last-of-type",
-      );
-      if (!lastColumn) return;
-
-      // remove this element, as it is always empty and takes up space
-      const firstChild = lastColumn.querySelector("span");
-      if (firstChild) {
-        lastColumn.removeChild(firstChild);
+      // New UI: li rows have display:grid — appending inside breaks layout.
+      // Insert as next sibling in the ul instead.
+      if (rowCurrentPr.tagName === "LI") {
+        rowBasePr.parentElement?.insertBefore(
+          rowCurrentPr,
+          rowBasePr.nextSibling,
+        );
+      } else {
+        rowBasePr.append(rowCurrentPr);
       }
-
-      lastColumn.classList.remove("col-4", "col-md-3");
-      lastColumn.classList.add("col-2");
-
-      // append the rowCurrentPr as a child of rowBasePr
-      // this moves rowCurrentPr away from it's current position
-      rowBasePr.append(rowCurrentPr);
     });
   } catch (err) {
     console.error("Error fetching PR data:", err);
