@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { Spinner } from "@primer/react";
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { TotalLines } from "../components";
@@ -11,15 +12,34 @@ import {
   insertBeforeMetadata,
 } from "./utils/prListDom";
 
+const TotalLinesLoading: React.FC = () => (
+  <Spinner size="small" sx={{ verticalAlign: "middle" }} />
+);
+
 export async function addTotalLines(
   octokit: Octokit,
   instanceConfig: InstanceConfig,
   settings: Settings,
 ) {
   const prRows = getPrRows();
+  const prTotalLinesClass = "gh-ui-booster-total-lines";
+
   for (const prRow of prRows) {
     const prNumber = getPrNumber(prRow);
     if (!prNumber) continue;
+    if (prRow.classList.contains(prTotalLinesClass)) continue;
+    prRow.classList.add(prTotalLinesClass);
+
+    const rootSpanEl = document.createElement("span");
+    rootSpanEl.classList.add("diffstat");
+    insertBeforeMetadata(prRow, rootSpanEl);
+
+    const root = createRoot(rootSpanEl);
+    root.render(
+      <React.StrictMode>
+        <TotalLinesLoading />
+      </React.StrictMode>,
+    );
 
     let totalLinesAdded = 0;
     let totalLinesRemoved = 0;
@@ -37,17 +57,6 @@ export async function addTotalLines(
         });
       },
     );
-
-    const prTotalLinesClass = "gh-ui-booster-total-lines";
-    if (prRow.classList.contains(prTotalLinesClass)) continue;
-    prRow.classList.add(prTotalLinesClass);
-
-    const rootSpanEl = document.createElement("span");
-    rootSpanEl.classList.add("diffstat");
-
-    insertBeforeMetadata(prRow, rootSpanEl);
-
-    const root = createRoot(rootSpanEl);
 
     root.render(
       <React.StrictMode>

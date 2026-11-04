@@ -47,7 +47,16 @@ export async function reOrderPrs(
         "1.5rem solid var(--bgColor-muted, var(--color-canvas-subtle))";
       rowCurrentPr.style.borderBottomLeftRadius = "0";
 
-      rowBasePr.append(rowCurrentPr);
+      // New UI: li rows have display:grid — appending inside breaks layout.
+      // Insert as next sibling in the ul instead.
+      if (rowCurrentPr.tagName === "LI") {
+        rowBasePr.parentElement?.insertBefore(
+          rowCurrentPr,
+          rowBasePr.nextSibling,
+        );
+      } else {
+        rowBasePr.append(rowCurrentPr);
+      }
     });
   } catch (err) {
     console.error("Error fetching PR data:", err);
