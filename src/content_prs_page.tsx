@@ -6,55 +6,80 @@ import { addUpdateBranchButton } from "./content/addUpdateBranchButton";
 import { handlePrFilter } from "./content/handlePrFilter";
 import { reOrderPrs } from "./content/reOrderPrs";
 import { Spinner } from "./content/spinner";
-import { getOrCreateHeadingControls } from "./content/utils/prListDom";
+import {
+  getOrCreateHeadingControls,
+  getPrRows,
+} from "./content/utils/prListDom";
 import { isOnPrsPage } from "./content/utils/isOnPrsPage";
 import { getInstanceConfig } from "./getInstanceConfig";
 import { getSettings, Settings } from "./services";
 import { getOctoInstance } from "./services/getOctoInstance";
 
 let observer: MutationObserver | null = null;
+let executeScriptsTimer: ReturnType<typeof setTimeout> | null = null;
 
-const observeContentChanges = (observer: MutationObserver) => {
+const SPINNER_PARENT =
+  ".gh-ui-booster-heading-controls, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
+
+const observeContentChanges = (
+  observer: MutationObserver,
+  settings: Settings,
+) => {
+  const scheduleExecute = () => {
+    if (executeScriptsTimer) clearTimeout(executeScriptsTimer);
+    executeScriptsTimer = setTimeout(() => void executeScripts(settings), 150);
+  };
+
+  // Observe repo nav tabs so the observer fires on route/tab changes
   const tabNavigation =
     document.querySelector('nav[aria-label="Repository"]') ??
     document.querySelector(".UnderlineNav");
-  if (!tabNavigation) return;
+  if (tabNavigation) {
+    observer.observe(tabNavigation, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+    });
+  }
 
-  observer.observe(tabNavigation, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-  });
+  // On new GH UI, PR rows are loaded into a Turbo Frame after the initial
+  // content-script run. Observing the frame catches that deferred population.
+  const turboFrame = document.getElementById("repo-content-turbo-frame");
+  if (turboFrame) {
+    const turboObserver = new MutationObserver(scheduleExecute);
+    turboObserver.observe(turboFrame, { childList: true, subtree: false });
+  }
 };
 
 getSettings({
   onSuccess: handleContentChange,
 });
 
-const SPINNER_PARENT =
-  ".gh-ui-booster-heading-controls, #js-issues-toolbar > div.table-list-filters.flex-auto.d-flex.min-width-0 > div.flex-auto.d-none.d-lg-block.no-wrap > div";
-
-/**
- * This method is automatically executed on initial page load, refreshes, and full navigations.
- *
- * For SPAs and dynamic content, additional strategies like Mutation Observer
- * are needed to ensure the content script is triggered when the page content
- * changes without a full reload.
- */
 async function handleContentChange(settings: Settings) {
   if (observer) return;
 
-  await executeScripts(settings);
+  const instanceConfig = getInstanceConfig(settings);
+  if (!instanceConfig || !isOnPrsPage(instanceConfig)) return;
 
+  // Show spinner as early as possible — before any async work starts
+  getOrCreateHeadingControls();
+  Spinner.showSpinner(SPINNER_PARENT);
+
+  // Set up observer BEFORE executeScripts so that turbo-frame mutations that
+  // occur during the initial run (e.g. rows loading while an API call awaits)
+  // are captured and trigger a follow-up pass.
   observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === "childList" || mutation.type === "attributes") {
-        void executeScripts(settings);
-      }
-    });
+    const relevant = mutations.some(
+      (m) => m.type === "childList" || m.type === "attributes",
+    );
+    if (!relevant) return;
+    if (executeScriptsTimer) clearTimeout(executeScriptsTimer);
+    executeScriptsTimer = setTimeout(() => void executeScripts(settings), 150);
   });
 
-  observeContentChanges(observer);
+  observeContentChanges(observer, settings);
+
+  await executeScripts(settings);
 }
 
 async function executeScripts(settings: Settings) {
@@ -102,6 +127,14 @@ async function executeScripts(settings: Settings) {
   } catch (err) {
     console.error(err);
   } finally {
-    Spinner.hideSpinner();
+    // Keep spinner visible while unprocessed rows still exist (turbo-frame
+    // observer will trigger another executeScripts pass once rows appear).
+    const rows = getPrRows();
+    const processedCount = document.querySelectorAll(
+      ".gh-ui-booster-total-lines",
+    ).length;
+    if (rows.length === 0 || processedCount >= rows.length) {
+      Spinner.hideSpinner();
+    }
   }
 }

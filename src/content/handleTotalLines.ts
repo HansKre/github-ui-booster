@@ -40,7 +40,7 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
     'span.f6.fgColor-danger.text-bold[aria-hidden="true"]',
   );
 
-  if (addedSpanNew && removedSpanNew) {
+  if (addedSpanNew) {
     // Guard against running twice
     if (addedSpanNew.classList.contains("gh-ui-booster-pr-lines")) return;
 
@@ -50,11 +50,13 @@ function updateUi(totalLinesAdded: number, totalLinesRemoved: number) {
     addedClone.style.setProperty("font-size", "12px", "important");
     addedSpanNew.parentNode?.insertBefore(addedClone, addedSpanNew);
 
-    const removedClone = removedSpanNew.cloneNode(true) as HTMLElement;
-    removedClone.textContent = `- ${totalLinesRemoved.toLocaleString()}`;
-    removedClone.classList.add("gh-ui-booster-pr-lines");
-    removedClone.style.setProperty("font-size", "12px", "important");
-    removedSpanNew.parentNode?.insertBefore(removedClone, removedSpanNew);
+    if (removedSpanNew) {
+      const removedClone = removedSpanNew.cloneNode(true) as HTMLElement;
+      removedClone.textContent = `- ${totalLinesRemoved.toLocaleString()}`;
+      removedClone.classList.add("gh-ui-booster-pr-lines");
+      removedClone.style.setProperty("font-size", "12px", "important");
+      removedSpanNew.parentNode?.insertBefore(removedClone, removedSpanNew);
+    }
 
     // Remove the diffstat squares (they reflect raw count, not filtered)
     addedSpanNew.parentElement

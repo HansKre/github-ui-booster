@@ -21,6 +21,25 @@ export function observeEditModeForAiSummary(
 ) {
   if (editModeObserver) return;
 
+  const issueKeyRegex = settings.jira?.issueKeyRegex;
+
+  // Mutable cache: populated at startup and refreshed on every mutation until non-null.
+  // The new GH UI renders branch links asynchronously, so they may not be present yet
+  // at content-script startup time.
+  let cachedBranches = extractPrPageBranches();
+  let cachedIssueKey = issueKeyRegex
+    ? extractJiraIssueKeyFromPrPage(issueKeyRegex)
+    : null;
+
+  console.log(LOG_PREFIX, "Cached branches at startup:", cachedBranches);
+  console.log(LOG_PREFIX, "Cached issue key at startup:", cachedIssueKey);
+
+  const refreshCacheIfNeeded = () => {
+    if (!cachedBranches) cachedBranches = extractPrPageBranches();
+    if (!cachedIssueKey && issueKeyRegex)
+      cachedIssueKey = extractJiraIssueKeyFromPrPage(issueKeyRegex);
+  };
+
   const discussionContainer =
     document.querySelector("#discussion_bucket") ??
     document.querySelector(".js-discussion") ??
@@ -34,7 +53,13 @@ export function observeEditModeForAiSummary(
   );
 
   editModeObserver = new MutationObserver(() => {
-    injectButtonsIntoEditContainers(instanceConfig, settings);
+    refreshCacheIfNeeded();
+    injectButtonsIntoEditContainers(
+      instanceConfig,
+      settings,
+      cachedBranches,
+      cachedIssueKey,
+    );
   });
 
   editModeObserver.observe(discussionContainer, {
@@ -42,12 +67,19 @@ export function observeEditModeForAiSummary(
     subtree: true,
   });
 
-  injectButtonsIntoEditContainers(instanceConfig, settings);
+  injectButtonsIntoEditContainers(
+    instanceConfig,
+    settings,
+    cachedBranches,
+    cachedIssueKey,
+  );
 }
 
 function injectButtonsIntoEditContainers(
   instanceConfig: InstanceConfig,
   settings: Settings,
+  cachedBranches: ReturnType<typeof extractPrPageBranches>,
+  cachedIssueKey: string | null,
 ) {
   const cancelButtons = document.querySelectorAll(
     "button.js-comment-cancel-button",
@@ -67,6 +99,16 @@ function injectButtonsIntoEditContainers(
     const formContainer = cancelButton.closest(".js-previewable-comment-form");
     if (!formContainer) {
       console.log(LOG_PREFIX, "No .js-previewable-comment-form ancestor found");
+      continue;
+    }
+
+    // Skip the combined title+body edit form (three-dots > Edit).
+    // That form contains a title <input>; the description-only edit form does not.
+    const titleInput = formContainer.querySelector(
+      'input[name="issue[title]"], #issue_title, input.js-issue-title',
+    );
+    if (titleInput) {
+      console.log(LOG_PREFIX, "Skipping title edit form");
       continue;
     }
 
@@ -93,27 +135,30 @@ function injectButtonsIntoEditContainers(
     const root = createRoot(container);
 
     const handleClick = async () => {
-      const branches = extractPrPageBranches();
-      const issueKeyRegex = settings.jira?.issueKeyRegex;
+      console.log(LOG_PREFIX, "Button clicked. Branches:", cachedBranches);
+      console.log(LOG_PREFIX, "Issue key:", cachedIssueKey);
 
-      console.log(LOG_PREFIX, "Button clicked. Branches:", branches);
-      console.log(LOG_PREFIX, "Issue key regex:", issueKeyRegex);
-
-      if (settings.features.aiSummary && issueKeyRegex) {
-        const issueKey = extractJiraIssueKeyFromPrPage(issueKeyRegex);
-        console.log(LOG_PREFIX, "Extracted issue key:", issueKey);
-        if (issueKey) {
-          const jiraData: FetchJiraIssueFull =
-            await JiraService.fetchJiraIssueFull(issueKey);
-          await addAiSummary(issueKey, jiraData, textArea);
+      if (cachedIssueKey && settings.jira?.baseUrl) {
+        const jiraUrl = `${settings.jira.baseUrl}/browse/${cachedIssueKey}`;
+        if (!textArea.value.includes(jiraUrl)) {
+          const link = `[${cachedIssueKey}](${jiraUrl})`;
+          const separator = textArea.value.trim() ? "\n\n" : "";
+          textArea.value = `${textArea.value}${separator}${link}`;
+          textArea.dispatchEvent(new Event("input", { bubbles: true }));
         }
       }
 
-      if (settings.features.aiCodeSummary && branches) {
+      if (settings.features.aiSummary && cachedIssueKey) {
+        const jiraData: FetchJiraIssueFull =
+          await JiraService.fetchJiraIssueFull(cachedIssueKey);
+        await addAiSummary(cachedIssueKey, jiraData, textArea);
+      }
+
+      if (settings.features.aiCodeSummary && cachedBranches) {
         await addAiCodeSummary(instanceConfig, settings, {
           textArea,
-          baseBranch: branches.base,
-          headBranch: branches.head,
+          baseBranch: cachedBranches.base,
+          headBranch: cachedBranches.head,
         });
       }
     };
